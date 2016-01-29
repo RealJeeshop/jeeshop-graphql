@@ -6,6 +6,7 @@ const app = express();
 app.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true}));
 var graphQLIP = process.env.OPENSHIFT_NODEJS_PORT || 8080
 console.log("openshifht ip: " + process.env.OPENSHIFT_NODEJS_PORT)
+console.log("openshifht ip: " + process.env.OPENSHIFT_NODEJS_PORT)
 console.log("used ip: " + graphQLIP)
 app.listen(graphQLIP, function(err) {
     if (err)
