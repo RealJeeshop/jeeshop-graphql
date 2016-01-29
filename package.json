@@ -24,7 +24,7 @@
   },
   "scripts": {
     "build": "npm run update-schema",
-    "start": "babel-node graphQLServer.js",
+    "start": "babel-node server.js",
     "update-schema": "babel-node tools/updateSchema.js"
   },
   "dependencies": {
