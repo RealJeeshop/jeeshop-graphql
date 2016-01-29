@@ -12,7 +12,7 @@ fs.readdirSync('node_modules')
 
 module.exports = {
     name: "server",
-    entry: "./graphQLServer.js",
+    entry: "./server.js",
     output: {
         filename: "bundle.js"
     },
