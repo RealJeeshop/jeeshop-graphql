@@ -49,5 +49,5 @@
   },
   "bundleDependencies": [],
   "private": true,
-  "main": "server.js"
+  "main": "bundle.js"
 }
