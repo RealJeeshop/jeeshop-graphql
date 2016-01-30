@@ -51,7 +51,7 @@
 	var graphQLHTTP = __webpack_require__(7);
 
 	var app = express();
-	//app.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true}));
+	app.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
 
 	console.log("openshift ip: " + process.env.OPENSHIFT_NODEJS_IP);
 	console.log("openshift port: " + process.env.OPENSHIFT_NODEJS_PORT);
