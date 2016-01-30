@@ -8,7 +8,7 @@ var graphQLIP = process.env.OPENSHIFT_NODEJS_PORT || 8080
 console.log("openshifht ip: " + process.env.OPENSHIFT_NODEJS_PORT)
 console.log("openshifht ip: " + process.env.OPENSHIFT_NODEJS_PORT)
 console.log("used ip: " + graphQLIP)
-app.listen(graphQLIP, function(err) {
+app.listen(3000, function(err) {
     if (err)
     return console.error(err);
 console.log('GraphQL Server is now running on localhost:' + graphQLIP);
