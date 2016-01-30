@@ -7,8 +7,13 @@ app.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true})
 var graphQLIP = process.env.OPENSHIFT_NODEJS_PORT || 8080
 console.log("openshifht ip: " + process.env.OPENSHIFT_NODEJS_PORT)
 console.log("openshifht ip: " + process.env.OPENSHIFT_NODEJS_PORT)
+
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+
+
 console.log("used ip: " + graphQLIP)
-app.listen(3000, function(err) {
+app.listen(server_port, server_ip_address, function(err) {
     if (err)
     return console.error(err);
 console.log('GraphQL Server is now running on localhost:' + graphQLIP);
