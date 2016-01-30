@@ -9,7 +9,7 @@ console.log("openshift ip: " + process.env.OPENSHIFT_NODEJS_IP)
 console.log("openshift port: " + process.env.OPENSHIFT_NODEJS_PORT)
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+var server_ip_address = '127.2.199.1'// process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 console.log("used ip: " + server_ip_address)
 console.log("used port: " + server_port)
