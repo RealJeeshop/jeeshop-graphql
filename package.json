@@ -32,6 +32,7 @@
     "babel-jest": "^6.0.1",
     "babel-loader": "^6.0.1",
     "babel-relay-plugin": "^0.6.3",
+    "es6-promise": "^3.0.2",
     "express": "^4.13.4",
     "express-graphql": "^0.4.5",
     "fs": "0.0.2",
