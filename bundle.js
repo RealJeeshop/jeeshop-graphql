@@ -54,7 +54,7 @@
 	var app = express();
 	app.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
 
-	console.log("openshift ip: " + process.env.OPENSHIFT_NODEJS_IP);
+	console.log("HEY openshift ip: " + process.env.OPENSHIFT_NODEJS_IP);
 	console.log("openshift port: " + process.env.OPENSHIFT_NODEJS_PORT);
 
 	var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
