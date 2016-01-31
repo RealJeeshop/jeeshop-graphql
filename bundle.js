@@ -46,7 +46,8 @@
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	__webpack_require__(2);
+	__webpack_require__(2); // Use for openshift and Promise
+
 	var express = __webpack_require__(3);
 	var Schema = __webpack_require__(4);
 	var graphQLHTTP = __webpack_require__(8);

@@ -1,4 +1,5 @@
-require("babel-polyfill");
+require("babel-polyfill"); // Use for openshift and Promise
+
 var express = require('express');
 var Schema = require('./data/schema');
 var graphQLHTTP = require('express-graphql');
