@@ -25,6 +25,7 @@ module.exports = {
                 query: {
                     plugins: ["./tools/BabelRelayPlugin"]
                 },
+                "presets": ["es2015", "react", "stage-1"],
 
                 exclude: /node_modules/
             },
