@@ -1,3 +1,4 @@
+require("babel-polyfill");
 var express = require('express');
 var Schema = require('./data/schema');
 var graphQLHTTP = require('express-graphql');

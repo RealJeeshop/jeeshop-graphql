@@ -46,9 +46,10 @@
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var express = __webpack_require__(2);
-	var Schema = __webpack_require__(3);
-	var graphQLHTTP = __webpack_require__(7);
+	__webpack_require__(2);
+	var express = __webpack_require__(3);
+	var Schema = __webpack_require__(4);
+	var graphQLHTTP = __webpack_require__(8);
 
 	var app = express();
 	app.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
@@ -169,10 +170,16 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = require("express");
+	module.exports = require("babel-polyfill");
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	module.exports = require("express");
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -182,11 +189,11 @@
 	});
 	exports.Viewer = undefined;
 
-	var _graphql = __webpack_require__(4);
+	var _graphql = __webpack_require__(5);
 
-	var _graphqlRelay = __webpack_require__(5);
+	var _graphqlRelay = __webpack_require__(6);
 
-	var _axios = __webpack_require__(6);
+	var _axios = __webpack_require__(7);
 
 	var _axios2 = _interopRequireDefault(_axios);
 
@@ -316,25 +323,25 @@
 	});
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	module.exports = require("graphql");
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = require("graphql-relay");
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	module.exports = require("axios");
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	module.exports = require("express-graphql");
