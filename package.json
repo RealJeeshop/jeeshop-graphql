@@ -30,7 +30,6 @@
   "dependencies": {
     "axios": "^0.9.1",
     "babel-loader": "^5.4.0",
-    "babel-polyfill": "^6.3.14",
     "babel-relay-plugin": "^0.6.3",
     "babel-runtime": "^5.8.34",
     "es6-promise": "^3.0.2",
