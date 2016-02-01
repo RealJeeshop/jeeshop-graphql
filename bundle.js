@@ -44,13 +44,13 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(process) {//require("babel-polyfill"); // Use for openshift and Promise
 
-	__webpack_require__(2); // Use for openshift and Promise
+	'use strict';
 
-	var express = __webpack_require__(3);
-	var Schema = __webpack_require__(4);
-	var graphQLHTTP = __webpack_require__(8);
+	var express = __webpack_require__(2);
+	var Schema = __webpack_require__(3);
+	var graphQLHTTP = __webpack_require__(7);
 
 	var app = express();
 	app.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
@@ -59,14 +59,14 @@
 	console.log("openshift port: " + process.env.OPENSHIFT_NODEJS_PORT);
 
 	var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-	var server_ip_address = '127.2.199.1'; // process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+	var server_ip_address = '127.0.0.1'; //'127.2.199.1'// process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 	console.log("used ip: " + server_ip_address);
 	console.log("used port: " + server_port);
 
 	app.listen(server_port, server_ip_address, function (err) {
 	    if (err) return console.error(err);
-	    console.log('GraphQL Server is now running on localhost:' + server_ip_address);
+	    console.log('GraphQL Server is now running on ' + server_ip_address + ':' + server_port);
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
@@ -171,16 +171,10 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = require("babel-polyfill");
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
 	module.exports = require("express");
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -189,7 +183,7 @@
 	  value: true
 	});
 
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -197,13 +191,13 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _graphql = __webpack_require__(5);
+	var _graphql = __webpack_require__(4);
 
-	var _graphqlRelay = __webpack_require__(6);
+	var _graphqlRelay = __webpack_require__(5);
 
 	// import database from './db'
 
-	var _axios = __webpack_require__(7);
+	var _axios = __webpack_require__(6);
 
 	var _axios2 = _interopRequireDefault(_axios);
 
@@ -325,25 +319,25 @@
 	});
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports) {
 
 	module.exports = require("graphql");
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports) {
 
 	module.exports = require("graphql-relay");
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = require("axios");
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports) {
 
 	module.exports = require("express-graphql");
