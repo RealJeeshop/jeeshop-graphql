@@ -23,10 +23,9 @@ module.exports = {
                 test: /\.js?$/,
                 loader: 'babel',
                 query: {
-                    plugins: ["./tools/BabelRelayPlugin"]
+
                 },
 
-                exclude: /node_modules/
             },
             {
                 test: /\.html$/,
