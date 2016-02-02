@@ -63,7 +63,7 @@
 
 	app.listen(server_port, server_ip_address, function (err) {
 	    if (err) return console.error(err);
-	    console.log('GraphQL Server is now running on ' + server_ip_address + ':' + server_port);
+	    console.log('GraphQL Server is now running on ' + server_ip_address + ':' + server_port + '/graphql');
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
