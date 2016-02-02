@@ -82,7 +82,7 @@ var GraphQLViewer = new GraphQLObjectType({
     id: globalIdField('Viewer'),
     simTypes: {
       type: SimTypesConnection,
-      //args: {...connectionArgs}, TODO
+      args: {...connectionArgs},
       resolve: (obj, args) => connectionFromPromisedArray(axios.get("http://greec-muskacirca.rhcloud.com/greec/rs/wrecks/lightweight")
                                                                     .then((response) => {
                                                                         return response.data

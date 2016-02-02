@@ -180,6 +180,8 @@
 
 	'use strict';
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -289,7 +291,7 @@
 	      id: (0, _graphqlRelay.globalIdField)('Viewer'),
 	      simTypes: {
 	        type: SimTypesConnection,
-	        //args: {...connectionArgs}, TODO
+	        args: _extends({}, _graphqlRelay.connectionArgs),
 	        resolve: function resolve(obj, args) {
 	          return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get("http://greec-muskacirca.rhcloud.com/greec/rs/wrecks/lightweight").then(function (response) {
 	            return response.data;
