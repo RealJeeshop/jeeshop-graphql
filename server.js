@@ -1,4 +1,4 @@
-//require("babel-polyfill"); // Use for openshift and Promise
+require("babel-polyfill"); // Use for openshift and Promise
 
 var express = require('express');
 var { Schema } = require('./data/schema');
