@@ -49,11 +49,15 @@
 	//require("babel-polyfill"); // Use for openshift and Promise
 
 	var express = __webpack_require__(2);
-	var Schema = __webpack_require__(3);
+
+	var _require = __webpack_require__(3);
+
+	var Schema = _require.Schema;
+
 	var graphQLHTTP = __webpack_require__(7);
 
 	var app = express();
-	app.use('/', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
+	app.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
 
 	var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 	var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
@@ -285,7 +289,7 @@
 	      id: (0, _graphqlRelay.globalIdField)('Viewer'),
 	      simTypes: {
 	        type: SimTypesConnection,
-	        //args: {args},
+	        //args: {...connectionArgs}, TODO
 	        resolve: function resolve(obj, args) {
 	          return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get("http://greec-muskacirca.rhcloud.com/greec/rs/wrecks/lightweight").then(function (response) {
 	            return response.data;

@@ -21,11 +21,7 @@ module.exports = {
             {test: /\.css$/, loader: "style!css"},
             {
                 test: /\.js?$/,
-                loader: 'babel',
-                query: {
-
-                },
-
+                loader: 'babel'
             },
             {
                 test: /\.html$/,
