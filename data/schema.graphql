@@ -33,5 +33,5 @@ type SimTypeEdge {
 
 type Viewer implements Node {
   id: ID!
-  simTypes: SimTypeConnection
+  simTypes(after: String, first: Int, before: String, last: Int): SimTypeConnection
 }
