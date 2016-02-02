@@ -16,5 +16,5 @@ console.log("used port: " + server_port)
 app.listen(server_port, server_ip_address, function(err) {
     if (err)
     return console.error(err);
-console.log('GraphQL Server is now running on ' + server_ip_address + ':' + server_port + '/graphql');
+console.log('GraphQL Server is now running on ' + server_ip_address + ':' + server_port);
 });
