@@ -44,12 +44,16 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {//require("babel-polyfill"); // Use for openshift and Promise
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	'use strict';
+	//require("babel-polyfill"); // Use for openshift and Promise
 
 	var express = __webpack_require__(2);
-	var Schema = __webpack_require__(3);
+
+	var _require = __webpack_require__(3);
+
+	var Schema = _require.Schema;
+
 	var graphQLHTTP = __webpack_require__(7);
 
 	var app = express();
@@ -176,41 +180,42 @@
 
 	'use strict';
 
-	Object.defineProperty(exports, '__esModule', {
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	exports.Schema = exports.Viewer = undefined;
 
 	var _graphql = __webpack_require__(4);
 
 	var _graphqlRelay = __webpack_require__(5);
 
-	// import database from './db'
-
 	var _axios = __webpack_require__(6);
 
 	var _axios2 = _interopRequireDefault(_axios);
 
-	var Viewer = (function (_Object) {
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	// import database from './db'
+
+	var Viewer = exports.Viewer = function (_Object) {
 	  _inherits(Viewer, _Object);
 
 	  function Viewer() {
 	    _classCallCheck(this, Viewer);
 
-	    _get(Object.getPrototypeOf(Viewer.prototype), 'constructor', this).apply(this, arguments);
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Viewer).apply(this, arguments));
 	  }
 
 	  return Viewer;
-	})(Object);
-
-	exports.Viewer = Viewer;
+	}(Object);
 
 	var VIEWER_ID = 'me';
 	var viewer = new Viewer();
@@ -270,14 +275,14 @@
 	  interfaces: [nodeInterface]
 	});
 
-	var _connectionDefinitions =
+	var _connectionDefinition =
 	// ,edgeType: GraphQLSimTypesEdge,
 	(0, _graphqlRelay.connectionDefinitions)({
 	  name: 'SimType',
 	  nodeType: GraphQLSimType
 	});
 
-	var SimTypesConnection = _connectionDefinitions.connectionType;
+	var SimTypesConnection = _connectionDefinition.connectionType;
 
 	var GraphQLViewer = new _graphql.GraphQLObjectType({
 	  name: 'Viewer',
@@ -286,9 +291,9 @@
 	      id: (0, _graphqlRelay.globalIdField)('Viewer'),
 	      simTypes: {
 	        type: SimTypesConnection,
-	        //args: {args},
+	        args: _extends({}, _graphqlRelay.connectionArgs),
 	        resolve: function resolve(obj, args) {
-	          return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2['default'].get("http://greec-muskacirca.rhcloud.com/greec/rs/wrecks/lightweight").then(function (response) {
+	          return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get("http://greec-muskacirca.rhcloud.com/greec/rs/wrecks/lightweight").then(function (response) {
 	            return response.data;
 	          }), args);
 	        }
@@ -311,7 +316,7 @@
 	  }
 	});
 
-	exports['default'] = new _graphql.GraphQLSchema({
+	var Schema = exports.Schema = new _graphql.GraphQLSchema({
 	  query: GraphQLRoot
 	});
 

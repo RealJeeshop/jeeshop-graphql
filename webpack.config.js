@@ -21,12 +21,7 @@ module.exports = {
             {test: /\.css$/, loader: "style!css"},
             {
                 test: /\.js?$/,
-                loader: 'babel',
-                query: {
-                    plugins: ["./tools/BabelRelayPlugin"]
-                },
-
-                exclude: /node_modules/
+                loader: 'babel'
             },
             {
                 test: /\.html$/,
