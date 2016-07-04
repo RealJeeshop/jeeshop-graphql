@@ -1,0 +1,42 @@
+schema {
+  query: Root
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Root {
+  viewer(viewerId: Int): Viewer
+  node(id: ID!): Node
+}
+
+type UserType implements Node {
+  id: ID!
+  login: String
+  password: String
+  email: String
+}
+
+type UserTypeConnection {
+  pageInfo: PageInfo!
+  edges: [UserTypeEdge]
+}
+
+type UserTypeEdge {
+  node: UserType
+  cursor: String!
+}
+
+type Viewer implements Node {
+  id: ID!
+  user: UserType
+  users(after: String, first: Int, before: String, last: Int): UserTypeConnection
+}
