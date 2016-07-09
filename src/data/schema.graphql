@@ -2,6 +2,28 @@ schema {
   query: Root
 }
 
+type CatalogType implements Node {
+  id: ID!
+  name: String
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  localizedPresentation: String
+  rootCategoriesId: String
+}
+
+type CatalogTypeConnection {
+  pageInfo: PageInfo!
+  edges: [CatalogTypeEdge]
+}
+
+type CatalogTypeEdge {
+  node: CatalogType
+  cursor: String!
+}
+
 interface Node {
   id: ID!
 }
@@ -22,7 +44,6 @@ type UserType implements Node {
   id: ID!
   login: String
   password: String
-  email: String
 }
 
 type UserTypeConnection {
@@ -39,4 +60,5 @@ type Viewer implements Node {
   id: ID!
   user: UserType
   users(after: String, first: Int, before: String, last: Int): UserTypeConnection
+  catalogs(after: String, first: Int, before: String, last: Int): CatalogTypeConnection
 }
