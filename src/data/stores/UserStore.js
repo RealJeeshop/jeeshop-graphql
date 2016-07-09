@@ -5,7 +5,9 @@ const VIEWER_ID = 'me';
 var viewer = new Viewer();
 viewer.id = VIEWER_ID;
 
+
 var users = {}
+users[VIEWER_ID] = viewer
 
 const usersById = {
     [VIEWER_ID]: viewer

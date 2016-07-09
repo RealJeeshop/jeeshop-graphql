@@ -32,6 +32,7 @@ var viewer = new Viewer();
 viewer.id = VIEWER_ID;
 
 var users = {};
+users[VIEWER_ID] = viewer;
 
 var usersById = _defineProperty({}, VIEWER_ID, viewer);
 

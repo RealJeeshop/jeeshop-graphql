@@ -35,7 +35,7 @@ _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
                     if (result.errors) {
                         console.error('ERROR introspecting schema: ', JSON.stringify(result.errors, null, 2));
                     } else {
-                        _fs2.default.writeFileSync(_path2.default.join(__dirname, '../data/Schema.json'), JSON.stringify(result, null, 2));
+                        _fs2.default.writeFileSync(_path2.default.join(__dirname, '../data/schema.json'), JSON.stringify(result, null, 2));
                     }
 
                 case 4:
@@ -47,4 +47,4 @@ _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
 }))();
 
 // Save user readable type system shorthand of schema
-_fs2.default.writeFileSync(_path2.default.join(__dirname, '../data/Schema.graphql'), (0, _utilities.printSchema)(_schema.Schema));
+_fs2.default.writeFileSync(_path2.default.join(__dirname, '../data/schema.graphql'), (0, _utilities.printSchema)(_schema.Schema));

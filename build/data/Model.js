@@ -123,11 +123,13 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                 args: _extends({}, _graphqlRelay.connectionArgs),
                 resolve: function resolve(obj, args) {
 
-                    console.log("what the fuck");
+                    console.log("what the fuck 2");
 
-                    return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get('localhost:8080/jeeshop-admin/rs/users', { headers: { 'Authorization': 'Basic ' + _jsBase.Base64.encode("admin@jeeshop.org:jeeshop") } }).then(function (response) {
+                    var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
+
+                    return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/users', { headers: config }).then(function (response) {
                         console.log("response : " + JSON.stringify(response));
-                        return response;
+                        return response.data;
                     }), args);
                 }
             }
@@ -150,6 +152,8 @@ var GraphQLRoot = exports.GraphQLRoot = new _graphql.GraphQLObjectType({
             resolve: function resolve(root, _ref) {
                 var viewerId = _ref.viewerId;
 
+
+                console.log("what the fuck : " + (0, _UserStore.getViewer)("me"));
                 return (0, _UserStore.getViewer)("me");
             }
         },

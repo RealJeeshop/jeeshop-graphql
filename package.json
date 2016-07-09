@@ -49,6 +49,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "babel-relay-plugin": "^0.9.1",
     "es6-promise": "^3.0.2",
+    "nodemon": "^1.9.2",
     "webpack": "^1.12.12"
   },
   "bundleDependencies": [],

@@ -16,7 +16,7 @@ import { introspectionQuery, printSchema } from 'graphql/utilities';
         );
     } else {
         fs.writeFileSync(
-            path.join(__dirname, '../data/Schema.json'),
+            path.join(__dirname, '../data/schema.json'),
             JSON.stringify(result, null, 2)
         );
     }
@@ -24,6 +24,6 @@ import { introspectionQuery, printSchema } from 'graphql/utilities';
 
 // Save user readable type system shorthand of schema
 fs.writeFileSync(
-    path.join(__dirname, '../data/Schema.graphql'),
+    path.join(__dirname, '../data/schema.graphql'),
     printSchema(Schema)
 );

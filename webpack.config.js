@@ -1,37 +1,49 @@
 var webpack = require('webpack');
-var fs = require('fs');
+var path = require('path');
+var assign = require('object-assign');
 
-var nodeModules = {};
-fs.readdirSync('node_modules')
-    .filter(function(x) {
-        return ['.bin'].indexOf(x) === -1;
-    })
-    .forEach(function(mod) {
-        nodeModules[mod] = 'commonjs ' + mod;
-    });
+var defaultConfig = {
+    
+};
 
-module.exports = {
-    name: "server",
-    entry: "./server.js",
+var serverConfig = assign({}, defaultConfig, {
+    entry: './src/server.js',
     output: {
-        filename: "bundle.js"
+        path: path.join(__dirname, 'build'),
+        filename: 'server.js',
+        libraryTarget: 'commonjs2'
     },
+
+    target: 'node',
+    // do not include polyfills or mocks for node stuff
+    node: {
+        console: false,
+        global: false,
+        process: false,
+        Buffer: false,
+        __filename: false,
+        __dirname: false
+    },
+    // all non-relative modules are external
+    // abc -> require('abc')
+    externals: /^[a-z\-0-9]+$/,
+
+    // plugins: [
+    //     // enable source-map-support by installing at the head of every chunk
+    //     new webpack.BannerPlugin('require("source-map-support").install();',
+    //         {raw: true, entryOnly: false})
+    // ],
+
     module: {
         loaders: [
-            {test: /\.css$/, loader: "style!css"},
             {
-                test: /\.js?$/,
+                // transpile all .js files using babel
+                test: /\.js$/,
+                exclude: /node_modules/,
                 loader: 'babel'
-            },
-            {
-                test: /\.html$/,
-                loader: "file?name=[name].[ext]"
-            },
-            {
-                test: /\.json$/,
-                loader: 'json'
             }
         ]
-    },
-    externals: nodeModules
-};
+    }
+});
+
+module.exports = [serverConfig];

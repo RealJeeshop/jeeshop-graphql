@@ -119,13 +119,14 @@ export var ViewerType = new GraphQLObjectType({
             args: {...connectionArgs},
             resolve: (obj, args) => {
                 
-                console.log("what the fuck");
+                console.log("what the fuck 2");
+
+                var config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
                 
-                return connectionFromPromisedArray(axios.get(`localhost:8080/jeeshop-admin/rs/users`,
-                    {headers: {'Authorization': 'Basic ' + Base64.encode("admin@jeeshop.org:jeeshop")}})
+                return connectionFromPromisedArray(axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/users`, {headers: config})
                     .then((response) => {
                         console.log("response : " + JSON.stringify(response));
-                        return response
+                        return response.data
                     }), args)
             }
         }
@@ -145,6 +146,8 @@ export var GraphQLRoot = new GraphQLObjectType({
                 }
             },
             resolve: (root, {viewerId}) => {
+
+                console.log("what the fuck : " + getViewer("me"));
                 return getViewer("me")
             }
         },
