@@ -8,10 +8,9 @@ const app = express();
 app.use('/', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true}));
 
 var server_port = process.env.PORT || 3000
-var server_ip_address = process.env.PROD_URL || 'localhost'
 
-app.listen(server_port, server_ip_address, function(err) {
+app.listen(server_port, function(err) {
     if (err)
     return console.error(err);
-console.log('GraphQL Server is now running on ' + server_ip_address + ':' + server_port);
+console.log('GraphQL Server is now running on ' + server_port);
 });
