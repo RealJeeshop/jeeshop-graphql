@@ -1,7 +1,5 @@
 'use strict';
 
-require("babel-polyfill"); // Use for openshift and Promise
-
 var express = require('express');
 
 var _require = require('./data/schema');
