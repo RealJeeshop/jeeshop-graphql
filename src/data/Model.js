@@ -43,10 +43,10 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
         let {id, type} = fromGlobalId(globalId);
 
-        if (type === 'ShopType') {
-            return Database.models.shop.findOne({where: {id: id}});
+        if (type === 'CatalogType') {
+            return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, {headers: config, id: id}).then(r => r.data)
         } else if (type === 'UserType') {
-            return Database.models.user.findOne({where: {id: id}})
+            return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/user/` + id, {headers: config}).then(r => r.data)
         } else if (type === 'ViewerType') {
             return getViewer(id)
         }
@@ -54,10 +54,10 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     },
     (obj) => {
 
-        if (obj.password != undefined) {
-            return ViewerType
-        } else if (obj.name != undefined) {
-            return ShopType
+        if (obj.login != undefined) {
+            return UserType
+        } else if (obj.description != undefined) {
+            return CatalogType
         } else if (obj.email) {
             return UserType
         }
@@ -65,14 +65,20 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     }
 );
 
-export var ShopType = new GraphQLObjectType({
+export var CatalogType = new GraphQLObjectType({
 
-    name: 'ShopType',
-    description: 'It represents a shop',
+    name: 'CatalogType',
+    description: 'It represents a catalog',
     fields: {
-        id: globalIdField('ShopType'),
+        id: globalIdField('CatalogType'),
         name: {type: GraphQLString, resolve: (obj) => obj.name},
-        description: {type: GraphQLString, resolve: (obj) => obj.description}
+        description: {type: GraphQLString, resolve: (obj) => obj.description},
+        disabled: {type: GraphQLBoolean, resolve: (obj) => obj.disabled},
+        startDate: {type: GraphQLString, resolve: (obj) => obj.startDate},
+        endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
+        visible: {type: GraphQLBoolean, resolve: (obj) => obj.endDate},
+        localizedPresentation: {type: GraphQLString, resolve: (obj) => null},
+        rootCategoriesId: {type: GraphQLString, resolve: (obj) => null}
     },
     interfaces: [nodeInterface]
 })
@@ -84,15 +90,11 @@ export var UserType = new GraphQLObjectType({
         id: globalIdField('UserType'),
         login: {
             type: GraphQLString,
-            resolve: (obj) => obj.login
+            resolve: (obj) => obj.login //email
         },
         password: {
             type: GraphQLString,
             resolve: (obj) => obj.password
-        },
-        email: {
-            type: GraphQLString,
-            resolve: (obj) => obj.email
         }
     },
     interfaces: [nodeInterface]
@@ -104,6 +106,14 @@ export var {
 } = connectionDefinitions({
     name: 'UserType',
     nodeType: UserType
+});
+
+export var {
+    connectionType: CatalogConnection
+    , edgeType: CatalogEdge,
+} = connectionDefinitions({
+    name: 'CatalogType',
+    nodeType: CatalogType
 });
 
 export var ViewerType = new GraphQLObjectType({
@@ -118,16 +128,22 @@ export var ViewerType = new GraphQLObjectType({
             type: UserConnection,
             args: {...connectionArgs},
             resolve: (obj, args) => {
-                
-                console.log("what the fuck 2");
 
-                var config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
-                
+                let config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
+
                 return connectionFromPromisedArray(axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/users`, {headers: config})
-                    .then((response) => {
-                        console.log("response : " + JSON.stringify(response));
-                        return response.data
-                    }), args)
+                    .then((response) => response.data), args)
+            }
+        },
+        catalogs: {
+            type: CatalogConnection,
+            args: {...connectionArgs},
+            resolve: (obj, args) => {
+
+                let config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
+
+                return connectionFromPromisedArray(axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, {headers: config})
+                    .then((response) => response.data), args)
             }
         }
     }),
@@ -146,8 +162,6 @@ export var GraphQLRoot = new GraphQLObjectType({
                 }
             },
             resolve: (root, {viewerId}) => {
-
-                console.log("what the fuck : " + getViewer("me"));
                 return getViewer("me")
             }
         },

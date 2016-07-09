@@ -7,8 +7,8 @@ var graphQLHTTP = require('express-graphql');
 const app = express();
 app.use('/', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true}));
 
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || 'localhost'
+var server_port = process.env.PORT || 3000
+var server_ip_address = process.env.PROD_URL || 'localhost'
 
 app.listen(server_port, server_ip_address, function(err) {
     if (err)

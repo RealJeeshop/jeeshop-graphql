@@ -60,8 +60,8 @@ module.exports =
 	var app = express();
 	app.use('/', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
 
-	var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
-	var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || 'localhost';
+	var server_port = process.env.PORT || 3000;
+	var server_ip_address = process.env.PROD_URL || 'localhost';
 
 	app.listen(server_port, server_ip_address, function (err) {
 	    if (err) return console.error(err);
@@ -114,7 +114,7 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.GraphQLRoot = exports.ViewerType = exports.UserEdge = exports.UserConnection = exports.UserType = exports.ShopType = undefined;
+	exports.GraphQLRoot = exports.ViewerType = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = undefined;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -144,20 +144,24 @@ module.exports =
 	    var type = _fromGlobalId.type;
 
 
-	    if (type === 'ShopType') {
-	        return Database.models.shop.findOne({ where: { id: id } });
+	    if (type === 'CatalogType') {
+	        return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', { headers: config, id: id }).then(function (r) {
+	            return r.data;
+	        });
 	    } else if (type === 'UserType') {
-	        return Database.models.user.findOne({ where: { id: id } });
+	        return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/user/' + id, { headers: config }).then(function (r) {
+	            return r.data;
+	        });
 	    } else if (type === 'ViewerType') {
 	        return (0, _UserStore.getViewer)(id);
 	    }
 	    return null;
 	}, function (obj) {
 
-	    if (obj.password != undefined) {
-	        return ViewerType;
-	    } else if (obj.name != undefined) {
-	        return ShopType;
+	    if (obj.login != undefined) {
+	        return UserType;
+	    } else if (obj.description != undefined) {
+	        return CatalogType;
 	    } else if (obj.email) {
 	        return UserType;
 	    }
@@ -166,17 +170,35 @@ module.exports =
 
 	var nodeInterface = _nodeDefinitions.nodeInterface;
 	var nodeField = _nodeDefinitions.nodeField;
-	var ShopType = exports.ShopType = new _graphql.GraphQLObjectType({
+	var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
 
-	    name: 'ShopType',
-	    description: 'It represents a shop',
+	    name: 'CatalogType',
+	    description: 'It represents a catalog',
 	    fields: {
-	        id: (0, _graphqlRelay.globalIdField)('ShopType'),
+	        id: (0, _graphqlRelay.globalIdField)('CatalogType'),
 	        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
 	                return obj.name;
 	            } },
 	        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
 	                return obj.description;
+	            } },
+	        disabled: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.disabled;
+	            } },
+	        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.startDate;
+	            } },
+	        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.endDate;
+	            } },
+	        visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.endDate;
+	            } },
+	        localizedPresentation: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return null;
+	            } },
+	        rootCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return null;
 	            } }
 	    },
 	    interfaces: [nodeInterface]
@@ -191,18 +213,12 @@ module.exports =
 	            type: _graphql.GraphQLString,
 	            resolve: function resolve(obj) {
 	                return obj.login;
-	            }
+	            } //email
 	        },
 	        password: {
 	            type: _graphql.GraphQLString,
 	            resolve: function resolve(obj) {
 	                return obj.password;
-	            }
-	        },
-	        email: {
-	            type: _graphql.GraphQLString,
-	            resolve: function resolve(obj) {
-	                return obj.email;
 	            }
 	        }
 	    },
@@ -218,6 +234,16 @@ module.exports =
 	var UserEdge = _connectionDefinition.edgeType;
 	exports.UserConnection = UserConnection;
 	exports.UserEdge = UserEdge;
+
+	var _connectionDefinition2 = (0, _graphqlRelay.connectionDefinitions)({
+	    name: 'CatalogType',
+	    nodeType: CatalogType
+	});
+
+	var CatalogConnection = _connectionDefinition2.connectionType;
+	var CatalogEdge = _connectionDefinition2.edgeType;
+	exports.CatalogConnection = CatalogConnection;
+	exports.CatalogEdge = CatalogEdge;
 	var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
 	    name: 'Viewer',
 	    fields: function fields() {
@@ -234,12 +260,21 @@ module.exports =
 	                args: _extends({}, _graphqlRelay.connectionArgs),
 	                resolve: function resolve(obj, args) {
 
-	                    console.log("what the fuck 2");
-
 	                    var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
 
 	                    return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/users', { headers: config }).then(function (response) {
-	                        console.log("response : " + JSON.stringify(response));
+	                        return response.data;
+	                    }), args);
+	                }
+	            },
+	            catalogs: {
+	                type: CatalogConnection,
+	                args: _extends({}, _graphqlRelay.connectionArgs),
+	                resolve: function resolve(obj, args) {
+
+	                    var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
+
+	                    return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', { headers: config }).then(function (response) {
 	                        return response.data;
 	                    }), args);
 	                }
@@ -263,8 +298,6 @@ module.exports =
 	            resolve: function resolve(root, _ref) {
 	                var viewerId = _ref.viewerId;
 
-
-	                console.log("what the fuck : " + (0, _UserStore.getViewer)("me"));
 	                return (0, _UserStore.getViewer)("me");
 	            }
 	        },
