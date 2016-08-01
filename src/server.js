@@ -1,5 +1,5 @@
 var express = require('express');
-var { Schema } = require('./data/schema');
+var { Schema } = require('./data/Schema');
 var graphQLHTTP = require('express-graphql');
 
 const app = express();

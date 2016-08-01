@@ -76,7 +76,7 @@ export var CatalogType = new GraphQLObjectType({
         disabled: {type: GraphQLBoolean, resolve: (obj) => obj.disabled},
         startDate: {type: GraphQLString, resolve: (obj) => obj.startDate},
         endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
-        visible: {type: GraphQLBoolean, resolve: (obj) => obj.endDate},
+        visible: {type: GraphQLBoolean, resolve: (obj) => obj.visible},
         localizedPresentation: {type: GraphQLString, resolve: (obj) => null},
         rootCategoriesId: {type: GraphQLString, resolve: (obj) => null}
     },
@@ -137,13 +137,41 @@ export var ViewerType = new GraphQLObjectType({
         },
         catalogs: {
             type: CatalogConnection,
-            args: {...connectionArgs},
+            args: {
+                search: {type: GraphQLString},
+                start: {type: GraphQLInt},
+                size: {type: GraphQLInt},
+                orderBy: {type: GraphQLString},
+                isDesc: {type: GraphQLBoolean},
+                ...connectionArgs
+            },
             resolve: (obj, args) => {
 
                 let config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
+                return connectionFromPromisedArray(axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, {params: args, headers: config})
+                    .then((response) => {
+                        return response.data
+                    }).catch((response) => {
+                        if(response.status == "404") return []
+                    }), args)
+            }
+        },
+        catalog: {
+            type: CatalogType,
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLString)},
+                locale: {type: GraphQLString}
+            },
+            resolve: (obj, args) => {
 
-                return connectionFromPromisedArray(axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, {headers: config})
-                    .then((response) => response.data), args)
+                let config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
+                let {id, type} = fromGlobalId(args.id);
+                return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/${id}`, {params: args, headers: config})
+                    .then((response) => {
+                        return response.data
+                    }).catch((response) => {
+                        if(response.status == "404") return []
+                    })
             }
         }
     }),

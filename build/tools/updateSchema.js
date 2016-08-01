@@ -9,7 +9,7 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _schema = require('../data/schema');
+var _Schema = require('../data/Schema');
 
 var _graphql = require('graphql');
 
@@ -27,7 +27,7 @@ _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
             switch (_context.prev = _context.next) {
                 case 0:
                     _context.next = 2;
-                    return (0, _graphql.graphql)(_schema.Schema, _utilities.introspectionQuery);
+                    return (0, _graphql.graphql)(_Schema.Schema, _utilities.introspectionQuery);
 
                 case 2:
                     result = _context.sent;
@@ -47,4 +47,4 @@ _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
 }))();
 
 // Save user readable type system shorthand of schema
-_fs2.default.writeFileSync(_path2.default.join(__dirname, '../data/schema.graphql'), (0, _utilities.printSchema)(_schema.Schema));
+_fs2.default.writeFileSync(_path2.default.join(__dirname, '../data/schema.graphql'), (0, _utilities.printSchema)(_Schema.Schema));

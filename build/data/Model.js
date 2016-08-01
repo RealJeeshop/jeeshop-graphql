@@ -25,7 +25,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * The first argument defines the way to resolve an ID to its object.
  * The second argument defines the way to resolve a node object to its GraphQL type.
  */
-
 var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
     var _fromGlobalId = (0, _graphqlRelay.fromGlobalId)(globalId);
 
@@ -81,7 +80,7 @@ var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
                 return obj.endDate;
             } },
         visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
-                return obj.endDate;
+                return obj.visible;
             } },
         localizedPresentation: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
                 return null;
