@@ -78,7 +78,7 @@ module.exports =
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	exports.Schema = undefined;
 
@@ -86,8 +86,18 @@ module.exports =
 
 	var _Model = __webpack_require__(4);
 
+	var _CatalogMutation = __webpack_require__(10);
+
+	var Mutation = new _graphql.GraphQLObjectType({
+	  name: 'Mutation',
+	  fields: {
+	    createCatalog: _CatalogMutation.CreateCatalogMutation
+	  }
+	});
+
 	var Schema = exports.Schema = new _graphql.GraphQLSchema({
-	    query: _Model.GraphQLRoot
+	  query: _Model.GraphQLRoot,
+	  mutation: Mutation
 	});
 
 /***/ },
@@ -400,6 +410,95 @@ module.exports =
 /***/ function(module, exports) {
 
 	module.exports = require("express-graphql");
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.CreateCatalogMutation = undefined;
+
+	var _graphql = __webpack_require__(3);
+
+	var _graphqlRelay = __webpack_require__(5);
+
+	var _Model = __webpack_require__(4);
+
+	var _UserStore = __webpack_require__(6);
+
+	var _axios = __webpack_require__(8);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var CreateCatalogMutation = exports.CreateCatalogMutation = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'CreateCatalog',
+	    description: 'Function to create a catalog',
+	    inputFields: {
+	        name: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        description: { type: _graphql.GraphQLString },
+	        disabled: { type: _graphql.GraphQLBoolean },
+	        startDate: { type: _graphql.GraphQLString },
+	        endDate: { type: _graphql.GraphQLString },
+	        visible: { type: _graphql.GraphQLBoolean },
+	        rootCategoriesIds: { type: new _graphql.GraphQLList(_graphql.GraphQLInt) }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        },
+	        catalogEdge: {
+	            type: _Model.CatalogEdge,
+	            resolve: function resolve(obj, _ref) {
+	                var id = _ref.id;
+
+
+	                console.log("obj : " + JSON.stringify(obj));
+
+	                return obj;
+
+	                // return Database.models.model.findAll()
+	                //     .then(dataModels => {
+	                //
+	                //         let itemToPass
+	                //         for (const model of dataModels) {
+	                //             if (model.id === obj.id) {
+	                //                 itemToPass = model;
+	                //             }
+	                //         }
+	                //         var cursor = cursorForObjectInConnection(dataModels, itemToPass);
+	                //         return {
+	                //             cursor: cursor,
+	                //             node: itemToPass
+	                //         }
+	                //     })
+	            }
+	        }
+	    },
+	    mutateAndGetPayload: function mutateAndGetPayload(args) {
+
+	        console.log("args in catalog mutation: " + JSON.stringify(args));
+
+	        delete args.clientMutationId;
+
+	        var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
+	        return _axios2.default.post('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', args, { headers: config }).then(function (response) {
+	            console.log("response : " + JSON.stringify(response));
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    }
+	});
 
 /***/ }
 /******/ ]);
