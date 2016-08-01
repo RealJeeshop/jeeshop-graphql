@@ -53,7 +53,7 @@ module.exports =
 
 	var Schema = _require.Schema;
 
-	var graphQLHTTP = __webpack_require__(9);
+	var graphQLHTTP = __webpack_require__(12);
 
 	var app = express();
 	app.use('/', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
@@ -125,7 +125,11 @@ module.exports =
 
 	var _UserStore = __webpack_require__(6);
 
-	var _jsBase = __webpack_require__(7);
+	var _CatalogService = __webpack_require__(7);
+
+	var _CatalogService2 = _interopRequireDefault(_CatalogService);
+
+	var _jsBase = __webpack_require__(9);
 
 	var _axios = __webpack_require__(8);
 
@@ -277,13 +281,7 @@ module.exports =
 	                    isDesc: { type: _graphql.GraphQLBoolean }
 	                }, _graphqlRelay.connectionArgs),
 	                resolve: function resolve(obj, args) {
-
-	                    var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
-	                    return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', { params: args, headers: config }).then(function (response) {
-	                        return response.data;
-	                    }).catch(function (response) {
-	                        if (response.status == "404") return [];
-	                    }), args);
+	                    return (0, _graphqlRelay.connectionFromPromisedArray)(_CatalogService2.default.findAllCatalog(args), args);
 	                }
 	            },
 	            catalog: {
@@ -395,9 +393,80 @@ module.exports =
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = require("js-base64");
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _axios = __webpack_require__(8);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
+
+	var CatalogService = {
+	    findAllCatalog: function findAllCatalog(args) {
+	        return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', { params: args, headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    findCatalogById: function findCatalogById(id) {
+	        return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    createCatalog: function createCatalog(input) {
+	        return _axios2.default.post('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
+	            console.log("response : " + JSON.stringify(response));
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    }
+	};
+
+	function computeServiceResult(response) {
+
+	    var result = {};
+	    switch (response.status) {
+
+	        case 200:
+	        case 201:
+	        case 204:
+	            result.message = "Success";
+	            result.success = true;
+	            break;
+
+	        case 400:
+	            result.message = response.data.message + ': ' + response.data.exception;
+	            result.success = false;
+	            break;
+
+	        case 409:
+	            result.message = response.data.message + ': ' + response.data.exception;
+	            result.success = false;
+	            break;
+
+	        default:
+	            result.message = '(' + response.status + ') ' + response.data.message + ': ' + response.data.exception;
+	            result.success = false;
+	            break;
+	    }
+
+	    return result;
+	}
+
+	exports.default = CatalogService;
 
 /***/ },
 /* 8 */
@@ -409,7 +478,7 @@ module.exports =
 /* 9 */
 /***/ function(module, exports) {
 
-	module.exports = require("express-graphql");
+	module.exports = require("js-base64");
 
 /***/ },
 /* 10 */
@@ -430,11 +499,15 @@ module.exports =
 
 	var _UserStore = __webpack_require__(6);
 
-	var _axios = __webpack_require__(8);
+	var _CatalogService = __webpack_require__(7);
 
-	var _axios2 = _interopRequireDefault(_axios);
+	var _CatalogService2 = _interopRequireDefault(_CatalogService);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
+	__webpack_require__(11);
 
 	var CreateCatalogMutation = exports.CreateCatalogMutation = new _graphqlRelay.mutationWithClientMutationId({
 	    name: 'CreateCatalog',
@@ -457,48 +530,89 @@ module.exports =
 	        },
 	        catalogEdge: {
 	            type: _Model.CatalogEdge,
-	            resolve: function resolve(obj, _ref) {
-	                var id = _ref.id;
+	            resolve: function () {
+	                var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(_ref2) {
+	                    var id = _ref2.id;
+	                    var catalog, catalogs, cursor;
+	                    return regeneratorRuntime.wrap(function _callee$(_context) {
+	                        while (1) {
+	                            switch (_context.prev = _context.next) {
+	                                case 0:
+	                                    _context.next = 2;
+	                                    return _CatalogService2.default.findCatalogById(id);
 
+	                                case 2:
+	                                    catalog = _context.sent;
+	                                    _context.next = 5;
+	                                    return _CatalogService2.default.findAllCatalog();
 
-	                console.log("obj : " + JSON.stringify(obj));
+	                                case 5:
+	                                    catalogs = _context.sent;
+	                                    cursor = (0, _graphqlRelay.cursorForObjectInConnection)(catalogs, catalog);
+	                                    return _context.abrupt('return', {
+	                                        cursor: cursor,
+	                                        node: catalog
+	                                    });
 
-	                return obj;
+	                                case 8:
+	                                case 'end':
+	                                    return _context.stop();
+	                            }
+	                        }
+	                    }, _callee, undefined);
+	                }));
 
-	                // return Database.models.model.findAll()
-	                //     .then(dataModels => {
-	                //
-	                //         let itemToPass
-	                //         for (const model of dataModels) {
-	                //             if (model.id === obj.id) {
-	                //                 itemToPass = model;
-	                //             }
-	                //         }
-	                //         var cursor = cursorForObjectInConnection(dataModels, itemToPass);
-	                //         return {
-	                //             cursor: cursor,
-	                //             node: itemToPass
-	                //         }
-	                //     })
-	            }
+	                return function resolve(_x) {
+	                    return _ref.apply(this, arguments);
+	                };
+	            }()
 	        }
 	    },
-	    mutateAndGetPayload: function mutateAndGetPayload(args) {
+	    mutateAndGetPayload: function () {
+	        var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(args) {
+	            var catalog;
+	            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+	                while (1) {
+	                    switch (_context2.prev = _context2.next) {
+	                        case 0:
 
-	        console.log("args in catalog mutation: " + JSON.stringify(args));
+	                            console.log("args in catalog mutation: " + JSON.stringify(args));
 
-	        delete args.clientMutationId;
+	                            delete args.clientMutationId;
+	                            _context2.next = 4;
+	                            return _CatalogService2.default.createCatalog(args);
 
-	        var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
-	        return _axios2.default.post('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', args, { headers: config }).then(function (response) {
-	            console.log("response : " + JSON.stringify(response));
-	            return response.data;
-	        }).catch(function (response) {
-	            console.log("response : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	        });
-	    }
+	                        case 4:
+	                            catalog = _context2.sent;
+
+	                            console.log("catalog : " + JSON.stringify(catalog));
+	                            return _context2.abrupt('return', catalog);
+
+	                        case 7:
+	                        case 'end':
+	                            return _context2.stop();
+	                    }
+	                }
+	            }, _callee2, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x2) {
+	            return _ref3.apply(this, arguments);
+	        };
+	    }()
 	});
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	module.exports = require("babel-polyfill");
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	module.exports = require("express-graphql");
 
 /***/ }
 /******/ ]);

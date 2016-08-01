@@ -1,5 +1,6 @@
 schema {
   query: Root
+  mutation: Mutation
 }
 
 type CatalogType implements Node {
@@ -22,6 +23,27 @@ type CatalogTypeConnection {
 type CatalogTypeEdge {
   node: CatalogType
   cursor: String!
+}
+
+input CreateCatalogInput {
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  rootCategoriesIds: [Int]
+  clientMutationId: String!
+}
+
+type CreateCatalogPayload {
+  viewer: Viewer
+  catalogEdge: CatalogTypeEdge
+  clientMutationId: String!
+}
+
+type Mutation {
+  createCatalog(input: CreateCatalogInput!): CreateCatalogPayload
 }
 
 interface Node {
@@ -60,5 +82,6 @@ type Viewer implements Node {
   id: ID!
   user: UserType
   users(after: String, first: Int, before: String, last: Int): UserTypeConnection
-  catalogs(after: String, first: Int, before: String, last: Int): CatalogTypeConnection
+  catalogs(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): CatalogTypeConnection
+  catalog(id: String!, locale: String): CatalogType
 }

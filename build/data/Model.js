@@ -13,6 +13,10 @@ var _graphqlRelay = require('graphql-relay');
 
 var _UserStore = require('./stores/UserStore');
 
+var _CatalogService = require('./catalog/CatalogService');
+
+var _CatalogService2 = _interopRequireDefault(_CatalogService);
+
 var _jsBase = require('js-base64');
 
 var _axios = require('axios');
@@ -26,10 +30,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * The second argument defines the way to resolve a node object to its GraphQL type.
  */
 var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
-    var _fromGlobalId = (0, _graphqlRelay.fromGlobalId)(globalId);
+    var _fromGlobalId2 = (0, _graphqlRelay.fromGlobalId)(globalId);
 
-    var id = _fromGlobalId.id;
-    var type = _fromGlobalId.type;
+    var id = _fromGlobalId2.id;
+    var type = _fromGlobalId2.type;
 
 
     if (type === 'CatalogType') {
@@ -157,14 +161,37 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
             },
             catalogs: {
                 type: CatalogConnection,
-                args: _extends({}, _graphqlRelay.connectionArgs),
+                args: _extends({
+                    search: { type: _graphql.GraphQLString },
+                    start: { type: _graphql.GraphQLInt },
+                    size: { type: _graphql.GraphQLInt },
+                    orderBy: { type: _graphql.GraphQLString },
+                    isDesc: { type: _graphql.GraphQLBoolean }
+                }, _graphqlRelay.connectionArgs),
+                resolve: function resolve(obj, args) {
+                    return (0, _graphqlRelay.connectionFromPromisedArray)(_CatalogService2.default.findAllCatalog(args), args);
+                }
+            },
+            catalog: {
+                type: CatalogType,
+                args: {
+                    id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+                    locale: { type: _graphql.GraphQLString }
+                },
                 resolve: function resolve(obj, args) {
 
                     var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
 
-                    return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', { headers: config }).then(function (response) {
+                    var _fromGlobalId = (0, _graphqlRelay.fromGlobalId)(args.id);
+
+                    var id = _fromGlobalId.id;
+                    var type = _fromGlobalId.type;
+
+                    return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/' + id, { params: args, headers: config }).then(function (response) {
                         return response.data;
-                    }), args);
+                    }).catch(function (response) {
+                        if (response.status == "404") return [];
+                    });
                 }
             }
         };

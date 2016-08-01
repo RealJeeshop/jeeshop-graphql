@@ -28,6 +28,8 @@ import {
     getViewer,
 } from './stores/UserStore';
 
+import CatalogService from './catalog/CatalogService'
+
 import {
     Base64
 } from 'js-base64'
@@ -81,7 +83,7 @@ export var CatalogType = new GraphQLObjectType({
         rootCategoriesId: {type: GraphQLString, resolve: (obj) => null}
     },
     interfaces: [nodeInterface]
-})
+});
 
 export var UserType = new GraphQLObjectType({
     name: 'UserType',
@@ -145,16 +147,7 @@ export var ViewerType = new GraphQLObjectType({
                 isDesc: {type: GraphQLBoolean},
                 ...connectionArgs
             },
-            resolve: (obj, args) => {
-
-                let config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
-                return connectionFromPromisedArray(axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, {params: args, headers: config})
-                    .then((response) => {
-                        return response.data
-                    }).catch((response) => {
-                        if(response.status == "404") return []
-                    }), args)
-            }
+            resolve: (obj, args) => connectionFromPromisedArray(CatalogService.findAllCatalog(args), args)
         },
         catalog: {
             type: CatalogType,

@@ -26,7 +26,6 @@
     "update-schema": "babel-node src/tools/updateSchema.js"
   },
   "dependencies": {
-    "axios": "^0.9.1",
     "express": "^4.13.4",
     "express-graphql": "^0.5.3",
     "fs": "0.0.2",
