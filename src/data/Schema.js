@@ -8,13 +8,17 @@ import {
 } from './Model'
 
 import {
-    CreateCatalogMutation
+    CreateCatalogMutation,
+    ModifyCatalogMutation,
+    DeleteCatalogMutation
 } from './catalog/CatalogMutation'
 
 let Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    createCatalog: CreateCatalogMutation
+    createCatalog: CreateCatalogMutation,
+    modifyCatalog: ModifyCatalogMutation,
+    deleteCatalog: DeleteCatalogMutation
   }
 });
 

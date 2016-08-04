@@ -35,6 +35,22 @@ var CatalogService = {
             console.log("response : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
+    },
+    modifyCatalog: function modifyCatalog(input) {
+        return _axios2.default.put('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
+            console.log("response : " + JSON.stringify(response));
+            return response.data;
+        }).catch(function (response) {
+            console.log("response catch: " + JSON.stringify(response));
+            if (response.status == "404") return [];
+        });
+    },
+    deleteCatalog: function deleteCatalog(id) {
+        return _axios2.default.delete('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
+            return response.data;
+        }).catch(function (response) {
+            if (response.status == "404") return [];
+        });
     }
 };
 

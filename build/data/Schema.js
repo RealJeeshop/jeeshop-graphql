@@ -14,7 +14,9 @@ var _CatalogMutation = require('./catalog/CatalogMutation');
 var Mutation = new _graphql.GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    createCatalog: _CatalogMutation.CreateCatalogMutation
+    createCatalog: _CatalogMutation.CreateCatalogMutation,
+    modifyCatalog: _CatalogMutation.ModifyCatalogMutation,
+    deleteCatalog: _CatalogMutation.DeleteCatalogMutation
   }
 });
 

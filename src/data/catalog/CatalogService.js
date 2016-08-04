@@ -29,6 +29,24 @@ var CatalogService = {
                 console.log("response : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
+    },
+    modifyCatalog(input) {
+        return axios.put(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
+            .then((response) => {
+                console.log("response : " + JSON.stringify(response));
+                return response.data
+            }).catch((response) => {
+                console.log("response catch: " + JSON.stringify(response));
+                if(response.status == "404") return []
+            })
+    },
+    deleteCatalog(id) {
+        return axios.delete(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
+            .then((response) => {
+                return response.data
+            }).catch((response) => {
+                if(response.status == "404") return []
+            })
     }
 };
 

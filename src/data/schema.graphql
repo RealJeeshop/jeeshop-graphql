@@ -42,8 +42,40 @@ type CreateCatalogPayload {
   clientMutationId: String!
 }
 
+input DeleteCatalogInput {
+  id: String!
+  clientMutationId: String!
+}
+
+type DeleteCatalogPayload {
+  viewer: Viewer
+  catalogs: CatalogTypeConnection
+  clientMutationId: String!
+}
+
+input ModifyCatalogInput {
+  id: String
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  localizedPresentation: String
+  rootCategoriesIds: [Int]
+  clientMutationId: String!
+}
+
+type ModifyCatalogPayload {
+  viewer: Viewer
+  catalogEdge: CatalogTypeEdge
+  clientMutationId: String!
+}
+
 type Mutation {
   createCatalog(input: CreateCatalogInput!): CreateCatalogPayload
+  modifyCatalog(input: ModifyCatalogInput!): ModifyCatalogPayload
+  deleteCatalog(input: DeleteCatalogInput!): DeleteCatalogPayload
 }
 
 interface Node {
