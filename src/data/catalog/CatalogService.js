@@ -10,6 +10,7 @@ var CatalogService = {
 
         return axios.get(`${url}/jeeshop-admin/rs/catalogs`, {params: args, headers: credentials})
             .then((response) => {
+                console.log("response.data of find all : " + JSON.stringify(response.data));
                 return response.data
             }).catch((response) => {
                 if(response.status == "404") return []
@@ -45,8 +46,10 @@ var CatalogService = {
     deleteCatalog(id) {
         return axios.delete(`${url}/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
             .then((response) => {
-                return response.data
+                console.log("response.data of delete : " + JSON.stringify(response));
+                return computeServiceResult(response)
             }).catch((response) => {
+                console.log("response.data of catch delete : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     }

@@ -18,6 +18,7 @@ var CatalogService = {
     findAllCatalog: function findAllCatalog(args) {
 
         return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs', { params: args, headers: credentials }).then(function (response) {
+            console.log("response.data of find all : " + JSON.stringify(response.data));
             return response.data;
         }).catch(function (response) {
             if (response.status == "404") return [];
@@ -49,8 +50,10 @@ var CatalogService = {
     },
     deleteCatalog: function deleteCatalog(id) {
         return _axios2.default.delete(url + '/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
-            return response.data;
+            console.log("response.data of delete : " + JSON.stringify(response));
+            return computeServiceResult(response);
         }).catch(function (response) {
+            console.log("response.data of catch delete : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     }

@@ -20,8 +20,7 @@ import {
 import {
     ViewerType,
     CatalogConnection,
-    CatalogEdge,
-    CatalogType
+    CatalogEdge
 } from '../Model'
 
 import {
@@ -117,12 +116,11 @@ export const DeleteCatalogMutation = new mutationWithClientMutationId({
         viewer: {
             type: ViewerType,
             resolve: () => getViewer("me")
-        },
-        catalogs: {
-            type: CatalogConnection,
-            resolve: async () => await CatalogService.findAllCatalog()
         }
     },
-    mutateAndGetPayload: async (args) => await CatalogService.deleteCatalog(fromGlobalId(args.id).id)
+    mutateAndGetPayload: async (args) => {
+        console.log("delete catalog mutate");
+        return await CatalogService.deleteCatalog(fromGlobalId(args.id).id)
+    }
 });
 

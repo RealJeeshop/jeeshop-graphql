@@ -49,7 +49,6 @@ input DeleteCatalogInput {
 
 type DeleteCatalogPayload {
   viewer: Viewer
-  catalogs: CatalogTypeConnection
   clientMutationId: String!
 }
 

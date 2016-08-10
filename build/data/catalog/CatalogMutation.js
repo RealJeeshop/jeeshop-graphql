@@ -200,57 +200,31 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
             resolve: function resolve() {
                 return (0, _UserStore.getViewer)("me");
             }
-        },
-        catalogs: {
-            type: _Model.CatalogConnection,
-            resolve: function () {
-                var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5() {
-                    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-                        while (1) {
-                            switch (_context5.prev = _context5.next) {
-                                case 0:
-                                    _context5.next = 2;
-                                    return _CatalogService2.default.findAllCatalog();
-
-                                case 2:
-                                    return _context5.abrupt('return', _context5.sent);
-
-                                case 3:
-                                case 'end':
-                                    return _context5.stop();
-                            }
-                        }
-                    }, _callee5, undefined);
-                }));
-
-                return function resolve() {
-                    return _ref5.apply(this, arguments);
-                };
-            }()
         }
     },
     mutateAndGetPayload: function () {
-        var _ref6 = _asyncToGenerator(regeneratorRuntime.mark(function _callee6(args) {
-            return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5(args) {
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
                 while (1) {
-                    switch (_context6.prev = _context6.next) {
+                    switch (_context5.prev = _context5.next) {
                         case 0:
-                            _context6.next = 2;
+                            console.log("delete catalog mutate");
+                            _context5.next = 3;
                             return _CatalogService2.default.deleteCatalog((0, _graphqlRelay.fromGlobalId)(args.id).id);
 
-                        case 2:
-                            return _context6.abrupt('return', _context6.sent);
-
                         case 3:
+                            return _context5.abrupt('return', _context5.sent);
+
+                        case 4:
                         case 'end':
-                            return _context6.stop();
+                            return _context5.stop();
                     }
                 }
-            }, _callee6, undefined);
+            }, _callee5, undefined);
         }));
 
         return function mutateAndGetPayload(_x5) {
-            return _ref6.apply(this, arguments);
+            return _ref5.apply(this, arguments);
         };
     }()
 });
