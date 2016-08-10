@@ -1,11 +1,14 @@
 import axios from 'axios';
 
-var credentials = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
+const credentials = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json"};
+const url = "https://localhost:8443";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var CatalogService = {
 
     findAllCatalog(args) {
-        return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, {params: args, headers: credentials})
+
+        return axios.get(`${url}/jeeshop-admin/rs/catalogs`, {params: args, headers: credentials})
             .then((response) => {
                 return response.data
             }).catch((response) => {
@@ -13,7 +16,7 @@ var CatalogService = {
             })
     },
     findCatalogById(id) {
-        return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
+        return axios.get(`${url}/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
             .then((response) => {
                 return response.data
             }).catch((response) => {
@@ -21,27 +24,26 @@ var CatalogService = {
             })
     },
     createCatalog(input) {
-        return axios.post(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
+        return axios.post(`${url}/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
             .then((response) => {
-                console.log("response : " + JSON.stringify(response));
-                return response.data
-            }).catch((response) => {
-                console.log("response : " + JSON.stringify(response));
-                if(response.status == "404") return []
-            })
-    },
-    modifyCatalog(input) {
-        return axios.put(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
-            .then((response) => {
-                console.log("response : " + JSON.stringify(response));
                 return response.data
             }).catch((response) => {
                 console.log("response catch: " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
+    modifyCatalog(input) {
+        return axios.put(`${url}/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
+            .then((response) => {
+                console.log("response : " + JSON.stringify(response.data));
+                return response.data
+            }).catch((response) => {
+                if(response.status == "404") return []
+                return []
+            })
+    },
     deleteCatalog(id) {
-        return axios.delete(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
+        return axios.delete(`${url}/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
             .then((response) => {
                 return response.data
             }).catch((response) => {

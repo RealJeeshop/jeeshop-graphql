@@ -49,25 +49,20 @@ export const CreateCatalogMutation = new mutationWithClientMutationId({
         },
         catalogEdge: {
             type: CatalogEdge,
-            resolve: async ({id}) => {
-                let catalog = await CatalogService.findCatalogById(id);
+            resolve: async (payload) => {
+
                 let catalogs = await CatalogService.findAllCatalog();
-                let cursor = cursorForObjectInConnection(catalogs, catalog);
+                let cursor = cursorForObjectInConnection(catalogs, payload);
                 return {
                     cursor: cursor,
-                    node: catalog
+                    node: payload
                 }
             }
         }
     },
     mutateAndGetPayload: async (args) => {
-
-        console.log("args in catalog mutation: " + JSON.stringify(args));
-
         delete args.clientMutationId;
-        let catalog = await CatalogService.createCatalog(args)
-        console.log("catalog : " + JSON.stringify(catalog));
-        return catalog
+        return await CatalogService.createCatalog(args)
     }
 });
 
@@ -75,7 +70,7 @@ export const ModifyCatalogMutation = new mutationWithClientMutationId({
     name: 'ModifyCatalog',
     description: 'Function to modify a catalog',
     inputFields: {
-        id: {type: GraphQLString},
+        id: {type: new GraphQLNonNull(GraphQLString)},
         name: {type: new GraphQLNonNull(GraphQLString)},
         description: {type: GraphQLString},
         disabled: {type: GraphQLBoolean},
@@ -93,25 +88,22 @@ export const ModifyCatalogMutation = new mutationWithClientMutationId({
         catalogEdge: {
             type: CatalogEdge,
             resolve: async (payload) => {
-                console.log("payload : " + JSON.stringify(payload));
-                let catalog = await CatalogService.findCatalogById(payload);
+
                 let catalogs = await CatalogService.findAllCatalog();
-                let cursor = cursorForObjectInConnection(catalogs, catalog);
+                let cursor = cursorForObjectInConnection(catalogs, payload);
                 return {
                     cursor: cursor,
-                    node: catalog
+                    node: payload
                 }
             }
         }
     },
     mutateAndGetPayload: async (args) => {
 
-        console.log("args in modify catalog mutation: " + JSON.stringify(args));
-
         delete args.clientMutationId;
-        let catalog = await CatalogService.modifyCatalog(args);
-        console.log("response of modify catalog : " + JSON.stringify(catalog));
-        return catalog
+        args.id = fromGlobalId(args.id).id;
+
+        return await CatalogService.modifyCatalog(args);
     }
 });
 
@@ -128,15 +120,9 @@ export const DeleteCatalogMutation = new mutationWithClientMutationId({
         },
         catalogs: {
             type: CatalogConnection,
-            resolve: async () => {
-                let catalogs = await CatalogService.findAllCatalog();
-                return catalogs
-            }
+            resolve: async () => await CatalogService.findAllCatalog()
         }
     },
-    mutateAndGetPayload: async (args) => {
-        let catalog = await CatalogService.deleteCatalog(fromGlobalId(args.id).id);
-        return catalog
-    }
+    mutateAndGetPayload: async (args) => await CatalogService.deleteCatalog(fromGlobalId(args.id).id)
 });
 

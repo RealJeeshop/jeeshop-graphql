@@ -54,7 +54,7 @@ type DeleteCatalogPayload {
 }
 
 input ModifyCatalogInput {
-  id: String
+  id: String!
   name: String!
   description: String
   disabled: Boolean

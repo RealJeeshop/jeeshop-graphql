@@ -45,30 +45,24 @@ var CreateCatalogMutation = exports.CreateCatalogMutation = new _graphqlRelay.mu
         catalogEdge: {
             type: _Model.CatalogEdge,
             resolve: function () {
-                var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(_ref2) {
-                    var id = _ref2.id;
-                    var catalog, catalogs, cursor;
+                var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(payload) {
+                    var catalogs, cursor;
                     return regeneratorRuntime.wrap(function _callee$(_context) {
                         while (1) {
                             switch (_context.prev = _context.next) {
                                 case 0:
                                     _context.next = 2;
-                                    return _CatalogService2.default.findCatalogById(id);
-
-                                case 2:
-                                    catalog = _context.sent;
-                                    _context.next = 5;
                                     return _CatalogService2.default.findAllCatalog();
 
-                                case 5:
+                                case 2:
                                     catalogs = _context.sent;
-                                    cursor = (0, _graphqlRelay.cursorForObjectInConnection)(catalogs, catalog);
+                                    cursor = (0, _graphqlRelay.cursorForObjectInConnection)(catalogs, payload);
                                     return _context.abrupt('return', {
                                         cursor: cursor,
-                                        node: catalog
+                                        node: payload
                                     });
 
-                                case 8:
+                                case 5:
                                 case 'end':
                                     return _context.stop();
                             }
@@ -83,26 +77,19 @@ var CreateCatalogMutation = exports.CreateCatalogMutation = new _graphqlRelay.mu
         }
     },
     mutateAndGetPayload: function () {
-        var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(args) {
-            var catalog;
+        var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(args) {
             return regeneratorRuntime.wrap(function _callee2$(_context2) {
                 while (1) {
                     switch (_context2.prev = _context2.next) {
                         case 0:
-
-                            console.log("args in catalog mutation: " + JSON.stringify(args));
-
                             delete args.clientMutationId;
-                            _context2.next = 4;
+                            _context2.next = 3;
                             return _CatalogService2.default.createCatalog(args);
 
+                        case 3:
+                            return _context2.abrupt('return', _context2.sent);
+
                         case 4:
-                            catalog = _context2.sent;
-
-                            console.log("catalog : " + JSON.stringify(catalog));
-                            return _context2.abrupt('return', catalog);
-
-                        case 7:
                         case 'end':
                             return _context2.stop();
                     }
@@ -111,7 +98,7 @@ var CreateCatalogMutation = exports.CreateCatalogMutation = new _graphqlRelay.mu
         }));
 
         return function mutateAndGetPayload(_x2) {
-            return _ref3.apply(this, arguments);
+            return _ref2.apply(this, arguments);
         };
     }()
 });
@@ -120,7 +107,7 @@ var ModifyCatalogMutation = exports.ModifyCatalogMutation = new _graphqlRelay.mu
     name: 'ModifyCatalog',
     description: 'Function to modify a catalog',
     inputFields: {
-        id: { type: _graphql.GraphQLString },
+        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         name: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         description: { type: _graphql.GraphQLString },
         disabled: { type: _graphql.GraphQLBoolean },
@@ -140,30 +127,24 @@ var ModifyCatalogMutation = exports.ModifyCatalogMutation = new _graphqlRelay.mu
         catalogEdge: {
             type: _Model.CatalogEdge,
             resolve: function () {
-                var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(payload) {
-                    var catalog, catalogs, cursor;
+                var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(payload) {
+                    var catalogs, cursor;
                     return regeneratorRuntime.wrap(function _callee3$(_context3) {
                         while (1) {
                             switch (_context3.prev = _context3.next) {
                                 case 0:
-                                    console.log("payload : " + JSON.stringify(payload));
-                                    _context3.next = 3;
-                                    return _CatalogService2.default.findCatalogById(payload);
-
-                                case 3:
-                                    catalog = _context3.sent;
-                                    _context3.next = 6;
+                                    _context3.next = 2;
                                     return _CatalogService2.default.findAllCatalog();
 
-                                case 6:
+                                case 2:
                                     catalogs = _context3.sent;
-                                    cursor = (0, _graphqlRelay.cursorForObjectInConnection)(catalogs, catalog);
+                                    cursor = (0, _graphqlRelay.cursorForObjectInConnection)(catalogs, payload);
                                     return _context3.abrupt('return', {
                                         cursor: cursor,
-                                        node: catalog
+                                        node: payload
                                     });
 
-                                case 9:
+                                case 5:
                                 case 'end':
                                     return _context3.stop();
                             }
@@ -172,32 +153,28 @@ var ModifyCatalogMutation = exports.ModifyCatalogMutation = new _graphqlRelay.mu
                 }));
 
                 return function resolve(_x3) {
-                    return _ref4.apply(this, arguments);
+                    return _ref3.apply(this, arguments);
                 };
             }()
         }
     },
     mutateAndGetPayload: function () {
-        var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(args) {
-            var catalog;
+        var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(args) {
             return regeneratorRuntime.wrap(function _callee4$(_context4) {
                 while (1) {
                     switch (_context4.prev = _context4.next) {
                         case 0:
 
-                            console.log("args in modify catalog mutation: " + JSON.stringify(args));
-
                             delete args.clientMutationId;
+                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+
                             _context4.next = 4;
                             return _CatalogService2.default.modifyCatalog(args);
 
                         case 4:
-                            catalog = _context4.sent;
+                            return _context4.abrupt('return', _context4.sent);
 
-                            console.log("response of modify catalog : " + JSON.stringify(catalog));
-                            return _context4.abrupt('return', catalog);
-
-                        case 7:
+                        case 5:
                         case 'end':
                             return _context4.stop();
                     }
@@ -206,7 +183,7 @@ var ModifyCatalogMutation = exports.ModifyCatalogMutation = new _graphqlRelay.mu
         }));
 
         return function mutateAndGetPayload(_x4) {
-            return _ref5.apply(this, arguments);
+            return _ref4.apply(this, arguments);
         };
     }()
 });
@@ -227,8 +204,7 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
         catalogs: {
             type: _Model.CatalogConnection,
             resolve: function () {
-                var _ref6 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5() {
-                    var catalogs;
+                var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5() {
                     return regeneratorRuntime.wrap(function _callee5$(_context5) {
                         while (1) {
                             switch (_context5.prev = _context5.next) {
@@ -237,10 +213,9 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
                                     return _CatalogService2.default.findAllCatalog();
 
                                 case 2:
-                                    catalogs = _context5.sent;
-                                    return _context5.abrupt('return', catalogs);
+                                    return _context5.abrupt('return', _context5.sent);
 
-                                case 4:
+                                case 3:
                                 case 'end':
                                     return _context5.stop();
                             }
@@ -249,14 +224,13 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
                 }));
 
                 return function resolve() {
-                    return _ref6.apply(this, arguments);
+                    return _ref5.apply(this, arguments);
                 };
             }()
         }
     },
     mutateAndGetPayload: function () {
-        var _ref7 = _asyncToGenerator(regeneratorRuntime.mark(function _callee6(args) {
-            var catalog;
+        var _ref6 = _asyncToGenerator(regeneratorRuntime.mark(function _callee6(args) {
             return regeneratorRuntime.wrap(function _callee6$(_context6) {
                 while (1) {
                     switch (_context6.prev = _context6.next) {
@@ -265,10 +239,9 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
                             return _CatalogService2.default.deleteCatalog((0, _graphqlRelay.fromGlobalId)(args.id).id);
 
                         case 2:
-                            catalog = _context6.sent;
-                            return _context6.abrupt('return', catalog);
+                            return _context6.abrupt('return', _context6.sent);
 
-                        case 4:
+                        case 3:
                         case 'end':
                             return _context6.stop();
                     }
@@ -277,7 +250,7 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
         }));
 
         return function mutateAndGetPayload(_x5) {
-            return _ref7.apply(this, arguments);
+            return _ref6.apply(this, arguments);
         };
     }()
 });

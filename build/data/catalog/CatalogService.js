@@ -10,43 +10,45 @@ var _axios2 = _interopRequireDefault(_axios);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
+var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
+var url = "https://localhost:8443";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 var CatalogService = {
     findAllCatalog: function findAllCatalog(args) {
-        return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', { params: args, headers: credentials }).then(function (response) {
+
+        return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs', { params: args, headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
             if (response.status == "404") return [];
         });
     },
     findCatalogById: function findCatalogById(id) {
-        return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
+        return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
             if (response.status == "404") return [];
         });
     },
     createCatalog: function createCatalog(input) {
-        return _axios2.default.post('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
-            console.log("response : " + JSON.stringify(response));
-            return response.data;
-        }).catch(function (response) {
-            console.log("response : " + JSON.stringify(response));
-            if (response.status == "404") return [];
-        });
-    },
-    modifyCatalog: function modifyCatalog(input) {
-        return _axios2.default.put('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
-            console.log("response : " + JSON.stringify(response));
+        return _axios2.default.post(url + '/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
             console.log("response catch: " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
+    modifyCatalog: function modifyCatalog(input) {
+        return _axios2.default.put(url + '/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
+            console.log("response : " + JSON.stringify(response.data));
+            return response.data;
+        }).catch(function (response) {
+            if (response.status == "404") return [];
+            return [];
+        });
+    },
     deleteCatalog: function deleteCatalog(id) {
-        return _axios2.default.delete('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
+        return _axios2.default.delete(url + '/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
             if (response.status == "404") return [];
