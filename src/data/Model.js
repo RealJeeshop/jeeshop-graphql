@@ -46,7 +46,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
         let {id, type} = fromGlobalId(globalId);
 
         if (type === 'CatalogType') {
-            return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs`, {headers: config, id: id}).then(r => r.data)
+            return CatalogService.findCatalogById(id)
         } else if (type === 'UserType') {
             return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/user/` + id, {headers: config}).then(r => r.data)
         } else if (type === 'ViewerType') {
@@ -79,7 +79,10 @@ export var CatalogType = new GraphQLObjectType({
         startDate: {type: GraphQLString, resolve: (obj) => obj.startDate},
         endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
         visible: {type: GraphQLBoolean, resolve: (obj) => obj.visible},
-        localizedPresentation: {type: GraphQLString, resolve: (obj) => null},
+        localizedPresentation: {type: GraphQLString, resolve: (obj) => {
+            console.log("obj in localizedPresentation : " + JSON.stringify(obj));
+            return null;
+        }},
         rootCategoriesId: {type: GraphQLString, resolve: (obj) => null}
     },
     interfaces: [nodeInterface]
@@ -155,17 +158,7 @@ export var ViewerType = new GraphQLObjectType({
                 id: {type: new GraphQLNonNull(GraphQLString)},
                 locale: {type: GraphQLString}
             },
-            resolve: (obj, args) => {
-
-                let config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
-                let {id, type} = fromGlobalId(args.id);
-                return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/${id}`, {params: args, headers: config})
-                    .then((response) => {
-                        return response.data
-                    }).catch((response) => {
-                        if(response.status == "404") return []
-                    })
-            }
+            resolve: (obj, args) => CatalogService.findCatalogById(fromGlobalId(args.id).id)
         }
     }),
     interfaces: [nodeInterface]

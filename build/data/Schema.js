@@ -16,7 +16,8 @@ var Mutation = new _graphql.GraphQLObjectType({
   fields: {
     createCatalog: _CatalogMutation.CreateCatalogMutation,
     modifyCatalog: _CatalogMutation.ModifyCatalogMutation,
-    deleteCatalog: _CatalogMutation.DeleteCatalogMutation
+    deleteCatalog: _CatalogMutation.DeleteCatalogMutation,
+    createCatalogLocalizedContent: _CatalogMutation.CreateCatalogLocalizedContentMutation
   }
 });
 

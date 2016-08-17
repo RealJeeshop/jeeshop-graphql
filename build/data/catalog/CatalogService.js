@@ -56,6 +56,16 @@ var CatalogService = {
             console.log("response.data of catch delete : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
+    },
+    createCatalogLocalizedContent: function createCatalogLocalizedContent(input) {
+        return _axios2.default.post(url + '/jeeshop-admin/rs/catalogs/' + input.id + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
+            console.log("response from createCatalogLocalizedContent: " + JSON.stringify(response.data));
+            return response.data;
+        }).catch(function (response) {
+            console.log("error in createCatalogLocalizedContent");
+            if (response.status == "404") return [];
+            return [];
+        });
     }
 };
 

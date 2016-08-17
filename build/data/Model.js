@@ -30,16 +30,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * The second argument defines the way to resolve a node object to its GraphQL type.
  */
 var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
-    var _fromGlobalId2 = (0, _graphqlRelay.fromGlobalId)(globalId);
+    var _fromGlobalId = (0, _graphqlRelay.fromGlobalId)(globalId);
 
-    var id = _fromGlobalId2.id;
-    var type = _fromGlobalId2.type;
+    var id = _fromGlobalId.id;
+    var type = _fromGlobalId.type;
 
 
     if (type === 'CatalogType') {
-        return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs', { headers: config, id: id }).then(function (r) {
-            return r.data;
-        });
+        return _CatalogService2.default.findCatalogById(id);
     } else if (type === 'UserType') {
         return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/user/' + id, { headers: config }).then(function (r) {
             return r.data;
@@ -179,19 +177,7 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                     locale: { type: _graphql.GraphQLString }
                 },
                 resolve: function resolve(obj, args) {
-
-                    var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
-
-                    var _fromGlobalId = (0, _graphqlRelay.fromGlobalId)(args.id);
-
-                    var id = _fromGlobalId.id;
-                    var type = _fromGlobalId.type;
-
-                    return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/catalogs/' + id, { params: args, headers: config }).then(function (response) {
-                        return response.data;
-                    }).catch(function (response) {
-                        if (response.status == "404") return [];
-                    });
+                    return _CatalogService2.default.findCatalogById((0, _graphqlRelay.fromGlobalId)(args.id).id);
                 }
             }
         };

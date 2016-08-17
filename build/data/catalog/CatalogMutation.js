@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.DeleteCatalogMutation = exports.ModifyCatalogMutation = exports.CreateCatalogMutation = undefined;
+exports.CreateCatalogLocalizedContentMutation = exports.DeleteCatalogMutation = exports.ModifyCatalogMutation = exports.CreateCatalogMutation = undefined;
 
 var _graphql = require('graphql');
 
@@ -225,6 +225,53 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
 
         return function mutateAndGetPayload(_x5) {
             return _ref5.apply(this, arguments);
+        };
+    }()
+});
+
+var CreateCatalogLocalizedContentMutation = exports.CreateCatalogLocalizedContentMutation = new _graphqlRelay.mutationWithClientMutationId({
+    name: 'CreateCatalogLocalizedContent',
+    description: 'Creates a localized content for a catalog',
+    inputFields: {
+        catalogId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        displayName: { type: _graphql.GraphQLString },
+        shortDescription: { type: _graphql.GraphQLString },
+        mediumDescription: { type: _graphql.GraphQLString },
+        longDescription: { type: _graphql.GraphQLString }
+    },
+    outputFields: {
+        viewer: {
+            type: _Model.ViewerType,
+            resolve: function resolve() {
+                return (0, _UserStore.getViewer)("me");
+            }
+        }
+    },
+    mutateAndGetPayload: function () {
+        var _ref6 = _asyncToGenerator(regeneratorRuntime.mark(function _callee6(args) {
+            return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                while (1) {
+                    switch (_context6.prev = _context6.next) {
+                        case 0:
+                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            console.log("args : " + JSON.stringify(args));
+                            _context6.next = 4;
+                            return _CatalogService2.default.createCatalogLocalizedContent(args);
+
+                        case 4:
+                            return _context6.abrupt('return', _context6.sent);
+
+                        case 5:
+                        case 'end':
+                            return _context6.stop();
+                    }
+                }
+            }, _callee6, undefined);
+        }));
+
+        return function mutateAndGetPayload(_x6) {
+            return _ref6.apply(this, arguments);
         };
     }()
 });

@@ -36,6 +36,21 @@ input CreateCatalogInput {
   clientMutationId: String!
 }
 
+input CreateCatalogLocalizedContentInput {
+  catalogId: String!
+  locale: String!
+  displayName: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type CreateCatalogLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
 type CreateCatalogPayload {
   viewer: Viewer
   catalogEdge: CatalogTypeEdge
@@ -75,6 +90,7 @@ type Mutation {
   createCatalog(input: CreateCatalogInput!): CreateCatalogPayload
   modifyCatalog(input: ModifyCatalogInput!): ModifyCatalogPayload
   deleteCatalog(input: DeleteCatalogInput!): DeleteCatalogPayload
+  createCatalogLocalizedContent(input: CreateCatalogLocalizedContentInput!): CreateCatalogLocalizedContentPayload
 }
 
 interface Node {

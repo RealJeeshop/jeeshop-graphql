@@ -10,7 +10,8 @@ import {
 import {
     CreateCatalogMutation,
     ModifyCatalogMutation,
-    DeleteCatalogMutation
+    DeleteCatalogMutation,
+    CreateCatalogLocalizedContentMutation
 } from './catalog/CatalogMutation'
 
 let Mutation = new GraphQLObjectType({
@@ -18,7 +19,8 @@ let Mutation = new GraphQLObjectType({
   fields: {
     createCatalog: CreateCatalogMutation,
     modifyCatalog: ModifyCatalogMutation,
-    deleteCatalog: DeleteCatalogMutation
+    deleteCatalog: DeleteCatalogMutation,
+    createCatalogLocalizedContent: CreateCatalogLocalizedContentMutation
   }
 });
 

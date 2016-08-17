@@ -52,6 +52,30 @@ var CatalogService = {
                 console.log("response.data of catch delete : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
+    },
+    getCatalogLocalizedContent(id, locale) {
+        return axios.get(`${url}/jeeshop-admin/rs/catalogs/${id}/presentations/${locale}`, {headers: credentials})
+            .then((response) => {
+                console.log("response from getCatalogLocalizedContent: " + JSON.stringify(response.data));
+                return response.data
+            }).catch((response) => {
+                console.log("error in getCatalogLocalizedContent : " + JSON.stringify(response));
+                if(response.status == "404") return []
+                return []
+
+            })
+    },
+    createCatalogLocalizedContent(id, input) {
+        return axios.post(`${url}/jeeshop-admin/rs/catalogs/${id}/presentations/${input.locale}`, input, {headers: credentials})
+            .then((response) => {
+                console.log("response from createCatalogLocalizedContent: " + JSON.stringify(response.data));
+                return response.data
+            }).catch((response) => {
+                console.log("error in createCatalogLocalizedContent : " + JSON.stringify(response));
+                if(response.status == "404") return []
+                return []
+
+            })
     }
 };
 
