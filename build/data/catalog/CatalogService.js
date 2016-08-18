@@ -57,12 +57,22 @@ var CatalogService = {
             if (response.status == "404") return [];
         });
     },
-    createCatalogLocalizedContent: function createCatalogLocalizedContent(input) {
-        return _axios2.default.post(url + '/jeeshop-admin/rs/catalogs/' + input.id + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
+    getCatalogLocalizedContent: function getCatalogLocalizedContent(id, locale) {
+        return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
+            console.log("response from getCatalogLocalizedContent: " + JSON.stringify(response.data));
+            return response.data;
+        }).catch(function (response) {
+            console.log("error in getCatalogLocalizedContent : " + JSON.stringify(response));
+            if (response.status == "404") return [];
+            return [];
+        });
+    },
+    createCatalogLocalizedContent: function createCatalogLocalizedContent(id, input) {
+        return _axios2.default.post(url + '/jeeshop-admin/rs/catalogs/' + id + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
             console.log("response from createCatalogLocalizedContent: " + JSON.stringify(response.data));
             return response.data;
         }).catch(function (response) {
-            console.log("error in createCatalogLocalizedContent");
+            console.log("error in createCatalogLocalizedContent : " + JSON.stringify(response));
             if (response.status == "404") return [];
             return [];
         });

@@ -24,11 +24,12 @@ import {
 
 import {
     Viewer,
-    registerViewer,
+    getViewerLocale,
     getViewer,
 } from './stores/UserStore';
 
 import CatalogService from './catalog/CatalogService'
+import UsersService from './users/UsersService'
 
 import {
     Base64
@@ -67,6 +68,25 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     }
 );
 
+export const PresentationType = new GraphQLObjectType({
+    name: 'PresentationType',
+    description: 'It represents a localized presentation',
+    fields: {
+        id: globalIdField('CatalogType'),
+        locale: {type: GraphQLString, resolve: (obj) => obj.locale},
+        displayName: {type: GraphQLString, resolve: (obj) => obj.displayName},
+        promotion: {type: GraphQLString, resolve: (obj) => obj.promotion},
+        shortDescription: {type: GraphQLString, resolve: (obj) => obj.shortDescription},
+        mediumDescription: {type: GraphQLString, resolve: (obj) => obj.mediumDescription},
+        longDescription: {type: GraphQLString, resolve: (obj) => obj.longDescription},
+        thumbnail: {type: GraphQLString, resolve: (obj) => obj.thumbnail},
+        smallImage: {type: GraphQLString, resolve: (obj) => obj.smallImage},
+        largeImage: {type: GraphQLString, resolve: (obj) => obj.largeImage},
+        video: {type: GraphQLString, resolve: (obj) => obj.video},
+        features: {type: GraphQLString, resolve: (obj) => obj.features},
+    }
+});
+
 export var CatalogType = new GraphQLObjectType({
 
     name: 'CatalogType',
@@ -79,10 +99,14 @@ export var CatalogType = new GraphQLObjectType({
         startDate: {type: GraphQLString, resolve: (obj) => obj.startDate},
         endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
         visible: {type: GraphQLBoolean, resolve: (obj) => obj.visible},
-        localizedPresentation: {type: GraphQLString, resolve: (obj) => {
-            console.log("obj in localizedPresentation : " + JSON.stringify(obj));
-            return null;
-        }},
+        localizedPresentation: {
+            type: PresentationType,
+            args: {locale: {type: GraphQLString}},
+            resolve: (obj, args) => {
+                let locale = args.locale ? args.locale : getViewerLocale("me");
+                return CatalogService.getCatalogLocalizedContent(obj.id, locale)
+            }
+        },
         rootCategoriesId: {type: GraphQLString, resolve: (obj) => null}
     },
     interfaces: [nodeInterface]
@@ -130,15 +154,10 @@ export var ViewerType = new GraphQLObjectType({
             resolve: (obj) => obj
         },
         users: {
+
             type: UserConnection,
             args: {...connectionArgs},
-            resolve: (obj, args) => {
-
-                let config = {'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA=="};
-
-                return connectionFromPromisedArray(axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/users`, {headers: config})
-                    .then((response) => response.data), args)
-            }
+            resolve: (obj, args) => connectionFromPromisedArray(UsersService.findAllUsers(), args)
         },
         catalogs: {
             type: CatalogConnection,
@@ -148,6 +167,7 @@ export var ViewerType = new GraphQLObjectType({
                 size: {type: GraphQLInt},
                 orderBy: {type: GraphQLString},
                 isDesc: {type: GraphQLBoolean},
+                locale: {type: GraphQLString},
                 ...connectionArgs
             },
             resolve: (obj, args) => connectionFromPromisedArray(CatalogService.findAllCatalog(args), args)
@@ -173,10 +193,11 @@ export var GraphQLRoot = new GraphQLObjectType({
                 viewerId: {
                     name: 'viewerId',
                     type: GraphQLInt
-                }
+                },
+                locale: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve: (root, {viewerId}) => {
-                return getViewer("me")
+            resolve: (root, {viewerId, locale}) => {
+                return getViewer("me", locale)
             }
         },
         node: nodeField

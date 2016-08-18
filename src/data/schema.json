@@ -1344,7 +1344,7 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "catalogId",
+              "name": "id",
               "description": null,
               "type": {
                 "kind": "NON_NULL",

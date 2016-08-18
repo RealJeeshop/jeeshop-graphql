@@ -20,6 +20,12 @@ export function registerViewer(viewer) {
     }
 }
 
-export function getViewer(viewerId) {
+export function getViewerLocale(viewerId) {
+    return users[viewerId].locale
+}
+
+export function getViewer(viewerId, locale) {
+
+    users[viewerId].locale = locale;
     return users[viewerId]
 }

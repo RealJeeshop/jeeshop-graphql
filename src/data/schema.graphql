@@ -37,7 +37,7 @@ input CreateCatalogInput {
 }
 
 input CreateCatalogLocalizedContentInput {
-  catalogId: String!
+  id: String!
   locale: String!
   displayName: String
   shortDescription: String

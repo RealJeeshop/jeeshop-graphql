@@ -233,7 +233,7 @@ var CreateCatalogLocalizedContentMutation = exports.CreateCatalogLocalizedConten
     name: 'CreateCatalogLocalizedContent',
     description: 'Creates a localized content for a catalog',
     inputFields: {
-        catalogId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         displayName: { type: _graphql.GraphQLString },
         shortDescription: { type: _graphql.GraphQLString },
@@ -250,19 +250,23 @@ var CreateCatalogLocalizedContentMutation = exports.CreateCatalogLocalizedConten
     },
     mutateAndGetPayload: function () {
         var _ref6 = _asyncToGenerator(regeneratorRuntime.mark(function _callee6(args) {
+            var id;
             return regeneratorRuntime.wrap(function _callee6$(_context6) {
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
-                            console.log("args : " + JSON.stringify(args));
-                            _context6.next = 4;
-                            return _CatalogService2.default.createCatalogLocalizedContent(args);
+                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
 
-                        case 4:
+                            delete args.id;
+                            delete args.clientMutationId;
+                            console.log("args : " + JSON.stringify(args));
+                            _context6.next = 6;
+                            return _CatalogService2.default.createCatalogLocalizedContent(id, args);
+
+                        case 6:
                             return _context6.abrupt('return', _context6.sent);
 
-                        case 5:
+                        case 7:
                         case 'end':
                             return _context6.stop();
                     }

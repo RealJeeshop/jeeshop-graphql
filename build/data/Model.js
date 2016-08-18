@@ -85,6 +85,7 @@ var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
                 return obj.visible;
             } },
         localizedPresentation: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                console.log("obj in localizedPresentation : " + JSON.stringify(obj));
                 return null;
             } },
         rootCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
