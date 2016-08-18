@@ -78,7 +78,7 @@ module.exports =
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	exports.Schema = undefined;
 
@@ -88,19 +88,23 @@ module.exports =
 
 	var _CatalogMutation = __webpack_require__(10);
 
+	var _CategoriesMutation = __webpack_require__(15);
+
 	var Mutation = new _graphql.GraphQLObjectType({
-	  name: 'Mutation',
-	  fields: {
-	    createCatalog: _CatalogMutation.CreateCatalogMutation,
-	    modifyCatalog: _CatalogMutation.ModifyCatalogMutation,
-	    deleteCatalog: _CatalogMutation.DeleteCatalogMutation,
-	    createCatalogLocalizedContent: _CatalogMutation.CreateCatalogLocalizedContentMutation
-	  }
+	    name: 'Mutation',
+	    fields: {
+	        createCatalog: _CatalogMutation.CreateCatalogMutation,
+	        modifyCatalog: _CatalogMutation.ModifyCatalogMutation,
+	        deleteCatalog: _CatalogMutation.DeleteCatalogMutation,
+	        createCatalogLocalizedContent: _CatalogMutation.CreateCatalogLocalizedContentMutation,
+
+	        createCategoryLocalizedContent: _CategoriesMutation.CreateCategoryLocalizedContentMutation
+	    }
 	});
 
 	var Schema = exports.Schema = new _graphql.GraphQLSchema({
-	  query: _Model.GraphQLRoot,
-	  mutation: Mutation
+	    query: _Model.GraphQLRoot,
+	    mutation: Mutation
 	});
 
 /***/ },
@@ -118,7 +122,7 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.GraphQLRoot = exports.ViewerType = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.PresentationType = undefined;
+	exports.GraphQLRoot = exports.ViewerType = exports.CategoryEdge = exports.CategoryConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryType = exports.PresentationType = undefined;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -131,6 +135,10 @@ module.exports =
 	var _CatalogService = __webpack_require__(7);
 
 	var _CatalogService2 = _interopRequireDefault(_CatalogService);
+
+	var _CategoriesService = __webpack_require__(14);
+
+	var _CategoriesService2 = _interopRequireDefault(_CategoriesService);
 
 	var _UsersService = __webpack_require__(13);
 
@@ -183,7 +191,7 @@ module.exports =
 	    name: 'PresentationType',
 	    description: 'It represents a localized presentation',
 	    fields: {
-	        id: (0, _graphqlRelay.globalIdField)('CatalogType'),
+	        id: (0, _graphqlRelay.globalIdField)('PresentationType'),
 	        locale: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
 	                return obj.locale;
 	            } },
@@ -216,6 +224,45 @@ module.exports =
 	            } },
 	        features: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
 	                return obj.features;
+	            } }
+	    }
+	});
+
+	var CategoryType = exports.CategoryType = new _graphql.GraphQLObjectType({
+	    name: 'CategoryType',
+	    description: 'It represents a category',
+	    fields: {
+	        id: (0, _graphqlRelay.globalIdField)('CategoryType'),
+	        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.name;
+	            } },
+	        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.description;
+	            } },
+	        disabled: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.disabled;
+	            } },
+	        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.startDate;
+	            } },
+	        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.endDate;
+	            } },
+	        visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.visible;
+	            } },
+	        localizedPresentation: {
+	            type: PresentationType,
+	            args: { locale: { type: _graphql.GraphQLString } },
+	            resolve: function resolve(obj, args) {
+	                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
+	                return _CategoriesService2.default.getCategoryLocalizedContent(obj.id, locale);
+	            } },
+	        childCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.childCategoriesId;
+	            } },
+	        childProductsIds: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.childProductsIds;
 	            } }
 	    }
 	});
@@ -299,6 +346,16 @@ module.exports =
 	var CatalogEdge = _connectionDefinition2.edgeType;
 	exports.CatalogConnection = CatalogConnection;
 	exports.CatalogEdge = CatalogEdge;
+
+	var _connectionDefinition3 = (0, _graphqlRelay.connectionDefinitions)({
+	    name: 'CategoryType',
+	    nodeType: CategoryType
+	});
+
+	var CategoryConnection = _connectionDefinition3.connectionType;
+	var CategoryEdge = _connectionDefinition3.edgeType;
+	exports.CategoryConnection = CategoryConnection;
+	exports.CategoryEdge = CategoryEdge;
 	var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
 	    name: 'Viewer',
 	    fields: function fields() {
@@ -340,6 +397,19 @@ module.exports =
 	                },
 	                resolve: function resolve(obj, args) {
 	                    return _CatalogService2.default.findCatalogById((0, _graphqlRelay.fromGlobalId)(args.id).id);
+	                }
+	            },
+	            categories: {
+	                type: CategoryConnection,
+	                args: _extends({
+	                    search: { type: _graphql.GraphQLString },
+	                    start: { type: _graphql.GraphQLInt },
+	                    size: { type: _graphql.GraphQLInt },
+	                    orderBy: { type: _graphql.GraphQLString },
+	                    isDesc: { type: _graphql.GraphQLBoolean }
+	                }, _graphqlRelay.connectionArgs),
+	                resolve: function resolve(obj, args) {
+	                    return (0, _graphqlRelay.connectionFromPromisedArray)(_CategoriesService2.default.findAllCategories(args), args);
 	                }
 	            }
 	        };
@@ -896,6 +966,137 @@ module.exports =
 	    }
 	};
 	exports.default = UsersService;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _axios = __webpack_require__(8);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
+	var url = "https://localhost:8443";
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+	var CategoriesService = {
+	    findAllCategories: function findAllCategories(args) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/categories', { params: args, headers: credentials }).then(function (response) {
+	            console.log("resonse.data : " + JSON.stringify(response.data));
+	            return response.data;
+	        }).catch(function (response) {
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    createCategoryLocalizedContent: function createCategoryLocalizedContent(id, input) {
+	        return _axios2.default.post(url + '/jeeshop-admin/rs/categories/' + id + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("error in createCatalogLocalizedContent : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	            return [];
+	        });
+	    },
+	    getCategoryLocalizedContent: function getCategoryLocalizedContent(id, locale) {
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/categories/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("error in getCatalogLocalizedContent : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	            return [];
+	        });
+	    }
+	};
+	exports.default = CategoriesService;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.CreateCategoryLocalizedContentMutation = undefined;
+
+	var _graphql = __webpack_require__(3);
+
+	var _graphqlRelay = __webpack_require__(5);
+
+	var _Model = __webpack_require__(4);
+
+	var _UserStore = __webpack_require__(6);
+
+	var _CategoriesService = __webpack_require__(14);
+
+	var _CategoriesService2 = _interopRequireDefault(_CategoriesService);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
+	__webpack_require__(11);
+
+	var CreateCategoryLocalizedContentMutation = exports.CreateCategoryLocalizedContentMutation = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'CreateCategoryLocalizedContent',
+	    description: 'Creates a localized content for a category',
+	    inputFields: {
+	        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        displayName: { type: _graphql.GraphQLString },
+	        shortDescription: { type: _graphql.GraphQLString },
+	        mediumDescription: { type: _graphql.GraphQLString },
+	        longDescription: { type: _graphql.GraphQLString }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        }
+	    },
+	    mutateAndGetPayload: function () {
+	        var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(args) {
+	            var id;
+	            return regeneratorRuntime.wrap(function _callee$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+
+	                            delete args.id;
+	                            delete args.clientMutationId;
+	                            console.log("args : " + JSON.stringify(args));
+	                            _context.next = 6;
+	                            return _CategoriesService2.default.createCategoryLocalizedContent(id, args);
+
+	                        case 6:
+	                            return _context.abrupt('return', _context.sent);
+
+	                        case 7:
+	                        case 'end':
+	                            return _context.stop();
+	                    }
+	                }
+	            }, _callee, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x) {
+	            return _ref.apply(this, arguments);
+	        };
+	    }()
+	});
 
 /***/ }
 /******/ ]);

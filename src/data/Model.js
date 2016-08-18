@@ -29,6 +29,7 @@ import {
 } from './stores/UserStore';
 
 import CatalogService from './catalog/CatalogService'
+import CategoriesService from './categories/CategoriesService'
 import UsersService from './users/UsersService'
 
 import {
@@ -72,7 +73,7 @@ export const PresentationType = new GraphQLObjectType({
     name: 'PresentationType',
     description: 'It represents a localized presentation',
     fields: {
-        id: globalIdField('CatalogType'),
+        id: globalIdField('PresentationType'),
         locale: {type: GraphQLString, resolve: (obj) => obj.locale},
         displayName: {type: GraphQLString, resolve: (obj) => obj.displayName},
         promotion: {type: GraphQLString, resolve: (obj) => obj.promotion},
@@ -84,6 +85,29 @@ export const PresentationType = new GraphQLObjectType({
         largeImage: {type: GraphQLString, resolve: (obj) => obj.largeImage},
         video: {type: GraphQLString, resolve: (obj) => obj.video},
         features: {type: GraphQLString, resolve: (obj) => obj.features},
+    }
+});
+
+export const CategoryType = new GraphQLObjectType({
+    name: 'CategoryType',
+    description: 'It represents a category',
+    fields: {
+        id: globalIdField('CategoryType'),
+        name: {type: GraphQLString, resolve: (obj) => obj.name},
+        description: {type: GraphQLString, resolve: (obj) => obj.description},
+        disabled: {type: GraphQLString, resolve: (obj) => obj.disabled},
+        startDate: {type: GraphQLString, resolve: (obj) => obj.startDate},
+        endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
+        visible: {type: GraphQLBoolean, resolve: (obj) => obj.visible},
+        localizedPresentation: {
+            type: PresentationType,
+            args: {locale: {type: GraphQLString}},
+            resolve: (obj, args) => {
+                let locale = args.locale ? args.locale : getViewerLocale("me");
+                return CategoriesService.getCategoryLocalizedContent(obj.id, locale)
+            }},
+        childCategoriesId: {type: GraphQLString, resolve: (obj) => obj.childCategoriesId},
+        childProductsIds: {type: GraphQLString, resolve: (obj) => obj.childProductsIds}
     }
 });
 
@@ -145,6 +169,14 @@ export var {
     nodeType: CatalogType
 });
 
+export var {
+    connectionType: CategoryConnection
+    , edgeType: CategoryEdge,
+} = connectionDefinitions({
+    name: 'CategoryType',
+    nodeType: CategoryType
+});
+
 export var ViewerType = new GraphQLObjectType({
     name: 'Viewer',
     fields: () => ({
@@ -179,6 +211,18 @@ export var ViewerType = new GraphQLObjectType({
                 locale: {type: GraphQLString}
             },
             resolve: (obj, args) => CatalogService.findCatalogById(fromGlobalId(args.id).id)
+        },
+        categories: {
+            type: CategoryConnection,
+            args: {
+                search: {type: GraphQLString},
+                start: {type: GraphQLInt},
+                size: {type: GraphQLInt},
+                orderBy: {type: GraphQLString},
+                isDesc: {type: GraphQLBoolean},
+                ...connectionArgs
+            },
+            resolve: (obj, args) => connectionFromPromisedArray(CategoriesService.findAllCategories(args), args)
         }
     }),
     interfaces: [nodeInterface]

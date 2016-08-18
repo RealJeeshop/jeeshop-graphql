@@ -14,13 +14,19 @@ import {
     CreateCatalogLocalizedContentMutation
 } from './catalog/CatalogMutation'
 
+import {
+    CreateCategoryLocalizedContentMutation
+} from './categories/CategoriesMutation'
+
 let Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     createCatalog: CreateCatalogMutation,
     modifyCatalog: ModifyCatalogMutation,
     deleteCatalog: DeleteCatalogMutation,
-    createCatalogLocalizedContent: CreateCatalogLocalizedContentMutation
+    createCatalogLocalizedContent: CreateCatalogLocalizedContentMutation,
+
+    createCategoryLocalizedContent: CreateCategoryLocalizedContentMutation
   }
 });
 
