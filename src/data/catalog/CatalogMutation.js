@@ -151,3 +151,30 @@ export const CreateCatalogLocalizedContentMutation = new mutationWithClientMutat
     }
 });
 
+export const ModifyCatalogLocalizedContent = new mutationWithClientMutationId({
+    name: 'ModifyCatalogLocalizedContent',
+    description: 'Modify a localized content for a catalog',
+    inputFields: {
+        catalogId: {type: new GraphQLNonNull(GraphQLString)},
+        id: {type: new GraphQLNonNull(GraphQLString)},
+        locale: {type: new GraphQLNonNull(GraphQLString)},
+        displayName: {type: GraphQLString},
+        shortDescription: {type: GraphQLString},
+        mediumDescription: {type: GraphQLString},
+        longDescription: {type: GraphQLString}
+    },
+    outputFields: {
+        viewer: {
+            type: ViewerType,
+            resolve: () => getViewer("me")
+        }
+    },
+    mutateAndGetPayload: async (args) => {
+        args.id = fromGlobalId(args.id).id;
+        let catalogId = fromGlobalId(args.catalogId).id;
+        delete args.clientMutationId;
+        delete args.catalogId;
+        return await CatalogService.modifyCatalogLocalizedContent(catalogId, args)
+    }
+});
+

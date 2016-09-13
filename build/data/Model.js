@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.GraphQLRoot = exports.ViewerType = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = undefined;
+exports.GraphQLRoot = exports.ViewerType = exports.CategoryEdge = exports.CategoryConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryType = exports.PresentationType = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -16,6 +16,14 @@ var _UserStore = require('./stores/UserStore');
 var _CatalogService = require('./catalog/CatalogService');
 
 var _CatalogService2 = _interopRequireDefault(_CatalogService);
+
+var _CategoriesService = require('./categories/CategoriesService');
+
+var _CategoriesService2 = _interopRequireDefault(_CategoriesService);
+
+var _UsersService = require('./users/UsersService');
+
+var _UsersService2 = _interopRequireDefault(_UsersService);
 
 var _jsBase = require('js-base64');
 
@@ -60,6 +68,86 @@ var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
 
 var nodeInterface = _nodeDefinitions.nodeInterface;
 var nodeField = _nodeDefinitions.nodeField;
+var PresentationType = exports.PresentationType = new _graphql.GraphQLObjectType({
+    name: 'PresentationType',
+    description: 'It represents a localized presentation',
+    fields: {
+        id: (0, _graphqlRelay.globalIdField)('PresentationType'),
+        locale: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.locale;
+            } },
+        displayName: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.displayName;
+            } },
+        promotion: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.promotion;
+            } },
+        shortDescription: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.shortDescription;
+            } },
+        mediumDescription: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.mediumDescription;
+            } },
+        longDescription: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.longDescription;
+            } },
+        thumbnail: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.thumbnail;
+            } },
+        smallImage: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.smallImage;
+            } },
+        largeImage: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.largeImage;
+            } },
+        video: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.video;
+            } },
+        features: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.features;
+            } }
+    }
+});
+
+var CategoryType = exports.CategoryType = new _graphql.GraphQLObjectType({
+    name: 'CategoryType',
+    description: 'It represents a category',
+    fields: {
+        id: (0, _graphqlRelay.globalIdField)('CategoryType'),
+        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.name;
+            } },
+        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.description;
+            } },
+        disabled: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.disabled;
+            } },
+        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.startDate;
+            } },
+        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.endDate;
+            } },
+        visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+                return obj.visible;
+            } },
+        localizedPresentation: {
+            type: PresentationType,
+            args: { locale: { type: _graphql.GraphQLString } },
+            resolve: function resolve(obj, args) {
+                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
+                return _CategoriesService2.default.getCategoryLocalizedContent(obj.id, locale);
+            } },
+        childCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.childCategoriesId;
+            } },
+        childProductsIds: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.childProductsIds;
+            } }
+    }
+});
+
 var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
 
     name: 'CatalogType',
@@ -84,10 +172,14 @@ var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
         visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
                 return obj.visible;
             } },
-        localizedPresentation: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
-                console.log("obj in localizedPresentation : " + JSON.stringify(obj));
-                return null;
-            } },
+        localizedPresentation: {
+            type: PresentationType,
+            args: { locale: { type: _graphql.GraphQLString } },
+            resolve: function resolve(obj, args) {
+                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
+                return _CatalogService2.default.getCatalogLocalizedContent(obj.id, locale);
+            }
+        },
         rootCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
                 return null;
             } }
@@ -135,6 +227,16 @@ var CatalogConnection = _connectionDefinition2.connectionType;
 var CatalogEdge = _connectionDefinition2.edgeType;
 exports.CatalogConnection = CatalogConnection;
 exports.CatalogEdge = CatalogEdge;
+
+var _connectionDefinition3 = (0, _graphqlRelay.connectionDefinitions)({
+    name: 'CategoryType',
+    nodeType: CategoryType
+});
+
+var CategoryConnection = _connectionDefinition3.connectionType;
+var CategoryEdge = _connectionDefinition3.edgeType;
+exports.CategoryConnection = CategoryConnection;
+exports.CategoryEdge = CategoryEdge;
 var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
     name: 'Viewer',
     fields: function fields() {
@@ -147,15 +249,11 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                 }
             },
             users: {
+
                 type: UserConnection,
                 args: _extends({}, _graphqlRelay.connectionArgs),
                 resolve: function resolve(obj, args) {
-
-                    var config = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==" };
-
-                    return (0, _graphqlRelay.connectionFromPromisedArray)(_axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/users', { headers: config }).then(function (response) {
-                        return response.data;
-                    }), args);
+                    return (0, _graphqlRelay.connectionFromPromisedArray)(_UsersService2.default.findAllUsers(), args);
                 }
             },
             catalogs: {
@@ -165,7 +263,8 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                     start: { type: _graphql.GraphQLInt },
                     size: { type: _graphql.GraphQLInt },
                     orderBy: { type: _graphql.GraphQLString },
-                    isDesc: { type: _graphql.GraphQLBoolean }
+                    isDesc: { type: _graphql.GraphQLBoolean },
+                    locale: { type: _graphql.GraphQLString }
                 }, _graphqlRelay.connectionArgs),
                 resolve: function resolve(obj, args) {
                     return (0, _graphqlRelay.connectionFromPromisedArray)(_CatalogService2.default.findAllCatalog(args), args);
@@ -179,6 +278,19 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                 },
                 resolve: function resolve(obj, args) {
                     return _CatalogService2.default.findCatalogById((0, _graphqlRelay.fromGlobalId)(args.id).id);
+                }
+            },
+            categories: {
+                type: CategoryConnection,
+                args: _extends({
+                    search: { type: _graphql.GraphQLString },
+                    start: { type: _graphql.GraphQLInt },
+                    size: { type: _graphql.GraphQLInt },
+                    orderBy: { type: _graphql.GraphQLString },
+                    isDesc: { type: _graphql.GraphQLBoolean }
+                }, _graphqlRelay.connectionArgs),
+                resolve: function resolve(obj, args) {
+                    return (0, _graphqlRelay.connectionFromPromisedArray)(_CategoriesService2.default.findAllCategories(args), args);
                 }
             }
         };
@@ -195,12 +307,14 @@ var GraphQLRoot = exports.GraphQLRoot = new _graphql.GraphQLObjectType({
                 viewerId: {
                     name: 'viewerId',
                     type: _graphql.GraphQLInt
-                }
+                },
+                locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) }
             },
             resolve: function resolve(root, _ref) {
                 var viewerId = _ref.viewerId;
+                var locale = _ref.locale;
 
-                return (0, _UserStore.getViewer)("me");
+                return (0, _UserStore.getViewer)("me", locale);
             }
         },
         node: nodeField

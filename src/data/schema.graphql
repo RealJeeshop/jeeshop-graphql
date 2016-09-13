@@ -11,7 +11,7 @@ type CatalogType implements Node {
   startDate: String
   endDate: String
   visible: Boolean
-  localizedPresentation: String
+  localizedPresentation(locale: String): PresentationType
   rootCategoriesId: String
 }
 
@@ -22,6 +22,29 @@ type CatalogTypeConnection {
 
 type CatalogTypeEdge {
   node: CatalogType
+  cursor: String!
+}
+
+type CategoryType {
+  id: ID!
+  name: String
+  description: String
+  disabled: String
+  startDate: String
+  endDate: String
+  visible: Boolean
+  localizedPresentation(locale: String): PresentationType
+  childCategoriesId: String
+  childProductsIds: String
+}
+
+type CategoryTypeConnection {
+  pageInfo: PageInfo!
+  edges: [CategoryTypeEdge]
+}
+
+type CategoryTypeEdge {
+  node: CategoryType
   cursor: String!
 }
 
@@ -54,6 +77,21 @@ type CreateCatalogLocalizedContentPayload {
 type CreateCatalogPayload {
   viewer: Viewer
   catalogEdge: CatalogTypeEdge
+  clientMutationId: String!
+}
+
+input CreateCategoryLocalizedContentInput {
+  id: String!
+  locale: String!
+  displayName: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type CreateCategoryLocalizedContentPayload {
+  viewer: Viewer
   clientMutationId: String!
 }
 
@@ -91,6 +129,7 @@ type Mutation {
   modifyCatalog(input: ModifyCatalogInput!): ModifyCatalogPayload
   deleteCatalog(input: DeleteCatalogInput!): DeleteCatalogPayload
   createCatalogLocalizedContent(input: CreateCatalogLocalizedContentInput!): CreateCatalogLocalizedContentPayload
+  createCategoryLocalizedContent(input: CreateCategoryLocalizedContentInput!): CreateCategoryLocalizedContentPayload
 }
 
 interface Node {
@@ -104,8 +143,23 @@ type PageInfo {
   endCursor: String
 }
 
+type PresentationType {
+  id: ID!
+  locale: String
+  displayName: String
+  promotion: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  thumbnail: String
+  smallImage: String
+  largeImage: String
+  video: String
+  features: String
+}
+
 type Root {
-  viewer(viewerId: Int): Viewer
+  viewer(viewerId: Int, locale: String!): Viewer
   node(id: ID!): Node
 }
 
@@ -129,6 +183,7 @@ type Viewer implements Node {
   id: ID!
   user: UserType
   users(after: String, first: Int, before: String, last: Int): UserTypeConnection
-  catalogs(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): CatalogTypeConnection
+  catalogs(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, locale: String, after: String, first: Int, before: String, last: Int): CatalogTypeConnection
   catalog(id: String!, locale: String): CatalogType
+  categories(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): CategoryTypeConnection
 }

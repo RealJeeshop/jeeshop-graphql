@@ -53,7 +53,7 @@ module.exports =
 
 	var Schema = _require.Schema;
 
-	var graphQLHTTP = __webpack_require__(12);
+	var graphQLHTTP = __webpack_require__(15);
 
 	var app = express();
 	app.use('/', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
@@ -86,9 +86,9 @@ module.exports =
 
 	var _Model = __webpack_require__(4);
 
-	var _CatalogMutation = __webpack_require__(10);
+	var _CatalogMutation = __webpack_require__(12);
 
-	var _CategoriesMutation = __webpack_require__(15);
+	var _CategoriesMutation = __webpack_require__(14);
 
 	var Mutation = new _graphql.GraphQLObjectType({
 	    name: 'Mutation',
@@ -97,6 +97,7 @@ module.exports =
 	        modifyCatalog: _CatalogMutation.ModifyCatalogMutation,
 	        deleteCatalog: _CatalogMutation.DeleteCatalogMutation,
 	        createCatalogLocalizedContent: _CatalogMutation.CreateCatalogLocalizedContentMutation,
+	        modifyCatalogLocalizedContent: _CatalogMutation.ModifyCatalogLocalizedContent,
 
 	        createCategoryLocalizedContent: _CategoriesMutation.CreateCategoryLocalizedContentMutation
 	    }
@@ -136,15 +137,15 @@ module.exports =
 
 	var _CatalogService2 = _interopRequireDefault(_CatalogService);
 
-	var _CategoriesService = __webpack_require__(14);
+	var _CategoriesService = __webpack_require__(9);
 
 	var _CategoriesService2 = _interopRequireDefault(_CategoriesService);
 
-	var _UsersService = __webpack_require__(13);
+	var _UsersService = __webpack_require__(10);
 
 	var _UsersService2 = _interopRequireDefault(_UsersService);
 
-	var _jsBase = __webpack_require__(9);
+	var _jsBase = __webpack_require__(11);
 
 	var _axios = __webpack_require__(8);
 
@@ -426,14 +427,12 @@ module.exports =
 	                viewerId: {
 	                    name: 'viewerId',
 	                    type: _graphql.GraphQLInt
-	                },
-	                locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) }
+	                }
 	            },
 	            resolve: function resolve(root, _ref) {
 	                var viewerId = _ref.viewerId;
-	                var locale = _ref.locale;
 
-	                return (0, _UserStore.getViewer)("me", locale);
+	                return (0, _UserStore.getViewer)("me");
 	            }
 	        },
 	        node: nodeField
@@ -483,6 +482,7 @@ module.exports =
 
 	var viewer = new Viewer();
 	viewer.id = VIEWER_ID;
+	viewer.locale = 'fr_FR';
 
 	var users = {};
 	users[VIEWER_ID] = viewer;
@@ -500,9 +500,7 @@ module.exports =
 	    return users[viewerId].locale;
 	}
 
-	function getViewer(viewerId, locale) {
-
-	    users[viewerId].locale = locale;
+	function getViewer(viewerId) {
 	    return users[viewerId];
 	}
 
@@ -588,6 +586,16 @@ module.exports =
 	            if (response.status == "404") return [];
 	            return [];
 	        });
+	    },
+	    modifyCatalogLocalizedContent: function modifyCatalogLocalizedContent(catalogId, input) {
+	        return _axios2.default.put(url + '/jeeshop-admin/rs/catalogs/' + catalogId + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
+	            console.log("response from modifyCatalogLocalizedContent: " + JSON.stringify(response.data));
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("error in modifyCatalogLocalizedContent : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	            return [];
+	        });
 	    }
 	};
 
@@ -632,9 +640,54 @@ module.exports =
 
 /***/ },
 /* 9 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = require("js-base64");
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _axios = __webpack_require__(8);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
+	var url = "https://localhost:8443";
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+	var CategoriesService = {
+	    findAllCategories: function findAllCategories(args) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/categories', { params: args, headers: credentials }).then(function (response) {
+	            console.log("resonse.data : " + JSON.stringify(response.data));
+	            return response.data;
+	        }).catch(function (response) {
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    createCategoryLocalizedContent: function createCategoryLocalizedContent(id, input) {
+	        return _axios2.default.post(url + '/jeeshop-admin/rs/categories/' + id + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("error in createCatalogLocalizedContent : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	            return [];
+	        });
+	    },
+	    getCategoryLocalizedContent: function getCategoryLocalizedContent(id, locale) {
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/categories/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("error in getCatalogLocalizedContent : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	            return [];
+	        });
+	    }
+	};
+	exports.default = CategoriesService;
 
 /***/ },
 /* 10 */
@@ -645,7 +698,46 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.CreateCatalogLocalizedContentMutation = exports.DeleteCatalogMutation = exports.ModifyCatalogMutation = exports.CreateCatalogMutation = undefined;
+
+	var _axios = __webpack_require__(8);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
+	var url = "https://localhost:8443";
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+	var UsersService = {
+	    findAllUsers: function findAllUsers() {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/users', { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            if (response.status == "404") return [];
+	            return [];
+	        });
+	    }
+	};
+	exports.default = UsersService;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	module.exports = require("js-base64");
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.ModifyCatalogLocalizedContent = exports.CreateCatalogLocalizedContentMutation = exports.DeleteCatalogMutation = exports.ModifyCatalogMutation = exports.CreateCatalogMutation = undefined;
 
 	var _graphql = __webpack_require__(3);
 
@@ -663,7 +755,7 @@ module.exports =
 
 	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
-	__webpack_require__(11);
+	__webpack_require__(13);
 
 	var CreateCatalogMutation = exports.CreateCatalogMutation = new _graphqlRelay.mutationWithClientMutationId({
 	    name: 'CreateCatalog',
@@ -922,104 +1014,66 @@ module.exports =
 	    }()
 	});
 
+	var ModifyCatalogLocalizedContent = exports.ModifyCatalogLocalizedContent = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'ModifyCatalogLocalizedContent',
+	    description: 'Modify a localized content for a catalog',
+	    inputFields: {
+	        catalogId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        displayName: { type: _graphql.GraphQLString },
+	        shortDescription: { type: _graphql.GraphQLString },
+	        mediumDescription: { type: _graphql.GraphQLString },
+	        longDescription: { type: _graphql.GraphQLString }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        }
+	    },
+	    mutateAndGetPayload: function () {
+	        var _ref7 = _asyncToGenerator(regeneratorRuntime.mark(function _callee7(args) {
+	            var catalogId;
+	            return regeneratorRuntime.wrap(function _callee7$(_context7) {
+	                while (1) {
+	                    switch (_context7.prev = _context7.next) {
+	                        case 0:
+	                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+	                            catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).id;
+
+	                            delete args.clientMutationId;
+	                            delete args.catalogId;
+	                            _context7.next = 6;
+	                            return _CatalogService2.default.modifyCatalogLocalizedContent(catalogId, args);
+
+	                        case 6:
+	                            return _context7.abrupt('return', _context7.sent);
+
+	                        case 7:
+	                        case 'end':
+	                            return _context7.stop();
+	                    }
+	                }
+	            }, _callee7, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x7) {
+	            return _ref7.apply(this, arguments);
+	        };
+	    }()
+	});
+
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports) {
 
 	module.exports = require("babel-polyfill");
 
 /***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	module.exports = require("express-graphql");
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _axios = __webpack_require__(8);
-
-	var _axios2 = _interopRequireDefault(_axios);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
-	var url = "https://localhost:8443";
-	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-	var UsersService = {
-	    findAllUsers: function findAllUsers() {
-
-	        return _axios2.default.get(url + '/jeeshop-admin/rs/users', { headers: credentials }).then(function (response) {
-	            return response.data;
-	        }).catch(function (response) {
-	            if (response.status == "404") return [];
-	            return [];
-	        });
-	    }
-	};
-	exports.default = UsersService;
-
-/***/ },
 /* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _axios = __webpack_require__(8);
-
-	var _axios2 = _interopRequireDefault(_axios);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
-	var url = "https://localhost:8443";
-	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-	var CategoriesService = {
-	    findAllCategories: function findAllCategories(args) {
-
-	        return _axios2.default.get(url + '/jeeshop-admin/rs/categories', { params: args, headers: credentials }).then(function (response) {
-	            console.log("resonse.data : " + JSON.stringify(response.data));
-	            return response.data;
-	        }).catch(function (response) {
-	            if (response.status == "404") return [];
-	        });
-	    },
-	    createCategoryLocalizedContent: function createCategoryLocalizedContent(id, input) {
-	        return _axios2.default.post(url + '/jeeshop-admin/rs/categories/' + id + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
-	            return response.data;
-	        }).catch(function (response) {
-	            console.log("error in createCatalogLocalizedContent : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	            return [];
-	        });
-	    },
-	    getCategoryLocalizedContent: function getCategoryLocalizedContent(id, locale) {
-	        return _axios2.default.get(url + '/jeeshop-admin/rs/categories/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
-	            return response.data;
-	        }).catch(function (response) {
-	            console.log("error in getCatalogLocalizedContent : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	            return [];
-	        });
-	    }
-	};
-	exports.default = CategoriesService;
-
-/***/ },
-/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1037,7 +1091,7 @@ module.exports =
 
 	var _UserStore = __webpack_require__(6);
 
-	var _CategoriesService = __webpack_require__(14);
+	var _CategoriesService = __webpack_require__(9);
 
 	var _CategoriesService2 = _interopRequireDefault(_CategoriesService);
 
@@ -1045,7 +1099,7 @@ module.exports =
 
 	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
-	__webpack_require__(11);
+	__webpack_require__(13);
 
 	var CreateCategoryLocalizedContentMutation = exports.CreateCategoryLocalizedContentMutation = new _graphqlRelay.mutationWithClientMutationId({
 	    name: 'CreateCategoryLocalizedContent',
@@ -1097,6 +1151,12 @@ module.exports =
 	        };
 	    }()
 	});
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	module.exports = require("express-graphql");
 
 /***/ }
 /******/ ]);

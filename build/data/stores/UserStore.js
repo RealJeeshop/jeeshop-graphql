@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.registerViewer = registerViewer;
+exports.getViewerLocale = getViewerLocale;
 exports.getViewer = getViewer;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -43,6 +44,12 @@ function registerViewer(viewer) {
     }
 }
 
-function getViewer(viewerId) {
+function getViewerLocale(viewerId) {
+    return users[viewerId].locale;
+}
+
+function getViewer(viewerId, locale) {
+
+    users[viewerId].locale = locale;
     return users[viewerId];
 }

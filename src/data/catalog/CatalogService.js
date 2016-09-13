@@ -76,6 +76,18 @@ var CatalogService = {
                 return []
 
             })
+    },
+    modifyCatalogLocalizedContent(catalogId, input) {
+        return axios.put(`${url}/jeeshop-admin/rs/catalogs/${catalogId}/presentations/${input.locale}`, input, {headers: credentials})
+            .then((response) => {
+                console.log("response from modifyCatalogLocalizedContent: " + JSON.stringify(response.data));
+                return response.data
+            }).catch((response) => {
+                console.log("error in modifyCatalogLocalizedContent : " + JSON.stringify(response));
+                if(response.status == "404") return []
+                return []
+
+            })
     }
 };
 

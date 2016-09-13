@@ -237,11 +237,10 @@ export var GraphQLRoot = new GraphQLObjectType({
                 viewerId: {
                     name: 'viewerId',
                     type: GraphQLInt
-                },
-                locale: {type: new GraphQLNonNull(GraphQLString)}
+                }
             },
-            resolve: (root, {viewerId, locale}) => {
-                return getViewer("me", locale)
+            resolve: (root, {viewerId}) => {
+                return getViewer("me")
             }
         },
         node: nodeField

@@ -4,10 +4,11 @@ const VIEWER_ID = 'me';
 
 var viewer = new Viewer();
 viewer.id = VIEWER_ID;
+viewer.locale = 'fr_FR';
 
 
-var users = {}
-users[VIEWER_ID] = viewer
+var users = {};
+users[VIEWER_ID] = viewer;
 
 const usersById = {
     [VIEWER_ID]: viewer
@@ -24,8 +25,6 @@ export function getViewerLocale(viewerId) {
     return users[viewerId].locale
 }
 
-export function getViewer(viewerId, locale) {
-
-    users[viewerId].locale = locale;
+export function getViewer(viewerId) {
     return users[viewerId]
 }
