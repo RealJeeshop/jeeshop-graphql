@@ -659,6 +659,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs', { params: args, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -666,6 +667,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -673,6 +675,7 @@ module.exports =
 	        return _axios2.default.post(url + '/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -680,6 +683,7 @@ module.exports =
 	        return _axios2.default.put(url + '/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
@@ -688,6 +692,7 @@ module.exports =
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -695,6 +700,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
@@ -703,6 +709,7 @@ module.exports =
 	        return _axios2.default.post(url + '/jeeshop-admin/rs/catalogs/' + id + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
@@ -711,6 +718,7 @@ module.exports =
 	        return _axios2.default.put(url + '/jeeshop-admin/rs/catalogs/' + catalogId + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
@@ -719,6 +727,7 @@ module.exports =
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/catalogs/' + catalogId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
@@ -790,6 +799,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/categories', { params: args, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -801,6 +811,7 @@ module.exports =
 	            console.log("resonse.data : " + JSON.stringify(response.data));
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -811,6 +822,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/categories/' + categoryId + '/categories', { params: params, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -822,6 +834,7 @@ module.exports =
 	            console.log("resonse.data : " + JSON.stringify(response.data));
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -847,6 +860,7 @@ module.exports =
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/categories/' + id, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -872,6 +886,7 @@ module.exports =
 	        return _axios2.default.put(url + '/jeeshop-admin/rs/categories/' + categoryId + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
@@ -880,6 +895,7 @@ module.exports =
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/categories/' + catalogId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
@@ -913,6 +929,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/users', { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
@@ -946,6 +963,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -955,6 +973,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/products/' + id, { params: params, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -962,6 +981,7 @@ module.exports =
 	        return _axios2.default.post(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -969,6 +989,7 @@ module.exports =
 	        return _axios2.default.put(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -976,6 +997,7 @@ module.exports =
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/products/' + id, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -983,6 +1005,7 @@ module.exports =
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/products/' + productId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -990,6 +1013,7 @@ module.exports =
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/products/' + productId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
