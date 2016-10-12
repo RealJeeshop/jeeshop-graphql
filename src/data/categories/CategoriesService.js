@@ -11,6 +11,7 @@ var CategoriesService = {
         return axios.get(`${url}/jeeshop-admin/rs/categories`, {params: args, headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -24,6 +25,7 @@ var CategoriesService = {
                 return response.data
             })
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -34,6 +36,7 @@ var CategoriesService = {
         return axios.get(`${url}/jeeshop-admin/rs/categories/${categoryId}/categories`, {params: params, headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -47,6 +50,7 @@ var CategoriesService = {
                 return response.data
             })
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -74,6 +78,7 @@ var CategoriesService = {
         return axios.delete(`${url}/jeeshop-admin/rs/categories/${id}`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -101,6 +106,7 @@ var CategoriesService = {
         return axios.put(`${url}/jeeshop-admin/rs/categories/${categoryId}/presentations/${input.locale}`, input, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
                 return []
 
@@ -110,6 +116,7 @@ var CategoriesService = {
         return axios.delete(`${url}/jeeshop-admin/rs/categories/${catalogId}/presentations/${locale}`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return [];
                 return []
             })

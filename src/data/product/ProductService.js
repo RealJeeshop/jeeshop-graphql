@@ -11,6 +11,7 @@ var ProductService = {
         return axios.get(`${url}/jeeshop-admin/rs/products`, {params: args, headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -20,6 +21,7 @@ var ProductService = {
         return axios.get(`${url}/jeeshop-admin/rs/products/${id}`, {params: params, headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -27,6 +29,7 @@ var ProductService = {
         return axios.post(`${url}/jeeshop-admin/rs/products`, {params: args, headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -34,6 +37,7 @@ var ProductService = {
         return axios.put(`${url}/jeeshop-admin/rs/products`, {params: args, headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -41,6 +45,7 @@ var ProductService = {
         return axios.delete(`${url}/jeeshop-admin/rs/products/${id}`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -48,6 +53,7 @@ var ProductService = {
         return axios.get(`${url}/jeeshop-admin/rs/products/${productId}/presentations/${locale}`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -55,6 +61,7 @@ var ProductService = {
         return axios.delete(`${url}/jeeshop-admin/rs/products/${productId}/presentations/${locale}`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },

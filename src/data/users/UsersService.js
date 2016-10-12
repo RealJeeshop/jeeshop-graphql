@@ -11,6 +11,7 @@ var UsersService = {
         return axios.get(`${url}/jeeshop-admin/rs/users`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
                 return []
             })

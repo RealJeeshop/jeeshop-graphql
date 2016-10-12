@@ -11,6 +11,7 @@ var CatalogService = {
         return axios.get(`${url}/jeeshop-admin/rs/catalogs`, {params: args, headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -19,6 +20,7 @@ var CatalogService = {
             .then((response) => {
                 return response.data
             }).catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -26,6 +28,7 @@ var CatalogService = {
         return axios.post(`${url}/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -33,6 +36,7 @@ var CatalogService = {
         return axios.put(`${url}/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
                 return []
             })
@@ -41,6 +45,7 @@ var CatalogService = {
         return axios.delete(`${url}/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
     },
@@ -48,6 +53,7 @@ var CatalogService = {
         return axios.get(`${url}/jeeshop-admin/rs/catalogs/${id}/presentations/${locale}`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
                 return []
 
@@ -57,6 +63,7 @@ var CatalogService = {
         return axios.post(`${url}/jeeshop-admin/rs/catalogs/${id}/presentations/${input.locale}`, input, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
                 return []
 
@@ -66,6 +73,7 @@ var CatalogService = {
         return axios.put(`${url}/jeeshop-admin/rs/catalogs/${catalogId}/presentations/${input.locale}`, input, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
                 return []
 
@@ -75,6 +83,7 @@ var CatalogService = {
         return axios.delete(`${url}/jeeshop-admin/rs/catalogs/${catalogId}/presentations/${locale}`, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return [];
                 return []
             })
