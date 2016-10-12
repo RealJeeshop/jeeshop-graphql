@@ -998,6 +998,7 @@ module.exports =
 
 	            return response.data;
 	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	        });
 	    },
@@ -2087,14 +2088,13 @@ module.exports =
 
 	                            delete args.clientMutationId;
 	                            delete args.productId;
-	                            delete args.locale;
-	                            _context7.next = 6;
+	                            _context7.next = 5;
 	                            return _ProductService2.default.createProductLocalizedContent(productId, args.locale, args);
 
-	                        case 6:
+	                        case 5:
 	                            return _context7.abrupt('return', _context7.sent);
 
-	                        case 7:
+	                        case 6:
 	                        case 'end':
 	                            return _context7.stop();
 	                    }

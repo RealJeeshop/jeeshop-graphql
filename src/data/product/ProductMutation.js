@@ -156,7 +156,6 @@ export const CreateProductLocalizedContent = new mutationWithClientMutationId({
         let productId = fromGlobalId(args.productId).id;
         delete args.clientMutationId;
         delete args.productId;
-        delete args.locale;
         return await ProductService.createProductLocalizedContent(productId, args.locale, args)
     }
 });
