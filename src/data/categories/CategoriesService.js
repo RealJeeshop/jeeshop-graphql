@@ -9,10 +9,70 @@ var CategoriesService = {
     findAllCategories(args) {
 
         return axios.get(`${url}/jeeshop-admin/rs/categories`, {params: args, headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                if(response.status == "404") return []
+            })
+    },
+    findCatalogCategories(catalogId, locale) {
+
+        let params = locale ? {locale: locale} : {};
+
+        return axios.get(`${url}/jeeshop-admin/rs/catalogs/${catalogId}/categories`, {params: params, headers: credentials})
             .then((response) => {
                 console.log("resonse.data : " + JSON.stringify(response.data));
                 return response.data
             })
+            .catch((response) => {
+                if(response.status == "404") return []
+            })
+    },
+    findCategoryRelatedCategories(categoryId, locale) {
+
+        let params = locale ? {locale: locale} : {};
+
+        return axios.get(`${url}/jeeshop-admin/rs/categories/${categoryId}/categories`, {params: params, headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                if(response.status == "404") return []
+            })
+    },
+    findCategoryById(categoryId, locale) {
+
+        let params = locale ? {locale: locale} : {};
+
+        return axios.get(`${url}/jeeshop-admin/rs/categories/${categoryId}`, {params: params, headers: credentials})
+            .then((response) => {
+                console.log("resonse.data : " + JSON.stringify(response.data));
+                return response.data
+            })
+            .catch((response) => {
+                if(response.status == "404") return []
+            })
+    },
+    createCategory(input) {
+        return axios.post(`${url}/jeeshop-admin/rs/categories`, input, {headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                console.log("error in createCategory : " + JSON.stringify(response));
+                if(response.status == "404") return []
+                return []
+
+            })
+    },
+    modifyCategory(input) {
+        return axios.put(`${url}/jeeshop-admin/rs/categories`, input, {headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                console.log("error in createCategory : " + JSON.stringify(response));
+                if(response.status == "404") return []
+                return []
+
+            })
+    },
+    deleteCategory(id) {
+        return axios.delete(`${url}/jeeshop-admin/rs/categories/${id}`, {headers: credentials})
+            .then((response) => response.data)
             .catch((response) => {
                 if(response.status == "404") return []
             })
@@ -37,5 +97,22 @@ var CategoriesService = {
 
             })
     },
+    modifyCategoryLocalizedContent(categoryId, input) {
+        return axios.put(`${url}/jeeshop-admin/rs/categories/${categoryId}/presentations/${input.locale}`, input, {headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                if(response.status == "404") return []
+                return []
+
+            })
+    },
+    deleteCategoryLocalizedContent(catalogId, locale) {
+        return axios.delete(`${url}/jeeshop-admin/rs/categories/${catalogId}/presentations/${locale}`, {headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                if(response.status == "404") return [];
+                return []
+            })
+    }
 };
 export default CategoriesService;

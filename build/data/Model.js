@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.GraphQLRoot = exports.ViewerType = exports.CategoryEdge = exports.CategoryConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryType = exports.PresentationType = undefined;
+exports.GraphQLRoot = exports.ViewerType = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.PresentationType = exports.ImageType = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -24,6 +24,10 @@ var _CategoriesService2 = _interopRequireDefault(_CategoriesService);
 var _UsersService = require('./users/UsersService');
 
 var _UsersService2 = _interopRequireDefault(_UsersService);
+
+var _ProductService = require('./product/ProductService');
+
+var _ProductService2 = _interopRequireDefault(_ProductService);
 
 var _jsBase = require('js-base64');
 
@@ -52,6 +56,12 @@ var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
         });
     } else if (type === 'ViewerType') {
         return (0, _UserStore.getViewer)(id);
+    } else if (type === 'ImageType') {
+        return null;
+    } else if (type === 'PresentationType') {
+        return null;
+    } else if (type === 'CategoryType') {
+        return _CategoriesService2.default.findCategoryById(id, (0, _UserStore.getViewerLocale)("me"));
     }
     return null;
 }, function (obj) {
@@ -62,12 +72,25 @@ var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
         return CatalogType;
     } else if (obj.email) {
         return UserType;
+    } else if (obj.uri) {
+        return ImageType;
     }
     return null;
 });
 
 var nodeInterface = _nodeDefinitions.nodeInterface;
 var nodeField = _nodeDefinitions.nodeField;
+var ImageType = exports.ImageType = new _graphql.GraphQLObjectType({
+    name: "ImageType",
+    description: "It represents an image",
+    fields: {
+        id: (0, _graphqlRelay.globalIdField)('ImageType'),
+        uri: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.uri;
+            } }
+    }
+});
+
 var PresentationType = exports.PresentationType = new _graphql.GraphQLObjectType({
     name: 'PresentationType',
     description: 'It represents a localized presentation',
@@ -94,10 +117,10 @@ var PresentationType = exports.PresentationType = new _graphql.GraphQLObjectType
         thumbnail: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
                 return obj.thumbnail;
             } },
-        smallImage: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+        smallImage: { type: ImageType, resolve: function resolve(obj) {
                 return obj.smallImage;
             } },
-        largeImage: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+        largeImage: { type: ImageType, resolve: function resolve(obj) {
                 return obj.largeImage;
             } },
         video: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
@@ -106,6 +129,41 @@ var PresentationType = exports.PresentationType = new _graphql.GraphQLObjectType
         features: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
                 return obj.features;
             } }
+    }
+});
+
+var ProductType = exports.ProductType = new _graphql.GraphQLObjectType({
+    name: "ProductType",
+    description: "It represents a product",
+    fields: {
+        id: (0, _graphqlRelay.globalIdField)('ProductType'),
+        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.name;
+            } },
+        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.description;
+            } },
+        disabled: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.disabled;
+            } },
+        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.startDate;
+            } },
+        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.endDate;
+            } },
+        visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+                return obj.visible;
+            } },
+        localizedPresentation: {
+            type: PresentationType,
+            args: { locale: { type: _graphql.GraphQLString } },
+            resolve: function resolve(obj, args) {
+                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
+                console.log("locale : " + JSON.stringify(locale));
+                return _ProductService2.default.findProductLocalizedContent(obj.id, locale);
+            }
+        }
     }
 });
 
@@ -148,6 +206,15 @@ var CategoryType = exports.CategoryType = new _graphql.GraphQLObjectType({
     }
 });
 
+var _connectionDefinition = (0, _graphqlRelay.connectionDefinitions)({
+    name: 'CategoryType',
+    nodeType: CategoryType
+});
+
+var CategoryConnection = _connectionDefinition.connectionType;
+var CategoryEdge = _connectionDefinition.edgeType;
+exports.CategoryConnection = CategoryConnection;
+exports.CategoryEdge = CategoryEdge;
 var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
 
     name: 'CatalogType',
@@ -182,7 +249,16 @@ var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
         },
         rootCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
                 return null;
-            } }
+            } },
+        categories: {
+            type: CategoryConnection,
+            args: _extends({
+                locale: { type: _graphql.GraphQLString }
+            }, _graphqlRelay.connectionArgs),
+            resolve: function resolve(obj, args) {
+                return (0, _graphqlRelay.connectionFromPromisedArray)(_CategoriesService2.default.findCatalogCategories(obj.id, args.locale), args);
+            }
+        }
     },
     interfaces: [nodeInterface]
 });
@@ -208,35 +284,35 @@ var UserType = exports.UserType = new _graphql.GraphQLObjectType({
     interfaces: [nodeInterface]
 });
 
-var _connectionDefinition = (0, _graphqlRelay.connectionDefinitions)({
+var _connectionDefinition2 = (0, _graphqlRelay.connectionDefinitions)({
     name: 'UserType',
     nodeType: UserType
 });
 
-var UserConnection = _connectionDefinition.connectionType;
-var UserEdge = _connectionDefinition.edgeType;
+var UserConnection = _connectionDefinition2.connectionType;
+var UserEdge = _connectionDefinition2.edgeType;
 exports.UserConnection = UserConnection;
 exports.UserEdge = UserEdge;
 
-var _connectionDefinition2 = (0, _graphqlRelay.connectionDefinitions)({
+var _connectionDefinition3 = (0, _graphqlRelay.connectionDefinitions)({
     name: 'CatalogType',
     nodeType: CatalogType
 });
 
-var CatalogConnection = _connectionDefinition2.connectionType;
-var CatalogEdge = _connectionDefinition2.edgeType;
+var CatalogConnection = _connectionDefinition3.connectionType;
+var CatalogEdge = _connectionDefinition3.edgeType;
 exports.CatalogConnection = CatalogConnection;
 exports.CatalogEdge = CatalogEdge;
 
-var _connectionDefinition3 = (0, _graphqlRelay.connectionDefinitions)({
-    name: 'CategoryType',
-    nodeType: CategoryType
+var _connectionDefinition4 = (0, _graphqlRelay.connectionDefinitions)({
+    name: 'ProductType',
+    nodeType: ProductType
 });
 
-var CategoryConnection = _connectionDefinition3.connectionType;
-var CategoryEdge = _connectionDefinition3.edgeType;
-exports.CategoryConnection = CategoryConnection;
-exports.CategoryEdge = CategoryEdge;
+var ProductConnection = _connectionDefinition4.connectionType;
+var ProductEdge = _connectionDefinition4.edgeType;
+exports.ProductConnection = ProductConnection;
+exports.ProductEdge = ProductEdge;
 var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
     name: 'Viewer',
     fields: function fields() {
@@ -292,6 +368,39 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                 resolve: function resolve(obj, args) {
                     return (0, _graphqlRelay.connectionFromPromisedArray)(_CategoriesService2.default.findAllCategories(args), args);
                 }
+            },
+            category: {
+                type: CategoryType,
+                args: {
+                    id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+                    locale: { type: _graphql.GraphQLString }
+                },
+                resolve: function resolve(obj, args) {
+                    return _CategoriesService2.default.findCategoryById((0, _graphqlRelay.fromGlobalId)(args.id).id, args.locale);
+                }
+            },
+            products: {
+                type: ProductConnection,
+                args: _extends({
+                    search: { type: _graphql.GraphQLString },
+                    start: { type: _graphql.GraphQLInt },
+                    size: { type: _graphql.GraphQLInt },
+                    orderBy: { type: _graphql.GraphQLString },
+                    isDesc: { type: _graphql.GraphQLBoolean }
+                }, _graphqlRelay.connectionArgs),
+                resolve: function resolve(obj, args) {
+                    return (0, _graphqlRelay.connectionFromPromisedArray)(_ProductService2.default.findAllProducts(args), args);
+                }
+            },
+            product: {
+                type: ProductType,
+                args: {
+                    id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+                    locale: { type: _graphql.GraphQLString }
+                },
+                resolve: function resolve(obj, args) {
+                    return _ProductService2.default.findProductById(args.id, args.locale);
+                }
             }
         };
     },
@@ -307,14 +416,12 @@ var GraphQLRoot = exports.GraphQLRoot = new _graphql.GraphQLObjectType({
                 viewerId: {
                     name: 'viewerId',
                     type: _graphql.GraphQLInt
-                },
-                locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) }
+                }
             },
             resolve: function resolve(root, _ref) {
                 var viewerId = _ref.viewerId;
-                var locale = _ref.locale;
 
-                return (0, _UserStore.getViewer)("me", locale);
+                return (0, _UserStore.getViewer)("me");
             }
         },
         node: nodeField

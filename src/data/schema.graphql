@@ -13,6 +13,7 @@ type CatalogType implements Node {
   visible: Boolean
   localizedPresentation(locale: String): PresentationType
   rootCategoriesId: String
+  categories(locale: String, after: String, first: Int, before: String, last: Int): CategoryTypeConnection
 }
 
 type CatalogTypeConnection {
@@ -80,6 +81,16 @@ type CreateCatalogPayload {
   clientMutationId: String!
 }
 
+input CreateCategoryInput {
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  clientMutationId: String!
+}
+
 input CreateCategoryLocalizedContentInput {
   id: String!
   locale: String!
@@ -95,14 +106,110 @@ type CreateCategoryLocalizedContentPayload {
   clientMutationId: String!
 }
 
+type CreateCategoryPayload {
+  viewer: Viewer
+  categoryEdge: CategoryTypeEdge
+  clientMutationId: String!
+}
+
+input CreateProductLocalizedContentInput {
+  productId: String!
+  locale: String!
+  displayName: String
+  promotion: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type CreateProductLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+input CreateProductMutationInput {
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  clientMutationId: String!
+}
+
+type CreateProductMutationPayload {
+  viewer: Viewer
+  productEdge: ProductTypeEdge
+  clientMutationId: String!
+}
+
 input DeleteCatalogInput {
   id: String!
+  clientMutationId: String!
+}
+
+input DeleteCatalogLocalizedContentInput {
+  catalogId: String!
+  locale: String!
+  clientMutationId: String!
+}
+
+type DeleteCatalogLocalizedContentPayload {
+  viewer: Viewer
   clientMutationId: String!
 }
 
 type DeleteCatalogPayload {
   viewer: Viewer
   clientMutationId: String!
+}
+
+input DeleteCategoryInput {
+  id: String!
+  clientMutationId: String!
+}
+
+input DeleteCategoryLocalizedContentInput {
+  categoryId: String!
+  locale: String!
+  clientMutationId: String!
+}
+
+type DeleteCategoryLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+type DeleteCategoryPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+input DeleteProductLocalizedContentInput {
+  productId: String!
+  locale: String!
+  clientMutationId: String!
+}
+
+type DeleteProductLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+input DeleteProductMutationInput {
+  id: String!
+  clientMutationId: String!
+}
+
+type DeleteProductMutationPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+type ImageType {
+  id: ID!
+  uri: String
 }
 
 input ModifyCatalogInput {
@@ -118,9 +225,94 @@ input ModifyCatalogInput {
   clientMutationId: String!
 }
 
+input ModifyCatalogLocalizedContentInput {
+  catalogId: String!
+  id: String!
+  locale: String!
+  displayName: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type ModifyCatalogLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
 type ModifyCatalogPayload {
   viewer: Viewer
   catalogEdge: CatalogTypeEdge
+  clientMutationId: String!
+}
+
+input ModifyCategoryInput {
+  id: String!
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  clientMutationId: String!
+}
+
+input ModifyCategoryLocalizedContentInput {
+  categoryId: String!
+  id: String!
+  locale: String!
+  displayName: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  smallImage: String
+  largeImage: String
+  video: String
+  features: String
+  clientMutationId: String!
+}
+
+type ModifyCategoryLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+type ModifyCategoryPayload {
+  viewer: Viewer
+  categoryEdge: CategoryTypeEdge
+  clientMutationId: String!
+}
+
+input ModifyProductLocalizedContentInput {
+  productId: String!
+  locale: String!
+  displayName: String
+  promotion: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type ModifyProductLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+input ModifyProductMutationInput {
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  clientMutationId: String!
+}
+
+type ModifyProductMutationPayload {
+  viewer: Viewer
+  productEdge: ProductTypeEdge
   clientMutationId: String!
 }
 
@@ -129,7 +321,20 @@ type Mutation {
   modifyCatalog(input: ModifyCatalogInput!): ModifyCatalogPayload
   deleteCatalog(input: DeleteCatalogInput!): DeleteCatalogPayload
   createCatalogLocalizedContent(input: CreateCatalogLocalizedContentInput!): CreateCatalogLocalizedContentPayload
+  modifyCatalogLocalizedContent(input: ModifyCatalogLocalizedContentInput!): ModifyCatalogLocalizedContentPayload
+  deleteCatalogLocalizedContent(input: DeleteCatalogLocalizedContentInput!): DeleteCatalogLocalizedContentPayload
+  createCategoryMutation(input: CreateCategoryInput!): CreateCategoryPayload
+  modifyCategoryMutation(input: ModifyCategoryInput!): ModifyCategoryPayload
+  deleteCategoryMutation(input: DeleteCategoryInput!): DeleteCategoryPayload
   createCategoryLocalizedContent(input: CreateCategoryLocalizedContentInput!): CreateCategoryLocalizedContentPayload
+  modifyCategoryLocalizedContent(input: ModifyCategoryLocalizedContentInput!): ModifyCategoryLocalizedContentPayload
+  deleteCategoryLocalizedContent(input: DeleteCategoryLocalizedContentInput!): DeleteCategoryLocalizedContentPayload
+  createProductMutation(input: CreateProductMutationInput!): CreateProductMutationPayload
+  modifyProductMutation(input: ModifyProductMutationInput!): ModifyProductMutationPayload
+  deleteProductMutation(input: DeleteProductMutationInput!): DeleteProductMutationPayload
+  createProductLocalizedContent(input: CreateProductLocalizedContentInput!): CreateProductLocalizedContentPayload
+  deleteProductLocalizedContent(input: DeleteProductLocalizedContentInput!): DeleteProductLocalizedContentPayload
+  modifyProductLocalizedContent(input: ModifyProductLocalizedContentInput!): ModifyProductLocalizedContentPayload
 }
 
 interface Node {
@@ -152,14 +357,35 @@ type PresentationType {
   mediumDescription: String
   longDescription: String
   thumbnail: String
-  smallImage: String
-  largeImage: String
+  smallImage: ImageType
+  largeImage: ImageType
   video: String
   features: String
 }
 
+type ProductType {
+  id: ID!
+  name: String
+  description: String
+  disabled: String
+  startDate: String
+  endDate: String
+  visible: Boolean
+  localizedPresentation(locale: String): PresentationType
+}
+
+type ProductTypeConnection {
+  pageInfo: PageInfo!
+  edges: [ProductTypeEdge]
+}
+
+type ProductTypeEdge {
+  node: ProductType
+  cursor: String!
+}
+
 type Root {
-  viewer(viewerId: Int, locale: String!): Viewer
+  viewer(viewerId: Int): Viewer
   node(id: ID!): Node
 }
 
@@ -186,4 +412,7 @@ type Viewer implements Node {
   catalogs(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, locale: String, after: String, first: Int, before: String, last: Int): CatalogTypeConnection
   catalog(id: String!, locale: String): CatalogType
   categories(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): CategoryTypeConnection
+  category(id: String!, locale: String): CategoryType
+  products(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): ProductTypeConnection
+  product(id: String!, locale: String): ProductType
 }

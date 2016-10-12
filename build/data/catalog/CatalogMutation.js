@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.CreateCatalogLocalizedContentMutation = exports.DeleteCatalogMutation = exports.ModifyCatalogMutation = exports.CreateCatalogMutation = undefined;
+exports.DeleteCatalogLocalizedContent = exports.ModifyCatalogLocalizedContent = exports.CreateCatalogLocalizedContentMutation = exports.DeleteCatalogMutation = exports.ModifyCatalogMutation = exports.CreateCatalogMutation = undefined;
 
 var _graphql = require('graphql');
 
@@ -231,7 +231,7 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
 
 var CreateCatalogLocalizedContentMutation = exports.CreateCatalogLocalizedContentMutation = new _graphqlRelay.mutationWithClientMutationId({
     name: 'CreateCatalogLocalizedContent',
-    description: 'Creates a localized content for a catalog',
+    description: 'CQ2F0ZWdvcnlUeXBlOjE=reates a localized content for a catalog',
     inputFields: {
         id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
@@ -276,6 +276,102 @@ var CreateCatalogLocalizedContentMutation = exports.CreateCatalogLocalizedConten
 
         return function mutateAndGetPayload(_x6) {
             return _ref6.apply(this, arguments);
+        };
+    }()
+});
+
+var ModifyCatalogLocalizedContent = exports.ModifyCatalogLocalizedContent = new _graphqlRelay.mutationWithClientMutationId({
+    name: 'ModifyCatalogLocalizedContent',
+    description: 'Modify a localized content for a catalog',
+    inputFields: {
+        catalogId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        displayName: { type: _graphql.GraphQLString },
+        shortDescription: { type: _graphql.GraphQLString },
+        mediumDescription: { type: _graphql.GraphQLString },
+        longDescription: { type: _graphql.GraphQLString }
+    },
+    outputFields: {
+        viewer: {
+            type: _Model.ViewerType,
+            resolve: function resolve() {
+                return (0, _UserStore.getViewer)("me");
+            }
+        }
+    },
+    mutateAndGetPayload: function () {
+        var _ref7 = _asyncToGenerator(regeneratorRuntime.mark(function _callee7(args) {
+            var catalogId;
+            return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                while (1) {
+                    switch (_context7.prev = _context7.next) {
+                        case 0:
+                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).id;
+
+                            delete args.clientMutationId;
+                            delete args.catalogId;
+                            _context7.next = 6;
+                            return _CatalogService2.default.modifyCatalogLocalizedContent(catalogId, args);
+
+                        case 6:
+                            return _context7.abrupt('return', _context7.sent);
+
+                        case 7:
+                        case 'end':
+                            return _context7.stop();
+                    }
+                }
+            }, _callee7, undefined);
+        }));
+
+        return function mutateAndGetPayload(_x7) {
+            return _ref7.apply(this, arguments);
+        };
+    }()
+});
+
+// Seems to work but there's an error
+var DeleteCatalogLocalizedContent = exports.DeleteCatalogLocalizedContent = new _graphqlRelay.mutationWithClientMutationId({
+    name: 'DeleteCatalogLocalizedContent',
+    description: 'Delete a localized content for a catalog',
+    inputFields: {
+        catalogId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) }
+    },
+    outputFields: {
+        viewer: {
+            type: _Model.ViewerType,
+            resolve: function resolve() {
+                return (0, _UserStore.getViewer)("me");
+            }
+        }
+    },
+    mutateAndGetPayload: function () {
+        var _ref8 = _asyncToGenerator(regeneratorRuntime.mark(function _callee8(args) {
+            var catalogId;
+            return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                while (1) {
+                    switch (_context8.prev = _context8.next) {
+                        case 0:
+                            catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).id;
+                            _context8.next = 3;
+                            return _CatalogService2.default.deleteCatalogLocalizedContent(catalogId, args.locale);
+
+                        case 3:
+                            return _context8.abrupt('return', _context8.sent);
+
+                        case 4:
+                        case 'end':
+                            return _context8.stop();
+                    }
+                }
+            }, _callee8, undefined);
+        }));
+
+        return function mutateAndGetPayload(_x8) {
+            return _ref8.apply(this, arguments);
         };
     }()
 });

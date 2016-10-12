@@ -18,7 +18,6 @@ var CatalogService = {
     findAllCatalog: function findAllCatalog(args) {
 
         return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs', { params: args, headers: credentials }).then(function (response) {
-            console.log("response.data of find all : " + JSON.stringify(response.data));
             return response.data;
         }).catch(function (response) {
             if (response.status == "404") return [];
@@ -35,13 +34,11 @@ var CatalogService = {
         return _axios2.default.post(url + '/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
-            console.log("response catch: " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
     modifyCatalog: function modifyCatalog(input) {
         return _axios2.default.put(url + '/jeeshop-admin/rs/catalogs', input, { headers: credentials }).then(function (response) {
-            console.log("response : " + JSON.stringify(response.data));
             return response.data;
         }).catch(function (response) {
             if (response.status == "404") return [];
@@ -50,29 +47,39 @@ var CatalogService = {
     },
     deleteCatalog: function deleteCatalog(id) {
         return _axios2.default.delete(url + '/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
-            console.log("response.data of delete : " + JSON.stringify(response));
-            return computeServiceResult(response);
+            return response.data;
         }).catch(function (response) {
-            console.log("response.data of catch delete : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
     getCatalogLocalizedContent: function getCatalogLocalizedContent(id, locale) {
         return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
-            console.log("response from getCatalogLocalizedContent: " + JSON.stringify(response.data));
             return response.data;
         }).catch(function (response) {
-            console.log("error in getCatalogLocalizedContent : " + JSON.stringify(response));
             if (response.status == "404") return [];
             return [];
         });
     },
     createCatalogLocalizedContent: function createCatalogLocalizedContent(id, input) {
         return _axios2.default.post(url + '/jeeshop-admin/rs/catalogs/' + id + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
-            console.log("response from createCatalogLocalizedContent: " + JSON.stringify(response.data));
             return response.data;
         }).catch(function (response) {
-            console.log("error in createCatalogLocalizedContent : " + JSON.stringify(response));
+            if (response.status == "404") return [];
+            return [];
+        });
+    },
+    modifyCatalogLocalizedContent: function modifyCatalogLocalizedContent(catalogId, input) {
+        return _axios2.default.put(url + '/jeeshop-admin/rs/catalogs/' + catalogId + '/presentations/' + input.locale, input, { headers: credentials }).then(function (response) {
+            return response.data;
+        }).catch(function (response) {
+            if (response.status == "404") return [];
+            return [];
+        });
+    },
+    deleteCatalogLocalizedContent: function deleteCatalogLocalizedContent(catalogId, locale) {
+        return _axios2.default.delete(url + '/jeeshop-admin/rs/catalogs/' + catalogId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
+            return response.data;
+        }).catch(function (response) {
             if (response.status == "404") return [];
             return [];
         });

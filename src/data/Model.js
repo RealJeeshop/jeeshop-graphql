@@ -31,6 +31,7 @@ import {
 import CatalogService from './catalog/CatalogService'
 import CategoriesService from './categories/CategoriesService'
 import UsersService from './users/UsersService'
+import ProductService from './product/ProductService'
 
 import {
     Base64
@@ -53,6 +54,14 @@ var {nodeInterface, nodeField} = nodeDefinitions(
             return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/user/` + id, {headers: config}).then(r => r.data)
         } else if (type === 'ViewerType') {
             return getViewer(id)
+        } else if(type === 'ImageType') {
+            return null
+        } else if(type === 'PresentationType' ) {
+            return null
+        } else if(type === 'CategoryType') {
+            return CategoriesService.findCategoryById(id, getViewerLocale("me"))
+        } else if(type === 'ProductType') {
+            return ProductService.findProductById(id, getViewerLocale("me"))
         }
         return null;
     },
@@ -64,10 +73,23 @@ var {nodeInterface, nodeField} = nodeDefinitions(
             return CatalogType
         } else if (obj.email) {
             return UserType
+        } else if (obj.uri) {
+            return ImageType
+        } else if(obj.promotion) {
+            return ProductType
         }
         return null
     }
 );
+
+export const ImageType = new GraphQLObjectType({
+    name: "ImageType",
+    description: "It represents an image",
+    fields: {
+        id: globalIdField('ImageType'),
+        uri: {type: GraphQLString, resolve: (obj) => obj.uri}
+    }
+});
 
 export const PresentationType = new GraphQLObjectType({
     name: 'PresentationType',
@@ -81,10 +103,33 @@ export const PresentationType = new GraphQLObjectType({
         mediumDescription: {type: GraphQLString, resolve: (obj) => obj.mediumDescription},
         longDescription: {type: GraphQLString, resolve: (obj) => obj.longDescription},
         thumbnail: {type: GraphQLString, resolve: (obj) => obj.thumbnail},
-        smallImage: {type: GraphQLString, resolve: (obj) => obj.smallImage},
-        largeImage: {type: GraphQLString, resolve: (obj) => obj.largeImage},
+        smallImage: {type: ImageType, resolve: (obj) => obj.smallImage},
+        largeImage: {type: ImageType, resolve: (obj) => obj.largeImage},
         video: {type: GraphQLString, resolve: (obj) => obj.video},
         features: {type: GraphQLString, resolve: (obj) => obj.features},
+    }
+});
+
+export const ProductType = new GraphQLObjectType({
+    name: "ProductType",
+    description: "It represents a product",
+    fields: {
+        id: globalIdField('ProductType'),
+        name: {type: GraphQLString, resolve: (obj) => obj.name},
+        description: {type: GraphQLString, resolve: (obj) => obj.description},
+        disabled: {type: GraphQLString, resolve: (obj) => obj.disabled},
+        startDate: {type: GraphQLString, resolve: (obj) => obj.startDate},
+        endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
+        visible: {type: GraphQLBoolean, resolve: (obj) => obj.visible},
+        localizedPresentation: {
+            type: PresentationType,
+            args: {locale: {type: GraphQLString}},
+            resolve: (obj, args) => {
+                let locale = args.locale ? args.locale : getViewerLocale("me");
+                console.log("locale : " + JSON.stringify(locale));
+                return ProductService.findProductLocalizedContent(obj.id, locale)
+            }
+        },
     }
 });
 
@@ -107,9 +152,29 @@ export const CategoryType = new GraphQLObjectType({
                 return CategoriesService.getCategoryLocalizedContent(obj.id, locale)
             }},
         childCategoriesId: {type: GraphQLString, resolve: (obj) => obj.childCategoriesId},
-        childProductsIds: {type: GraphQLString, resolve: (obj) => obj.childProductsIds}
+        childProductsIds: {type: GraphQLString, resolve: (obj) => obj.childProductsIds},
+        // relatedCategories: {
+        //     type: CategoryConnection,
+        //     args: {
+        //         locale: {type: GraphQLString},
+        //         ...connectionArgs
+        //     },
+        //     resolve: (obj, args) => {
+        //         return connectionFromPromisedArray(CategoriesService.findCategoryRelatedCategories(obj.id, args.locale), args)
+        //     }
+        // }
     }
 });
+
+
+export var {
+    connectionType: CategoryConnection
+    , edgeType: CategoryEdge,
+} = connectionDefinitions({
+    name: 'CategoryType',
+    nodeType: CategoryType
+});
+
 
 export var CatalogType = new GraphQLObjectType({
 
@@ -131,7 +196,17 @@ export var CatalogType = new GraphQLObjectType({
                 return CatalogService.getCatalogLocalizedContent(obj.id, locale)
             }
         },
-        rootCategoriesId: {type: GraphQLString, resolve: (obj) => null}
+        rootCategoriesId: {type: GraphQLString, resolve: (obj) => null},
+        categories: {
+            type: CategoryConnection,
+            args: {
+                locale: {type: GraphQLString},
+                ...connectionArgs
+            },
+            resolve: (obj, args) => {
+                return connectionFromPromisedArray(CategoriesService.findCatalogCategories(obj.id, args.locale), args)
+            }
+        }
     },
     interfaces: [nodeInterface]
 });
@@ -170,11 +245,11 @@ export var {
 });
 
 export var {
-    connectionType: CategoryConnection
-    , edgeType: CategoryEdge,
+    connectionType: ProductConnection
+    , edgeType: ProductEdge,
 } = connectionDefinitions({
-    name: 'CategoryType',
-    nodeType: CategoryType
+    name: 'ProductType',
+    nodeType: ProductType
 });
 
 export var ViewerType = new GraphQLObjectType({
@@ -223,6 +298,34 @@ export var ViewerType = new GraphQLObjectType({
                 ...connectionArgs
             },
             resolve: (obj, args) => connectionFromPromisedArray(CategoriesService.findAllCategories(args), args)
+        },
+        category: {
+            type: CategoryType,
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLString)},
+                locale: {type: GraphQLString}
+            },
+            resolve: (obj, args) => CategoriesService.findCategoryById(fromGlobalId(args.id).id, args.locale)
+        },
+        products: {
+            type: ProductConnection,
+            args: {
+                search: {type: GraphQLString},
+                start: {type: GraphQLInt},
+                size: {type: GraphQLInt},
+                orderBy: {type: GraphQLString},
+                isDesc: {type: GraphQLBoolean},
+                ...connectionArgs
+            },
+            resolve: (obj, args) => connectionFromPromisedArray(ProductService.findAllProducts(args), args)
+        },
+        product: {
+            type: ProductType,
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLString)},
+                locale: {type: GraphQLString}
+            },
+            resolve: (obj, args) => ProductService.findProductById(args.id, args.locale)
         }
     }),
     interfaces: [nodeInterface]

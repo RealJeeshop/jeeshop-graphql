@@ -127,7 +127,7 @@ export const DeleteCatalogMutation = new mutationWithClientMutationId({
 
 export const CreateCatalogLocalizedContentMutation = new mutationWithClientMutationId({
     name: 'CreateCatalogLocalizedContent',
-    description: 'Creates a localized content for a catalog',
+    description: 'CQ2F0ZWdvcnlUeXBlOjE=reates a localized content for a catalog',
     inputFields: {
         id: {type: new GraphQLNonNull(GraphQLString)},
         locale: {type: new GraphQLNonNull(GraphQLString)},
@@ -178,3 +178,23 @@ export const ModifyCatalogLocalizedContent = new mutationWithClientMutationId({
     }
 });
 
+
+// Seems to work but there's an error
+export const DeleteCatalogLocalizedContent = new mutationWithClientMutationId({
+    name: 'DeleteCatalogLocalizedContent',
+    description: 'Delete a localized content for a catalog',
+    inputFields: {
+        catalogId: {type: new GraphQLNonNull(GraphQLString)},
+        locale: {type: new GraphQLNonNull(GraphQLString)}
+    },
+    outputFields: {
+        viewer: {
+            type: ViewerType,
+            resolve: () => getViewer("me")
+        }
+    },
+    mutateAndGetPayload: async (args) => {
+        let catalogId = fromGlobalId(args.catalogId).id;
+        return await CatalogService.deleteCatalogLocalizedContent(catalogId, args.locale)
+    }
+});

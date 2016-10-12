@@ -31,6 +31,7 @@ var VIEWER_ID = 'me';
 
 var viewer = new Viewer();
 viewer.id = VIEWER_ID;
+viewer.locale = 'fr_FR';
 
 var users = {};
 users[VIEWER_ID] = viewer;
@@ -48,8 +49,6 @@ function getViewerLocale(viewerId) {
     return users[viewerId].locale;
 }
 
-function getViewer(viewerId, locale) {
-
-    users[viewerId].locale = locale;
+function getViewer(viewerId) {
     return users[viewerId];
 }

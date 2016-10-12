@@ -9,10 +9,8 @@ var CatalogService = {
     findAllCatalog(args) {
 
         return axios.get(`${url}/jeeshop-admin/rs/catalogs`, {params: args, headers: credentials})
-            .then((response) => {
-                console.log("response.data of find all : " + JSON.stringify(response.data));
-                return response.data
-            }).catch((response) => {
+            .then((response) => response.data)
+            .catch((response) => {
                 if(response.status == "404") return []
             })
     },
@@ -26,40 +24,30 @@ var CatalogService = {
     },
     createCatalog(input) {
         return axios.post(`${url}/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
-            .then((response) => {
-                return response.data
-            }).catch((response) => {
-                console.log("response catch: " + JSON.stringify(response));
+            .then((response) => response.data)
+            .catch((response) => {
                 if(response.status == "404") return []
             })
     },
     modifyCatalog(input) {
         return axios.put(`${url}/jeeshop-admin/rs/catalogs`, input, {headers: credentials})
-            .then((response) => {
-                console.log("response : " + JSON.stringify(response.data));
-                return response.data
-            }).catch((response) => {
+            .then((response) => response.data)
+            .catch((response) => {
                 if(response.status == "404") return []
                 return []
             })
     },
     deleteCatalog(id) {
         return axios.delete(`${url}/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
-            .then((response) => {
-                console.log("response.data of delete : " + JSON.stringify(response));
-                return computeServiceResult(response)
-            }).catch((response) => {
-                console.log("response.data of catch delete : " + JSON.stringify(response));
+            .then((response) => response.data)
+            .catch((response) => {
                 if(response.status == "404") return []
             })
     },
     getCatalogLocalizedContent(id, locale) {
         return axios.get(`${url}/jeeshop-admin/rs/catalogs/${id}/presentations/${locale}`, {headers: credentials})
-            .then((response) => {
-                console.log("response from getCatalogLocalizedContent: " + JSON.stringify(response.data));
-                return response.data
-            }).catch((response) => {
-                console.log("error in getCatalogLocalizedContent : " + JSON.stringify(response));
+            .then((response) => response.data)
+            .catch((response) => {
                 if(response.status == "404") return []
                 return []
 
@@ -67,11 +55,8 @@ var CatalogService = {
     },
     createCatalogLocalizedContent(id, input) {
         return axios.post(`${url}/jeeshop-admin/rs/catalogs/${id}/presentations/${input.locale}`, input, {headers: credentials})
-            .then((response) => {
-                console.log("response from createCatalogLocalizedContent: " + JSON.stringify(response.data));
-                return response.data
-            }).catch((response) => {
-                console.log("error in createCatalogLocalizedContent : " + JSON.stringify(response));
+            .then((response) => response.data)
+            .catch((response) => {
                 if(response.status == "404") return []
                 return []
 
@@ -79,14 +64,19 @@ var CatalogService = {
     },
     modifyCatalogLocalizedContent(catalogId, input) {
         return axios.put(`${url}/jeeshop-admin/rs/catalogs/${catalogId}/presentations/${input.locale}`, input, {headers: credentials})
-            .then((response) => {
-                console.log("response from modifyCatalogLocalizedContent: " + JSON.stringify(response.data));
-                return response.data
-            }).catch((response) => {
-                console.log("error in modifyCatalogLocalizedContent : " + JSON.stringify(response));
+            .then((response) => response.data)
+            .catch((response) => {
                 if(response.status == "404") return []
                 return []
 
+            })
+    },
+    deleteCatalogLocalizedContent(catalogId, locale) {
+        return axios.delete(`${url}/jeeshop-admin/rs/catalogs/${catalogId}/presentations/${locale}`, {headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                if(response.status == "404") return [];
+                return []
             })
     }
 };

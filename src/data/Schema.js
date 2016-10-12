@@ -12,12 +12,27 @@ import {
     ModifyCatalogMutation,
     DeleteCatalogMutation,
     CreateCatalogLocalizedContentMutation,
-    ModifyCatalogLocalizedContent
+    ModifyCatalogLocalizedContent,
+    DeleteCatalogLocalizedContent
 } from './catalog/CatalogMutation'
 
 import {
-    CreateCategoryLocalizedContentMutation
+    CreateCategoryLocalizedContentMutation,
+    CreateCategoryMutation,
+    ModifyCategoryMutation,
+    DeleteCategoryMutation,
+    ModifyCategoryLocalizedContent,
+    DeleteCategoryLocalizedContent
 } from './categories/CategoriesMutation'
+
+import {
+    CreateProductMutation,
+    ModifyProductMutation,
+    DeleteProductMutation,
+    CreateProductLocalizedContent,
+    ModifyProductLocalizedContent,
+    DeleteProductLocalizedContent
+} from './product/ProductMutation'
 
 let Mutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -27,8 +42,22 @@ let Mutation = new GraphQLObjectType({
     deleteCatalog: DeleteCatalogMutation,
     createCatalogLocalizedContent: CreateCatalogLocalizedContentMutation,
     modifyCatalogLocalizedContent: ModifyCatalogLocalizedContent,
+    deleteCatalogLocalizedContent: DeleteCatalogLocalizedContent,
 
-    createCategoryLocalizedContent: CreateCategoryLocalizedContentMutation
+    createCategoryMutation: CreateCategoryMutation,
+    modifyCategoryMutation: ModifyCategoryMutation,
+    deleteCategoryMutation: DeleteCategoryMutation,
+    createCategoryLocalizedContent: CreateCategoryLocalizedContentMutation,
+    modifyCategoryLocalizedContent: ModifyCategoryLocalizedContent,
+    deleteCategoryLocalizedContent: DeleteCategoryLocalizedContent,
+
+    createProductMutation: CreateProductMutation,
+    modifyProductMutation: ModifyProductMutation,
+    deleteProductMutation: DeleteProductMutation,
+    createProductLocalizedContent: CreateProductLocalizedContent,
+    deleteProductLocalizedContent: DeleteProductLocalizedContent,
+    modifyProductLocalizedContent: ModifyProductLocalizedContent
+
   }
 });
 
