@@ -1,8 +1,9 @@
 # usage
-npm install
 
-webpack
+be sure to install gulp locally
 
-npm start
+then :
 
-open http://localhost:8080/graphql in browser
+`npm run build && gulp`
+
+open http://localhost:3000 in browser
