@@ -87,5 +87,16 @@ var ProductService = {
                 if(response.status == "404") return []
             })
     },
+    findProductRelatedSKUs(productId) {
+        return axios.get(`${url}/jeeshop-admin/rs/products/${productId}/skus`, {headers: credentials})
+            .then((response) => {
+                console.log("response : " + JSON.stringify(response.data));
+                return response.data
+            })
+            .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
+                if(response.status == "404") return []
+            })
+    }
 };
 export default ProductService;

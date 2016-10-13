@@ -20,6 +20,7 @@ var ProductService = {
         return _axios2.default.get(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
@@ -29,6 +30,7 @@ var ProductService = {
         return _axios2.default.get(url + '/jeeshop-admin/rs/products/' + id, { params: params, headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
@@ -36,6 +38,7 @@ var ProductService = {
         return _axios2.default.post(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
@@ -43,6 +46,7 @@ var ProductService = {
         return _axios2.default.put(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
@@ -50,6 +54,7 @@ var ProductService = {
         return _axios2.default.delete(url + '/jeeshop-admin/rs/products/' + id, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
@@ -57,6 +62,7 @@ var ProductService = {
         return _axios2.default.get(url + '/jeeshop-admin/rs/products/' + productId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
@@ -64,20 +70,25 @@ var ProductService = {
         return _axios2.default.delete(url + '/jeeshop-admin/rs/products/' + productId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
     createProductLocalizedContent: function createProductLocalizedContent(productId, locale, presentationObject) {
         return _axios2.default.post(url + '/jeeshop-admin/rs/products/' + productId + '/presentations/' + locale, presentationObject, { headers: credentials }).then(function (response) {
+
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     },
     modifyProductLocalizedContent: function modifyProductLocalizedContent(productId, locale, presentationObject) {
         return _axios2.default.put(url + '/jeeshop-admin/rs/products/' + productId + '/presentations/' + locale, presentationObject, { headers: credentials }).then(function (response) {
+            console.log("response : " + JSON.stringify(response.data));
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
     }

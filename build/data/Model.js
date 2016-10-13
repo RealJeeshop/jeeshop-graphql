@@ -62,6 +62,8 @@ var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
         return null;
     } else if (type === 'CategoryType') {
         return _CategoriesService2.default.findCategoryById(id, (0, _UserStore.getViewerLocale)("me"));
+    } else if (type === 'ProductType') {
+        return _ProductService2.default.findProductById(id, (0, _UserStore.getViewerLocale)("me"));
     }
     return null;
 }, function (obj) {
@@ -74,6 +76,8 @@ var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
         return UserType;
     } else if (obj.uri) {
         return ImageType;
+    } else if (obj.promotion) {
+        return ProductType;
     }
     return null;
 });

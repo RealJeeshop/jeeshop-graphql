@@ -34,6 +34,12 @@ import {
     DeleteProductLocalizedContent
 } from './product/ProductMutation'
 
+import {
+    CreateSKUMutation,
+    ModifySKUMutation,
+    DeleteSKUMutation
+} from './product/SKUMutation'
+
 let Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
@@ -56,8 +62,11 @@ let Mutation = new GraphQLObjectType({
     deleteProductMutation: DeleteProductMutation,
     createProductLocalizedContent: CreateProductLocalizedContent,
     deleteProductLocalizedContent: DeleteProductLocalizedContent,
-    modifyProductLocalizedContent: ModifyProductLocalizedContent
+    modifyProductLocalizedContent: ModifyProductLocalizedContent,
 
+    createSKU: CreateSKUMutation,
+    modifySKU: ModifySKUMutation,
+    deleteSKU: DeleteSKUMutation
   }
 });
 

@@ -92,6 +92,8 @@ module.exports =
 
 	var _ProductMutation = __webpack_require__(16);
 
+	var _SKUMutation = __webpack_require__(19);
+
 	var Mutation = new _graphql.GraphQLObjectType({
 	    name: 'Mutation',
 	    fields: {
@@ -114,8 +116,11 @@ module.exports =
 	        deleteProductMutation: _ProductMutation.DeleteProductMutation,
 	        createProductLocalizedContent: _ProductMutation.CreateProductLocalizedContent,
 	        deleteProductLocalizedContent: _ProductMutation.DeleteProductLocalizedContent,
-	        modifyProductLocalizedContent: _ProductMutation.ModifyProductLocalizedContent
+	        modifyProductLocalizedContent: _ProductMutation.ModifyProductLocalizedContent,
 
+	        createSKU: _SKUMutation.CreateSKUMutation,
+	        modifySKU: _SKUMutation.ModifySKUMutation,
+	        deleteSKU: _SKUMutation.DeleteSKUMutation
 	    }
 	});
 
@@ -139,7 +144,7 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.GraphQLRoot = exports.ViewerType = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.PresentationType = exports.ImageType = undefined;
+	exports.GraphQLRoot = exports.ViewerType = exports.SKUEdge = exports.SKUConnection = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.SKUType = exports.PresentationType = exports.ImageType = undefined;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -164,6 +169,10 @@ module.exports =
 	var _ProductService = __webpack_require__(11);
 
 	var _ProductService2 = _interopRequireDefault(_ProductService);
+
+	var _SkuService = __webpack_require__(18);
+
+	var _SkuService2 = _interopRequireDefault(_SkuService);
 
 	var _jsBase = __webpack_require__(12);
 
@@ -200,6 +209,8 @@ module.exports =
 	        return _CategoriesService2.default.findCategoryById(id, (0, _UserStore.getViewerLocale)("me"));
 	    } else if (type === 'ProductType') {
 	        return _ProductService2.default.findProductById(id, (0, _UserStore.getViewerLocale)("me"));
+	    } else if (type === 'SKUType') {
+	        return _SkuService2.default.findSKUById(id);
 	    }
 	    return null;
 	}, function (obj) {
@@ -214,6 +225,8 @@ module.exports =
 	        return ImageType;
 	    } else if (obj.promotion) {
 	        return ProductType;
+	    } else if (obj.price) {
+	        return SKUType;
 	    }
 	    return null;
 	});
@@ -272,6 +285,55 @@ module.exports =
 	    }
 	});
 
+	var SKUType = exports.SKUType = new _graphql.GraphQLObjectType({
+	    name: 'SKUType',
+	    description: 'It represents a SKU',
+	    fields: {
+	        id: (0, _graphqlRelay.globalIdField)('SKUType'),
+	        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.name;
+	            } },
+	        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.description;
+	            } },
+	        disabled: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.disabled;
+	            } },
+	        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.startDate;
+	            } },
+	        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.endDate;
+	            } },
+	        price: { type: _graphql.GraphQLFloat, resolve: function resolve(obj) {
+	                return obj.price;
+	            } },
+	        currency: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.currency;
+	            } },
+	        reference: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.reference;
+	            } },
+	        threshold: { type: _graphql.GraphQLInt, resolve: function resolve(obj) {
+	                return obj.threshold;
+	            } },
+	        quantity: { type: _graphql.GraphQLInt, resolve: function resolve(obj) {
+	                return obj.quantity;
+	            } },
+	        available: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.available;
+	            } },
+	        localizedPresentation: {
+	            type: PresentationType,
+	            args: { locale: { type: _graphql.GraphQLString } },
+	            resolve: function resolve(obj, args) {
+	                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
+	                return _SkuService2.default.findSKULocalizedContent(obj.id, locale);
+	            }
+	        }
+	    }
+	});
+
 	var ProductType = exports.ProductType = new _graphql.GraphQLObjectType({
 	    name: "ProductType",
 	    description: "It represents a product",
@@ -302,6 +364,12 @@ module.exports =
 	                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
 	                console.log("locale : " + JSON.stringify(locale));
 	                return _ProductService2.default.findProductLocalizedContent(obj.id, locale);
+	            }
+	        },
+	        skus: {
+	            type: new _graphql.GraphQLList(SKUType),
+	            resolve: function resolve(obj, args) {
+	                return _ProductService2.default.findProductRelatedSKUs(obj.id);
 	            }
 	        }
 	    }
@@ -453,6 +521,16 @@ module.exports =
 	var ProductEdge = _connectionDefinition4.edgeType;
 	exports.ProductConnection = ProductConnection;
 	exports.ProductEdge = ProductEdge;
+
+	var _connectionDefinition5 = (0, _graphqlRelay.connectionDefinitions)({
+	    name: 'SKUType',
+	    nodeType: SKUType
+	});
+
+	var SKUConnection = _connectionDefinition5.connectionType;
+	var SKUEdge = _connectionDefinition5.edgeType;
+	exports.SKUConnection = SKUConnection;
+	exports.SKUEdge = SKUEdge;
 	var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
 	    name: 'Viewer',
 	    fields: function fields() {
@@ -540,6 +618,19 @@ module.exports =
 	                },
 	                resolve: function resolve(obj, args) {
 	                    return _ProductService2.default.findProductById(args.id, args.locale);
+	                }
+	            },
+	            skus: {
+	                type: SKUConnection,
+	                args: _extends({
+	                    search: { type: _graphql.GraphQLString },
+	                    start: { type: _graphql.GraphQLInt },
+	                    size: { type: _graphql.GraphQLInt },
+	                    orderBy: { type: _graphql.GraphQLString },
+	                    isDesc: { type: _graphql.GraphQLBoolean }
+	                }, _graphqlRelay.connectionArgs),
+	                resolve: function resolve(obj, args) {
+	                    return (0, _graphqlRelay.connectionFromPromisedArray)(_SkuService2.default.findAllSKUs(args), args);
 	                }
 	            }
 	        };
@@ -1028,6 +1119,15 @@ module.exports =
 	    },
 	    modifyProductLocalizedContent: function modifyProductLocalizedContent(productId, locale, presentationObject) {
 	        return _axios2.default.put(url + '/jeeshop-admin/rs/products/' + productId + '/presentations/' + locale, presentationObject, { headers: credentials }).then(function (response) {
+	            console.log("response : " + JSON.stringify(response.data));
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    findProductRelatedSKUs: function findProductRelatedSKUs(productId) {
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/products/' + productId + '/skus', { headers: credentials }).then(function (response) {
 	            console.log("response : " + JSON.stringify(response.data));
 	            return response.data;
 	        }).catch(function (response) {
@@ -2221,6 +2321,270 @@ module.exports =
 /***/ function(module, exports) {
 
 	module.exports = require("express-graphql");
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _axios = __webpack_require__(8);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
+	var url = "https://localhost:8443";
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+	var SKUService = {
+	    findAllSKUs: function findAllSKUs(args) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus', { params: args, headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    findSKUById: function findSKUById(id) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    createSKU: function createSKU(input) {
+	        return _axios2.default.post(url + '/jeeshop-admin/rs/skus/', input, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    modifySKU: function modifySKU(input) {
+	        return _axios2.default.put(url + '/jeeshop-admin/rs/skus/', input, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    deleteSKU: function deleteSKU(id) {
+	        return _axios2.default.delete(url + '/jeeshop-admin/rs/skus/' + id, { headers: credentials }).then(function (response) {
+	            return response;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	            return {};
+	        });
+	    },
+	    findSKULocalizedContent: function findSKULocalizedContent(id, locale) {
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    }
+	};
+	exports.default = SKUService;
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.DeleteSKUMutation = exports.ModifySKUMutation = exports.CreateSKUMutation = undefined;
+
+	var _graphql = __webpack_require__(3);
+
+	var _graphqlRelay = __webpack_require__(5);
+
+	var _Model = __webpack_require__(4);
+
+	var _UserStore = __webpack_require__(6);
+
+	var _SkuService = __webpack_require__(18);
+
+	var _SkuService2 = _interopRequireDefault(_SkuService);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
+	__webpack_require__(14);
+
+	var CreateSKUMutation = exports.CreateSKUMutation = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'CreateSKUMutation',
+	    description: 'Function to create a sku',
+	    inputFields: {
+	        name: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        description: { type: _graphql.GraphQLString },
+	        disabled: { type: _graphql.GraphQLBoolean },
+	        startDate: { type: _graphql.GraphQLString },
+	        endDate: { type: _graphql.GraphQLString },
+	        visible: { type: _graphql.GraphQLBoolean },
+	        price: { type: _graphql.GraphQLFloat },
+	        currency: { type: _graphql.GraphQLString },
+	        reference: { type: _graphql.GraphQLString },
+	        threshold: { type: _graphql.GraphQLInt },
+	        quantity: { type: _graphql.GraphQLInt },
+	        available: { type: _graphql.GraphQLBoolean }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        },
+	        sku: {
+	            type: _Model.SKUType,
+	            resolve: function resolve(payload) {
+	                return payload;
+	            }
+	        }
+	    },
+	    mutateAndGetPayload: function () {
+	        var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(args) {
+	            return regeneratorRuntime.wrap(function _callee$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            delete args.clientMutationId;
+	                            _context.next = 3;
+	                            return _SkuService2.default.createSKU(args);
+
+	                        case 3:
+	                            return _context.abrupt('return', _context.sent);
+
+	                        case 4:
+	                        case 'end':
+	                            return _context.stop();
+	                    }
+	                }
+	            }, _callee, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x) {
+	            return _ref.apply(this, arguments);
+	        };
+	    }()
+	});
+
+	var ModifySKUMutation = exports.ModifySKUMutation = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'ModifySKUMutation',
+	    description: 'Function to modify a sku',
+	    inputFields: {
+	        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        name: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        description: { type: _graphql.GraphQLString },
+	        disabled: { type: _graphql.GraphQLBoolean },
+	        startDate: { type: _graphql.GraphQLString },
+	        endDate: { type: _graphql.GraphQLString },
+	        visible: { type: _graphql.GraphQLBoolean },
+	        price: { type: _graphql.GraphQLFloat },
+	        currency: { type: _graphql.GraphQLString },
+	        reference: { type: _graphql.GraphQLString },
+	        threshold: { type: _graphql.GraphQLInt },
+	        quantity: { type: _graphql.GraphQLInt },
+	        available: { type: _graphql.GraphQLBoolean }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        },
+	        sku: {
+	            type: _Model.SKUType,
+	            resolve: function resolve(payload) {
+	                return payload;
+	            }
+	        }
+	    },
+	    mutateAndGetPayload: function () {
+	        var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(args) {
+	            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+	                while (1) {
+	                    switch (_context2.prev = _context2.next) {
+	                        case 0:
+	                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+	                            delete args.clientMutationId;
+	                            _context2.next = 4;
+	                            return _SkuService2.default.modifySKU(args);
+
+	                        case 4:
+	                            return _context2.abrupt('return', _context2.sent);
+
+	                        case 5:
+	                        case 'end':
+	                            return _context2.stop();
+	                    }
+	                }
+	            }, _callee2, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x2) {
+	            return _ref2.apply(this, arguments);
+	        };
+	    }()
+	});
+
+	var DeleteSKUMutation = exports.DeleteSKUMutation = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'DeleteSKUMutation',
+	    description: 'Function to delete a sku',
+	    inputFields: {
+	        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        }
+	    },
+	    mutateAndGetPayload: function () {
+	        var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(args) {
+	            var id;
+	            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+	                while (1) {
+	                    switch (_context3.prev = _context3.next) {
+	                        case 0:
+	                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+	                            _context3.next = 3;
+	                            return _SkuService2.default.deleteSKU(id);
+
+	                        case 3:
+	                            return _context3.abrupt('return', _context3.sent);
+
+	                        case 4:
+	                        case 'end':
+	                            return _context3.stop();
+	                    }
+	                }
+	            }, _callee3, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x3) {
+	            return _ref3.apply(this, arguments);
+	        };
+	    }()
+	});
 
 /***/ }
 /******/ ]);

@@ -32,6 +32,7 @@ import CatalogService from './catalog/CatalogService'
 import CategoriesService from './categories/CategoriesService'
 import UsersService from './users/UsersService'
 import ProductService from './product/ProductService'
+import SKUService from './product/SkuService'
 
 import {
     Base64
@@ -62,6 +63,8 @@ var {nodeInterface, nodeField} = nodeDefinitions(
             return CategoriesService.findCategoryById(id, getViewerLocale("me"))
         } else if(type === 'ProductType') {
             return ProductService.findProductById(id, getViewerLocale("me"))
+        } else if(type === 'SKUType') {
+            return SKUService.findSKUById(id)
         }
         return null;
     },
@@ -77,6 +80,8 @@ var {nodeInterface, nodeField} = nodeDefinitions(
             return ImageType
         } else if(obj.promotion) {
             return ProductType
+        } else if(obj.price) {
+            return SKUType
         }
         return null
     }
@@ -110,6 +115,33 @@ export const PresentationType = new GraphQLObjectType({
     }
 });
 
+export const SKUType = new GraphQLObjectType({
+    name: 'SKUType',
+    description: 'It represents a SKU',
+    fields: {
+        id: globalIdField('SKUType'),
+        name: {type: GraphQLString, resolve: (obj) => obj.name},
+        description: {type: GraphQLString, resolve: (obj) => obj.description},
+        disabled: {type: GraphQLBoolean, resolve: (obj) => obj.disabled},
+        startDate: {type: GraphQLString, resolve: (obj) => obj.startDate},
+        endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
+        price: {type: GraphQLFloat, resolve: (obj) => obj.price},
+        currency: {type: GraphQLString, resolve: (obj) => obj.currency},
+        reference: {type: GraphQLString, resolve: (obj) => obj.reference},
+        threshold: {type: GraphQLInt, resolve: (obj) => obj.threshold},
+        quantity: {type: GraphQLInt, resolve: (obj) => obj.quantity},
+        available: {type: GraphQLBoolean, resolve: (obj) => obj.available},
+        localizedPresentation: {
+            type: PresentationType,
+            args: {locale: {type: GraphQLString}},
+            resolve: (obj, args) => {
+                let locale = args.locale ? args.locale : getViewerLocale("me");
+                return SKUService.findSKULocalizedContent(obj.id, locale)
+            }
+        },
+    }
+});
+
 export const ProductType = new GraphQLObjectType({
     name: "ProductType",
     description: "It represents a product",
@@ -130,6 +162,12 @@ export const ProductType = new GraphQLObjectType({
                 return ProductService.findProductLocalizedContent(obj.id, locale)
             }
         },
+        skus: {
+            type: new GraphQLList(SKUType),
+            resolve: (obj, args) => {
+                return ProductService.findProductRelatedSKUs(obj.id)
+            }
+        }
     }
 });
 
@@ -252,6 +290,15 @@ export var {
     nodeType: ProductType
 });
 
+export var {
+    connectionType: SKUConnection
+    , edgeType: SKUEdge,
+} = connectionDefinitions({
+    name: 'SKUType',
+    nodeType: SKUType
+});
+
+
 export var ViewerType = new GraphQLObjectType({
     name: 'Viewer',
     fields: () => ({
@@ -326,6 +373,18 @@ export var ViewerType = new GraphQLObjectType({
                 locale: {type: GraphQLString}
             },
             resolve: (obj, args) => ProductService.findProductById(args.id, args.locale)
+        },
+        skus: {
+            type: SKUConnection,
+            args: {
+                search: {type: GraphQLString},
+                start: {type: GraphQLInt},
+                size: {type: GraphQLInt},
+                orderBy: {type: GraphQLString},
+                isDesc: {type: GraphQLBoolean},
+                ...connectionArgs
+            },
+            resolve: (obj, args) => connectionFromPromisedArray(SKUService.findAllSKUs(args), args)
         }
     }),
     interfaces: [nodeInterface]

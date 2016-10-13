@@ -297,6 +297,7 @@ input ModifyProductLocalizedContentInput {
 
 type ModifyProductLocalizedContentPayload {
   viewer: Viewer
+  productEdge: ProductTypeEdge
   clientMutationId: String!
 }
 

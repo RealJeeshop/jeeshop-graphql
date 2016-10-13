@@ -20,6 +20,7 @@ var UsersService = {
         return _axios2.default.get(url + '/jeeshop-admin/rs/users', { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
             return [];
         });

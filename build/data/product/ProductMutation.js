@@ -295,15 +295,13 @@ var CreateProductLocalizedContent = exports.CreateProductLocalizedContent = new 
 
                             delete args.clientMutationId;
                             delete args.productId;
-
-                            console.log("calling product service with args : " + JSON.stringify(args));
-                            _context7.next = 6;
+                            _context7.next = 5;
                             return _ProductService2.default.createProductLocalizedContent(productId, args.locale, args);
 
-                        case 6:
+                        case 5:
                             return _context7.abrupt('return', _context7.sent);
 
-                        case 7:
+                        case 6:
                         case 'end':
                             return _context7.stop();
                     }
@@ -335,34 +333,68 @@ var ModifyProductLocalizedContent = exports.ModifyProductLocalizedContent = new 
             resolve: function resolve() {
                 return (0, _UserStore.getViewer)("me");
             }
+        },
+        productEdge: {
+            type: _Model.ProductEdge,
+            resolve: function () {
+                var _ref8 = _asyncToGenerator(regeneratorRuntime.mark(function _callee8(payload) {
+                    var products, cursor;
+                    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                        while (1) {
+                            switch (_context8.prev = _context8.next) {
+                                case 0:
+                                    _context8.next = 2;
+                                    return _ProductService2.default.findAllProducts();
+
+                                case 2:
+                                    products = _context8.sent;
+                                    cursor = (0, _graphqlRelay.cursorForObjectInConnection)(products, payload);
+                                    return _context8.abrupt('return', {
+                                        cursor: cursor,
+                                        node: payload
+                                    });
+
+                                case 5:
+                                case 'end':
+                                    return _context8.stop();
+                            }
+                        }
+                    }, _callee8, undefined);
+                }));
+
+                return function resolve(_x8) {
+                    return _ref8.apply(this, arguments);
+                };
+            }()
         }
     },
     mutateAndGetPayload: function () {
-        var _ref8 = _asyncToGenerator(regeneratorRuntime.mark(function _callee8(args) {
+        var _ref9 = _asyncToGenerator(regeneratorRuntime.mark(function _callee9(args) {
             var productId;
-            return regeneratorRuntime.wrap(function _callee8$(_context8) {
+            return regeneratorRuntime.wrap(function _callee9$(_context9) {
                 while (1) {
-                    switch (_context8.prev = _context8.next) {
+                    switch (_context9.prev = _context9.next) {
                         case 0:
                             productId = (0, _graphqlRelay.fromGlobalId)(args.productId).id;
 
                             delete args.clientMutationId;
-                            _context8.next = 4;
+                            delete args.productId;
+                            _context9.next = 5;
                             return _ProductService2.default.modifyProductLocalizedContent(productId, args.locale, args);
 
-                        case 4:
-                            return _context8.abrupt('return', _context8.sent);
-
                         case 5:
+                            return _context9.abrupt('return', _context9.sent);
+
+                        case 6:
                         case 'end':
-                            return _context8.stop();
+                            return _context9.stop();
                     }
                 }
-            }, _callee8, undefined);
+            }, _callee9, undefined);
         }));
 
-        return function mutateAndGetPayload(_x8) {
-            return _ref8.apply(this, arguments);
+        return function mutateAndGetPayload(_x9) {
+            return _ref9.apply(this, arguments);
         };
     }()
 });
