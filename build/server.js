@@ -53,7 +53,7 @@ module.exports =
 
 	var Schema = _require.Schema;
 
-	var graphQLHTTP = __webpack_require__(17);
+	var graphQLHTTP = __webpack_require__(19);
 
 	var app = express();
 	app.use('/', graphQLHTTP({ schema: Schema, pretty: true, graphiql: true }));
@@ -86,13 +86,13 @@ module.exports =
 
 	var _Model = __webpack_require__(4);
 
-	var _CatalogMutation = __webpack_require__(13);
+	var _CatalogMutation = __webpack_require__(14);
 
-	var _CategoriesMutation = __webpack_require__(15);
+	var _CategoriesMutation = __webpack_require__(16);
 
-	var _ProductMutation = __webpack_require__(16);
+	var _ProductMutation = __webpack_require__(17);
 
-	var _SKUMutation = __webpack_require__(19);
+	var _SKUMutation = __webpack_require__(18);
 
 	var Mutation = new _graphql.GraphQLObjectType({
 	    name: 'Mutation',
@@ -144,7 +144,7 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.GraphQLRoot = exports.ViewerType = exports.SKUEdge = exports.SKUConnection = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.SKUType = exports.PresentationType = exports.ImageType = undefined;
+	exports.GraphQLRoot = exports.ViewerType = exports.SKUEdge = exports.SKUConnection = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.SKUType = exports.DiscountType = exports.PresentationType = exports.ImageType = undefined;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -170,11 +170,15 @@ module.exports =
 
 	var _ProductService2 = _interopRequireDefault(_ProductService);
 
-	var _SkuService = __webpack_require__(18);
+	var _SkuService = __webpack_require__(12);
 
 	var _SkuService2 = _interopRequireDefault(_SkuService);
 
-	var _jsBase = __webpack_require__(12);
+	var _DiscountService = __webpack_require__(20);
+
+	var _DiscountService2 = _interopRequireDefault(_DiscountService);
+
+	var _jsBase = __webpack_require__(13);
 
 	var _axios = __webpack_require__(8);
 
@@ -285,6 +289,53 @@ module.exports =
 	    }
 	});
 
+	var DiscountType = exports.DiscountType = new _graphql.GraphQLObjectType({
+	    name: 'DiscountType',
+	    description: 'It represents a discount',
+	    fields: {
+	        id: (0, _graphqlRelay.globalIdField)('DiscountType'),
+	        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.name;
+	            } },
+	        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.description;
+	            } },
+	        disabled: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.disabled;
+	            } },
+	        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.startDate;
+	            } },
+	        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.endDate;
+	            } },
+	        visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.visible;
+	            } },
+	        usePerCustomer: { type: _graphql.GraphQLInt, resolve: function resolve(obj) {
+	                return obj.usePerCustomer;
+	            } },
+	        type: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.type;
+	            } },
+	        triggerRule: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                return obj.triggerRule;
+	            } },
+	        triggerValue: { type: _graphql.GraphQLFloat, resolve: function resolve(obj) {
+	                return obj.triggerValue;
+	            } },
+	        discountValue: { type: _graphql.GraphQLFloat, resolve: function resolve(obj) {
+	                return obj.discountValue;
+	            } },
+	        rateType: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.rateType;
+	            } },
+	        uniqueUse: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                return obj.uniqueUse;
+	            } }
+	    }
+	});
+
 	var SKUType = exports.SKUType = new _graphql.GraphQLObjectType({
 	    name: 'SKUType',
 	    description: 'It represents a SKU',
@@ -329,6 +380,12 @@ module.exports =
 	            resolve: function resolve(obj, args) {
 	                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
 	                return _SkuService2.default.findSKULocalizedContent(obj.id, locale);
+	            }
+	        },
+	        discounts: {
+	            type: new _graphql.GraphQLList(DiscountType),
+	            resolve: function resolve(obj) {
+	                return _DiscountService2.default.findDiscountsWithMultipleIds(obj.discountsIds);
 	            }
 	        }
 	    }
@@ -1140,12 +1197,113 @@ module.exports =
 
 /***/ },
 /* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _axios = __webpack_require__(8);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
+	var url = "https://localhost:8443";
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+	var SKUService = {
+	    findAllSKUs: function findAllSKUs(args) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus', { params: args, headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    findSKUById: function findSKUById(id) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    createSKU: function createSKU(input) {
+	        return _axios2.default.post(url + '/jeeshop-admin/rs/skus/', input, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    modifySKU: function modifySKU(input) {
+	        return _axios2.default.put(url + '/jeeshop-admin/rs/skus/', input, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    deleteSKU: function deleteSKU(id) {
+	        return _axios2.default.delete(url + '/jeeshop-admin/rs/skus/' + id, { headers: credentials }).then(function (response) {
+	            return response;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	            return {};
+	        });
+	    },
+	    findSKULocalizedContent: function findSKULocalizedContent(id, locale) {
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    deleteSKULocalizedContent: function deleteSKULocalizedContent(skuId, locale) {
+	        return _axios2.default.delete(url + '/jeeshop-admin/rs/skus/' + skuId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    createSKULocalizedContent: function createSKULocalizedContent(skuId, locale, presentationObject) {
+	        return _axios2.default.post(url + '/jeeshop-admin/rs/skus/' + skuId + '/presentations/' + locale, presentationObject, { headers: credentials }).then(function (response) {
+
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    modifySKULocalizedContent: function modifySKULocalizedContent(skuId, locale, presentationObject) {
+	        return _axios2.default.put(url + '/jeeshop-admin/rs/skus/' + skuId + '/presentations/' + locale, presentationObject, { headers: credentials }).then(function (response) {
+	            console.log("response : " + JSON.stringify(response.data));
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    }
+	};
+	exports.default = SKUService;
+
+/***/ },
+/* 13 */
 /***/ function(module, exports) {
 
 	module.exports = require("js-base64");
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1171,7 +1329,7 @@ module.exports =
 
 	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
-	__webpack_require__(14);
+	__webpack_require__(15);
 
 	var CreateCatalogMutation = exports.CreateCatalogMutation = new _graphqlRelay.mutationWithClientMutationId({
 	    name: 'CreateCatalog',
@@ -1527,13 +1685,13 @@ module.exports =
 	});
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	module.exports = require("babel-polyfill");
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1559,7 +1717,7 @@ module.exports =
 
 	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
-	__webpack_require__(14);
+	__webpack_require__(15);
 
 	var CreateCategoryMutation = exports.CreateCategoryMutation = new _graphqlRelay.mutationWithClientMutationId({
 	    name: 'CreateCategory',
@@ -1912,7 +2070,7 @@ module.exports =
 	});
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1938,7 +2096,7 @@ module.exports =
 
 	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
-	__webpack_require__(14);
+	__webpack_require__(15);
 
 	var CreateProductMutation = exports.CreateProductMutation = new _graphqlRelay.mutationWithClientMutationId({
 	    name: 'CreateProductMutation',
@@ -2317,12 +2475,6 @@ module.exports =
 	});
 
 /***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	module.exports = require("express-graphql");
-
-/***/ },
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2331,82 +2483,7 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-
-	var _axios = __webpack_require__(8);
-
-	var _axios2 = _interopRequireDefault(_axios);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
-	var url = "https://localhost:8443";
-	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-	var SKUService = {
-	    findAllSKUs: function findAllSKUs(args) {
-
-	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus', { params: args, headers: credentials }).then(function (response) {
-	            return response.data;
-	        }).catch(function (response) {
-	            console.log("response error : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	        });
-	    },
-	    findSKUById: function findSKUById(id) {
-
-	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id, { headers: credentials }).then(function (response) {
-	            return response.data;
-	        }).catch(function (response) {
-	            console.log("response error : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	        });
-	    },
-	    createSKU: function createSKU(input) {
-	        return _axios2.default.post(url + '/jeeshop-admin/rs/skus/', input, { headers: credentials }).then(function (response) {
-	            return response.data;
-	        }).catch(function (response) {
-	            console.log("response error : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	        });
-	    },
-	    modifySKU: function modifySKU(input) {
-	        return _axios2.default.put(url + '/jeeshop-admin/rs/skus/', input, { headers: credentials }).then(function (response) {
-	            return response.data;
-	        }).catch(function (response) {
-	            console.log("response error : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	        });
-	    },
-	    deleteSKU: function deleteSKU(id) {
-	        return _axios2.default.delete(url + '/jeeshop-admin/rs/skus/' + id, { headers: credentials }).then(function (response) {
-	            return response;
-	        }).catch(function (response) {
-	            console.log("response error : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	            return {};
-	        });
-	    },
-	    findSKULocalizedContent: function findSKULocalizedContent(id, locale) {
-	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
-	            return response.data;
-	        }).catch(function (response) {
-	            console.log("response error : " + JSON.stringify(response));
-	            if (response.status == "404") return [];
-	        });
-	    }
-	};
-	exports.default = SKUService;
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.DeleteSKUMutation = exports.ModifySKUMutation = exports.CreateSKUMutation = undefined;
+	exports.ModifySKULocalizedContent = exports.CreateSKULocalizedContent = exports.DeleteSKULocalizedContent = exports.DeleteSKUMutation = exports.ModifySKUMutation = exports.CreateSKUMutation = undefined;
 
 	var _graphql = __webpack_require__(3);
 
@@ -2416,7 +2493,7 @@ module.exports =
 
 	var _UserStore = __webpack_require__(6);
 
-	var _SkuService = __webpack_require__(18);
+	var _SkuService = __webpack_require__(12);
 
 	var _SkuService2 = _interopRequireDefault(_SkuService);
 
@@ -2424,7 +2501,7 @@ module.exports =
 
 	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
-	__webpack_require__(14);
+	__webpack_require__(15);
 
 	var CreateSKUMutation = exports.CreateSKUMutation = new _graphqlRelay.mutationWithClientMutationId({
 	    name: 'CreateSKUMutation',
@@ -2585,6 +2662,247 @@ module.exports =
 	        };
 	    }()
 	});
+
+	var DeleteSKULocalizedContent = exports.DeleteSKULocalizedContent = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'DeleteSKULocalizedContent',
+	    description: 'Delete a localized content for a sku',
+	    inputFields: {
+	        skuId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        }
+	    },
+	    mutateAndGetPayload: function () {
+	        var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(args) {
+	            var skuId;
+	            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+	                while (1) {
+	                    switch (_context4.prev = _context4.next) {
+	                        case 0:
+	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.skuId).id;
+	                            _context4.next = 3;
+	                            return _SkuService2.default.deleteSKULocalizedContent(skuId, args.locale);
+
+	                        case 3:
+	                            return _context4.abrupt('return', _context4.sent);
+
+	                        case 4:
+	                        case 'end':
+	                            return _context4.stop();
+	                    }
+	                }
+	            }, _callee4, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x4) {
+	            return _ref4.apply(this, arguments);
+	        };
+	    }()
+	});
+
+	var CreateSKULocalizedContent = exports.CreateSKULocalizedContent = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'CreateSKULocalizedContent',
+	    description: 'create a localized content for a sku',
+	    inputFields: {
+	        skuId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        displayName: { type: _graphql.GraphQLString },
+	        promotion: { type: _graphql.GraphQLString },
+	        shortDescription: { type: _graphql.GraphQLString },
+	        mediumDescription: { type: _graphql.GraphQLString },
+	        longDescription: { type: _graphql.GraphQLString }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        }
+	    },
+	    mutateAndGetPayload: function () {
+	        var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5(args) {
+	            var skuId;
+	            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+	                while (1) {
+	                    switch (_context5.prev = _context5.next) {
+	                        case 0:
+	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.skuId).id;
+
+	                            delete args.clientMutationId;
+	                            delete args.skuId;
+	                            _context5.next = 5;
+	                            return _SkuService2.default.createSKULocalizedContent(skuId, args.locale, args);
+
+	                        case 5:
+	                            return _context5.abrupt('return', _context5.sent);
+
+	                        case 6:
+	                        case 'end':
+	                            return _context5.stop();
+	                    }
+	                }
+	            }, _callee5, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x5) {
+	            return _ref5.apply(this, arguments);
+	        };
+	    }()
+	});
+
+	var ModifySKULocalizedContent = exports.ModifySKULocalizedContent = new _graphqlRelay.mutationWithClientMutationId({
+	    name: 'ModifySKULocalizedContent',
+	    description: 'modify a localized content for a sku',
+	    inputFields: {
+	        skuId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        displayName: { type: _graphql.GraphQLString },
+	        promotion: { type: _graphql.GraphQLString },
+	        shortDescription: { type: _graphql.GraphQLString },
+	        mediumDescription: { type: _graphql.GraphQLString },
+	        longDescription: { type: _graphql.GraphQLString }
+	    },
+	    outputFields: {
+	        viewer: {
+	            type: _Model.ViewerType,
+	            resolve: function resolve() {
+	                return (0, _UserStore.getViewer)("me");
+	            }
+	        },
+	        skuEdge: {
+	            type: _Model.SKUEdge,
+	            resolve: function () {
+	                var _ref6 = _asyncToGenerator(regeneratorRuntime.mark(function _callee6(payload) {
+	                    var skus, cursor;
+	                    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+	                        while (1) {
+	                            switch (_context6.prev = _context6.next) {
+	                                case 0:
+	                                    _context6.next = 2;
+	                                    return _SkuService2.default.findAllSKUs();
+
+	                                case 2:
+	                                    skus = _context6.sent;
+	                                    cursor = (0, _graphqlRelay.cursorForObjectInConnection)(skus, payload);
+	                                    return _context6.abrupt('return', {
+	                                        cursor: cursor,
+	                                        node: payload
+	                                    });
+
+	                                case 5:
+	                                case 'end':
+	                                    return _context6.stop();
+	                            }
+	                        }
+	                    }, _callee6, undefined);
+	                }));
+
+	                return function resolve(_x6) {
+	                    return _ref6.apply(this, arguments);
+	                };
+	            }()
+	        }
+	    },
+	    mutateAndGetPayload: function () {
+	        var _ref7 = _asyncToGenerator(regeneratorRuntime.mark(function _callee7(args) {
+	            var skuId;
+	            return regeneratorRuntime.wrap(function _callee7$(_context7) {
+	                while (1) {
+	                    switch (_context7.prev = _context7.next) {
+	                        case 0:
+	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.skuId).id;
+
+	                            delete args.clientMutationId;
+	                            delete args.skuId;
+	                            _context7.next = 5;
+	                            return _SkuService2.default.modifySKULocalizedContent(skuId, args.locale, args);
+
+	                        case 5:
+	                            return _context7.abrupt('return', _context7.sent);
+
+	                        case 6:
+	                        case 'end':
+	                            return _context7.stop();
+	                    }
+	                }
+	            }, _callee7, undefined);
+	        }));
+
+	        return function mutateAndGetPayload(_x7) {
+	            return _ref7.apply(this, arguments);
+	        };
+	    }()
+	});
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	module.exports = require("express-graphql");
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _axios = __webpack_require__(8);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var credentials = { 'Authorization': "Basic YWRtaW5AamVlc2hvcC5vcmc6amVlc2hvcA==", "Content-Type": "application/json" };
+	var url = "https://localhost:8443";
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+	var DiscountService = {
+	    findAllDiscounts: function findAllDiscounts(args) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/discounts', { params: args, headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    findDiscountById: function findDiscountById(id) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/discounts/' + id, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	        });
+	    },
+	    findDiscountsWithMultipleIds: function findDiscountsWithMultipleIds(args) {
+	        var _this = this;
+
+	        if (!args) {
+	            return null;
+	        }
+
+	        var calls = args.map(function (id) {
+	            return _this.findDiscountById(id);
+	        });
+
+	        return _axios2.default.all(calls).then(_axios2.default.spread(function (args) {
+	            console.log("args : " + JSON.stringify(args));
+	        }));
+	    }
+	};
+	exports.default = DiscountService;
 
 /***/ }
 /******/ ]);

@@ -91,6 +91,15 @@ var ProductService = {
             console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
+    },
+    findProductRelatedSKUs: function findProductRelatedSKUs(productId) {
+        return _axios2.default.get(url + '/jeeshop-admin/rs/products/' + productId + '/skus', { headers: credentials }).then(function (response) {
+            console.log("response : " + JSON.stringify(response.data));
+            return response.data;
+        }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
+            if (response.status == "404") return [];
+        });
     }
 };
 exports.default = ProductService;

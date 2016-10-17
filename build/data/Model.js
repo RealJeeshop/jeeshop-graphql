@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.GraphQLRoot = exports.ViewerType = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.PresentationType = exports.ImageType = undefined;
+exports.GraphQLRoot = exports.ViewerType = exports.SKUEdge = exports.SKUConnection = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.SKUType = exports.PresentationType = exports.ImageType = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -28,6 +28,10 @@ var _UsersService2 = _interopRequireDefault(_UsersService);
 var _ProductService = require('./product/ProductService');
 
 var _ProductService2 = _interopRequireDefault(_ProductService);
+
+var _SkuService = require('./product/SkuService');
+
+var _SkuService2 = _interopRequireDefault(_SkuService);
 
 var _jsBase = require('js-base64');
 
@@ -64,6 +68,8 @@ var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
         return _CategoriesService2.default.findCategoryById(id, (0, _UserStore.getViewerLocale)("me"));
     } else if (type === 'ProductType') {
         return _ProductService2.default.findProductById(id, (0, _UserStore.getViewerLocale)("me"));
+    } else if (type === 'SKUType') {
+        return _SkuService2.default.findSKUById(id);
     }
     return null;
 }, function (obj) {
@@ -78,6 +84,8 @@ var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
         return ImageType;
     } else if (obj.promotion) {
         return ProductType;
+    } else if (obj.price) {
+        return SKUType;
     }
     return null;
 });
@@ -136,6 +144,55 @@ var PresentationType = exports.PresentationType = new _graphql.GraphQLObjectType
     }
 });
 
+var SKUType = exports.SKUType = new _graphql.GraphQLObjectType({
+    name: 'SKUType',
+    description: 'It represents a SKU',
+    fields: {
+        id: (0, _graphqlRelay.globalIdField)('SKUType'),
+        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.name;
+            } },
+        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.description;
+            } },
+        disabled: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+                return obj.disabled;
+            } },
+        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.startDate;
+            } },
+        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.endDate;
+            } },
+        price: { type: _graphql.GraphQLFloat, resolve: function resolve(obj) {
+                return obj.price;
+            } },
+        currency: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.currency;
+            } },
+        reference: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.reference;
+            } },
+        threshold: { type: _graphql.GraphQLInt, resolve: function resolve(obj) {
+                return obj.threshold;
+            } },
+        quantity: { type: _graphql.GraphQLInt, resolve: function resolve(obj) {
+                return obj.quantity;
+            } },
+        available: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+                return obj.available;
+            } },
+        localizedPresentation: {
+            type: PresentationType,
+            args: { locale: { type: _graphql.GraphQLString } },
+            resolve: function resolve(obj, args) {
+                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
+                return _SkuService2.default.findSKULocalizedContent(obj.id, locale);
+            }
+        }
+    }
+});
+
 var ProductType = exports.ProductType = new _graphql.GraphQLObjectType({
     name: "ProductType",
     description: "It represents a product",
@@ -166,6 +223,12 @@ var ProductType = exports.ProductType = new _graphql.GraphQLObjectType({
                 var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
                 console.log("locale : " + JSON.stringify(locale));
                 return _ProductService2.default.findProductLocalizedContent(obj.id, locale);
+            }
+        },
+        skus: {
+            type: new _graphql.GraphQLList(SKUType),
+            resolve: function resolve(obj, args) {
+                return _ProductService2.default.findProductRelatedSKUs(obj.id);
             }
         }
     }
@@ -317,6 +380,16 @@ var ProductConnection = _connectionDefinition4.connectionType;
 var ProductEdge = _connectionDefinition4.edgeType;
 exports.ProductConnection = ProductConnection;
 exports.ProductEdge = ProductEdge;
+
+var _connectionDefinition5 = (0, _graphqlRelay.connectionDefinitions)({
+    name: 'SKUType',
+    nodeType: SKUType
+});
+
+var SKUConnection = _connectionDefinition5.connectionType;
+var SKUEdge = _connectionDefinition5.edgeType;
+exports.SKUConnection = SKUConnection;
+exports.SKUEdge = SKUEdge;
 var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
     name: 'Viewer',
     fields: function fields() {
@@ -404,6 +477,19 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                 },
                 resolve: function resolve(obj, args) {
                     return _ProductService2.default.findProductById(args.id, args.locale);
+                }
+            },
+            skus: {
+                type: SKUConnection,
+                args: _extends({
+                    search: { type: _graphql.GraphQLString },
+                    start: { type: _graphql.GraphQLInt },
+                    size: { type: _graphql.GraphQLInt },
+                    orderBy: { type: _graphql.GraphQLString },
+                    isDesc: { type: _graphql.GraphQLBoolean }
+                }, _graphqlRelay.connectionArgs),
+                resolve: function resolve(obj, args) {
+                    return (0, _graphqlRelay.connectionFromPromisedArray)(_SkuService2.default.findAllSKUs(args), args);
                 }
             }
         };

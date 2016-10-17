@@ -20,7 +20,8 @@ import {
 
 import {
     ViewerType,
-    SKUType
+    SKUType,
+    SKUEdge
 } from '../Model'
 
 import {
@@ -112,5 +113,88 @@ export const DeleteSKUMutation = new mutationWithClientMutationId({
     mutateAndGetPayload: async (args) => {
         let id = fromGlobalId(args.id).id;
         return await SKUService.deleteSKU(id)
+    }
+});
+
+export const DeleteSKULocalizedContent = new mutationWithClientMutationId({
+    name: 'DeleteSKULocalizedContent',
+    description: 'Delete a localized content for a sku',
+    inputFields: {
+        skuId: {type: new GraphQLNonNull(GraphQLString)},
+        locale: {type: new GraphQLNonNull(GraphQLString)}
+    },
+    outputFields: {
+        viewer: {
+            type: ViewerType,
+            resolve: () => getViewer("me")
+        }
+    },
+    mutateAndGetPayload: async (args) => {
+        let skuId = fromGlobalId(args.skuId).id;
+        return await SKUService.deleteSKULocalizedContent(skuId, args.locale)
+    }
+});
+
+export const CreateSKULocalizedContent = new mutationWithClientMutationId({
+    name: 'CreateSKULocalizedContent',
+    description: 'create a localized content for a sku',
+    inputFields: {
+        skuId: {type: new GraphQLNonNull(GraphQLString)},
+        locale: {type: new GraphQLNonNull(GraphQLString)},
+        displayName: {type: GraphQLString},
+        promotion: {type: GraphQLString},
+        shortDescription: {type: GraphQLString},
+        mediumDescription: {type: GraphQLString},
+        longDescription: {type: GraphQLString}
+    },
+    outputFields: {
+        viewer: {
+            type: ViewerType,
+            resolve: () => getViewer("me")
+        }
+    },
+    mutateAndGetPayload: async (args) => {
+        let skuId = fromGlobalId(args.skuId).id;
+        delete args.clientMutationId;
+        delete args.skuId;
+        return await SKUService.createSKULocalizedContent(skuId, args.locale, args)
+    }
+});
+
+export const ModifySKULocalizedContent = new mutationWithClientMutationId({
+    name: 'ModifySKULocalizedContent',
+    description: 'modify a localized content for a sku',
+    inputFields: {
+        skuId: {type: new GraphQLNonNull(GraphQLString)},
+        locale: {type: new GraphQLNonNull(GraphQLString)},
+        displayName: {type: GraphQLString},
+        promotion: {type: GraphQLString},
+        shortDescription: {type: GraphQLString},
+        mediumDescription: {type: GraphQLString},
+        longDescription: {type: GraphQLString}
+    },
+    outputFields: {
+        viewer: {
+            type: ViewerType,
+            resolve: () => getViewer("me")
+        },
+        skuEdge: {
+            type: SKUEdge,
+            resolve: async (payload) => {
+
+                let skus = await SKUService.findAllSKUs();
+                let cursor = cursorForObjectInConnection(skus, payload);
+                return {
+                    cursor: cursor,
+                    node: payload
+                }
+            }
+        }
+    },
+    mutateAndGetPayload: async (args) => {
+        let skuId = fromGlobalId(args.skuId).id;
+        delete args.clientMutationId;
+        delete args.skuId;
+        return await SKUService.modifySKULocalizedContent(skuId, args.locale, args)
     }
 });

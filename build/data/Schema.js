@@ -15,6 +15,8 @@ var _CategoriesMutation = require('./categories/CategoriesMutation');
 
 var _ProductMutation = require('./product/ProductMutation');
 
+var _SKUMutation = require('./product/SKUMutation');
+
 var Mutation = new _graphql.GraphQLObjectType({
     name: 'Mutation',
     fields: {
@@ -37,8 +39,11 @@ var Mutation = new _graphql.GraphQLObjectType({
         deleteProductMutation: _ProductMutation.DeleteProductMutation,
         createProductLocalizedContent: _ProductMutation.CreateProductLocalizedContent,
         deleteProductLocalizedContent: _ProductMutation.DeleteProductLocalizedContent,
-        modifyProductLocalizedContent: _ProductMutation.ModifyProductLocalizedContent
+        modifyProductLocalizedContent: _ProductMutation.ModifyProductLocalizedContent,
 
+        createSKU: _SKUMutation.CreateSKUMutation,
+        modifySKU: _SKUMutation.ModifySKUMutation,
+        deleteSKU: _SKUMutation.DeleteSKUMutation
     }
 });
 

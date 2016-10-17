@@ -57,6 +57,36 @@ var SKUService = {
                 if(response.status == "404") return []
             })
     },
+    deleteSKULocalizedContent(skuId, locale) {
+        return axios.delete(`${url}/jeeshop-admin/rs/skus/${skuId}/presentations/${locale}`, {headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
+                if(response.status == "404") return []
+            })
+    },
+    createSKULocalizedContent(skuId, locale, presentationObject) {
+        return axios.post(`${url}/jeeshop-admin/rs/skus/${skuId}/presentations/${locale}`, presentationObject, {headers: credentials})
+            .then((response) => {
+
+                return response.data;
+            })
+            .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
+                if(response.status == "404") return []
+            })
+    },
+    modifySKULocalizedContent(skuId, locale, presentationObject) {
+        return axios.put(`${url}/jeeshop-admin/rs/skus/${skuId}/presentations/${locale}`, presentationObject, {headers: credentials})
+            .then((response) => {
+                console.log("response : " + JSON.stringify(response.data));
+                return response.data
+            })
+            .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
+                if(response.status == "404") return []
+            })
+    },
 
 };
 export default SKUService;

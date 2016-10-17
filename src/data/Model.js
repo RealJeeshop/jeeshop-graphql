@@ -33,6 +33,7 @@ import CategoriesService from './categories/CategoriesService'
 import UsersService from './users/UsersService'
 import ProductService from './product/ProductService'
 import SKUService from './product/SkuService'
+import DiscountService from './discount/DiscountService'
 
 import {
     Base64
@@ -115,6 +116,28 @@ export const PresentationType = new GraphQLObjectType({
     }
 });
 
+export const DiscountType = new GraphQLObjectType({
+    name: 'DiscountType',
+    description: 'It represents a discount',
+    fields: {
+        id: globalIdField('DiscountType'),
+        name: {type: GraphQLString, resolve: (obj) => obj.name},
+        description: {type: GraphQLString, resolve: (obj) => obj.description},
+        disabled: {type: GraphQLBoolean, resolve: (obj) => obj.disabled},
+        startDate: {type: GraphQLString, resolve: (obj) => obj.startDate},
+        endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
+        visible: {type: GraphQLBoolean, resolve: (obj) => obj.visible},
+        usePerCustomer: {type: GraphQLInt, resolve: (obj) => obj.usePerCustomer},
+        type: {type: GraphQLString, resolve: (obj) => obj.type},
+        triggerRule: {type: GraphQLString, resolve: (obj) => obj.triggerRule},
+        triggerValue: {type: GraphQLFloat, resolve: (obj) => obj.triggerValue},
+        discountValue: {type: GraphQLFloat, resolve: (obj) => obj.discountValue},
+        rateType: {type: GraphQLBoolean, resolve: (obj) => obj.rateType},
+        uniqueUse: {type: GraphQLBoolean, resolve: (obj) => obj.uniqueUse},
+    }
+});
+
+
 export const SKUType = new GraphQLObjectType({
     name: 'SKUType',
     description: 'It represents a SKU',
@@ -139,6 +162,10 @@ export const SKUType = new GraphQLObjectType({
                 return SKUService.findSKULocalizedContent(obj.id, locale)
             }
         },
+        discounts: {
+            type: new GraphQLList(DiscountType),
+            resolve: (obj) => DiscountService.findDiscountsWithMultipleIds(obj.discountsIds)
+        }
     }
 });
 

@@ -144,6 +144,28 @@ type CreateProductMutationPayload {
   clientMutationId: String!
 }
 
+input CreateSKUMutationInput {
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  price: Float
+  currency: String
+  reference: String
+  threshold: Int
+  quantity: Int
+  available: Boolean
+  clientMutationId: String!
+}
+
+type CreateSKUMutationPayload {
+  viewer: Viewer
+  sku: SKUType
+  clientMutationId: String!
+}
+
 input DeleteCatalogInput {
   id: String!
   clientMutationId: String!
@@ -203,6 +225,16 @@ input DeleteProductMutationInput {
 }
 
 type DeleteProductMutationPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+input DeleteSKUMutationInput {
+  id: String!
+  clientMutationId: String!
+}
+
+type DeleteSKUMutationPayload {
   viewer: Viewer
   clientMutationId: String!
 }
@@ -317,6 +349,29 @@ type ModifyProductMutationPayload {
   clientMutationId: String!
 }
 
+input ModifySKUMutationInput {
+  id: String!
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  price: Float
+  currency: String
+  reference: String
+  threshold: Int
+  quantity: Int
+  available: Boolean
+  clientMutationId: String!
+}
+
+type ModifySKUMutationPayload {
+  viewer: Viewer
+  sku: SKUType
+  clientMutationId: String!
+}
+
 type Mutation {
   createCatalog(input: CreateCatalogInput!): CreateCatalogPayload
   modifyCatalog(input: ModifyCatalogInput!): ModifyCatalogPayload
@@ -336,6 +391,9 @@ type Mutation {
   createProductLocalizedContent(input: CreateProductLocalizedContentInput!): CreateProductLocalizedContentPayload
   deleteProductLocalizedContent(input: DeleteProductLocalizedContentInput!): DeleteProductLocalizedContentPayload
   modifyProductLocalizedContent(input: ModifyProductLocalizedContentInput!): ModifyProductLocalizedContentPayload
+  createSKU(input: CreateSKUMutationInput!): CreateSKUMutationPayload
+  modifySKU(input: ModifySKUMutationInput!): ModifySKUMutationPayload
+  deleteSKU(input: DeleteSKUMutationInput!): DeleteSKUMutationPayload
 }
 
 interface Node {
@@ -373,6 +431,7 @@ type ProductType {
   endDate: String
   visible: Boolean
   localizedPresentation(locale: String): PresentationType
+  skus: [SKUType]
 }
 
 type ProductTypeConnection {
@@ -388,6 +447,32 @@ type ProductTypeEdge {
 type Root {
   viewer(viewerId: Int): Viewer
   node(id: ID!): Node
+}
+
+type SKUType {
+  id: ID!
+  name: String
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  price: Float
+  currency: String
+  reference: String
+  threshold: Int
+  quantity: Int
+  available: Boolean
+  localizedPresentation(locale: String): PresentationType
+}
+
+type SKUTypeConnection {
+  pageInfo: PageInfo!
+  edges: [SKUTypeEdge]
+}
+
+type SKUTypeEdge {
+  node: SKUType
+  cursor: String!
 }
 
 type UserType implements Node {
@@ -416,4 +501,5 @@ type Viewer implements Node {
   category(id: String!, locale: String): CategoryType
   products(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): ProductTypeConnection
   product(id: String!, locale: String): ProductType
+  skus(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): SKUTypeConnection
 }
