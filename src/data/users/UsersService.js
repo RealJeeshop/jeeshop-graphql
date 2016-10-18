@@ -15,6 +15,17 @@ var UsersService = {
                 if(response.status == "404") return []
                 return []
             })
+    },
+
+    findUserById(id) {
+
+        return axios.get(`${url}/jeeshop-admin/rs/users/${id}`, {headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
+                if(response.status == "404") return []
+                return []
+            })
     }
 };
 export default UsersService;

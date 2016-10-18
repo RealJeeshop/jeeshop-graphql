@@ -15,9 +15,10 @@ var SKUService = {
                 if(response.status == "404") return []
             })
     },
-    findSKUById(id) {
+    findSKUById(id, locale) {
 
-        return axios.get(`${url}/jeeshop-admin/rs/skus/${id}`, {headers: credentials})
+        let params = locale ? {locale: locale} : {};
+        return axios.get(`${url}/jeeshop-admin/rs/skus/${id}`, {params: params, headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));

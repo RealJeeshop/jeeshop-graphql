@@ -212,11 +212,9 @@ module.exports =
 	    if (type === 'CatalogType') {
 	        return _CatalogService2.default.findCatalogById(id);
 	    } else if (type === 'UserType') {
-	        return _axios2.default.get('https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/user/' + id, { headers: config }).then(function (r) {
-	            return r.data;
-	        });
+	        return _UsersService2.default.findUserById(id);
 	    } else if (type === 'ViewerType') {
-	        return (0, _UserStore.getViewer)(id);
+	        return (0, _UserStore.getViewer)("me");
 	    } else if (type === 'ImageType') {
 	        return null;
 	    } else if (type === 'PresentationType') {
@@ -226,7 +224,9 @@ module.exports =
 	    } else if (type === 'ProductType') {
 	        return _ProductService2.default.findProductById(id, (0, _UserStore.getViewerLocale)("me"));
 	    } else if (type === 'SKUType') {
-	        return _SkuService2.default.findSKUById(id);
+	        return _SkuService2.default.findSKUById(id, (0, _UserStore.getViewerLocale)("me"));
+	    } else if (type === 'DiscountType') {
+	        return _DiscountService2.default.findDiscountById(id, (0, _UserStore.getViewerLocale)("me"));
 	    }
 	    return null;
 	}, function (obj) {
@@ -243,6 +243,8 @@ module.exports =
 	        return ProductType;
 	    } else if (obj.price) {
 	        return SKUType;
+	    } else if (obj.uniqueUse) {
+	        return DiscountType;
 	    }
 	    return null;
 	});
@@ -1116,6 +1118,16 @@ module.exports =
 	            if (response.status == "404") return [];
 	            return [];
 	        });
+	    },
+	    findUserById: function findUserById(id) {
+
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/users/' + id, { headers: credentials }).then(function (response) {
+	            return response.data;
+	        }).catch(function (response) {
+	            console.log("response error : " + JSON.stringify(response));
+	            if (response.status == "404") return [];
+	            return [];
+	        });
 	    }
 	};
 	exports.default = UsersService;
@@ -1260,9 +1272,10 @@ module.exports =
 	            if (response.status == "404") return [];
 	        });
 	    },
-	    findSKUById: function findSKUById(id) {
+	    findSKUById: function findSKUById(id, locale) {
 
-	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id, { headers: credentials }).then(function (response) {
+	        var params = locale ? { locale: locale } : {};
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id, { params: params, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
 	            console.log("response error : " + JSON.stringify(response));
@@ -1361,9 +1374,10 @@ module.exports =
 	            if (response.status == "404") return [];
 	        });
 	    },
-	    findDiscountById: function findDiscountById(id) {
+	    findDiscountById: function findDiscountById(id, locale) {
 
-	        return _axios2.default.get(url + '/jeeshop-admin/rs/discounts/' + id, { headers: credentials }).then(function (response) {
+	        var params = locale ? { locale: locale } : {};
+	        return _axios2.default.get(url + '/jeeshop-admin/rs/discounts/' + id, { params: params, headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
 	            console.log("response error : " + JSON.stringify(response));

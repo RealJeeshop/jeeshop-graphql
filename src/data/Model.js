@@ -53,9 +53,9 @@ var {nodeInterface, nodeField} = nodeDefinitions(
         if (type === 'CatalogType') {
             return CatalogService.findCatalogById(id)
         } else if (type === 'UserType') {
-            return axios.get(`https://apps-jeeshop.rhcloud.com/jeeshop-admin/rs/user/` + id, {headers: config}).then(r => r.data)
+            return UsersService.findUserById(id)
         } else if (type === 'ViewerType') {
-            return getViewer(id)
+            return getViewer("me")
         } else if(type === 'ImageType') {
             return null
         } else if(type === 'PresentationType' ) {
@@ -65,7 +65,9 @@ var {nodeInterface, nodeField} = nodeDefinitions(
         } else if(type === 'ProductType') {
             return ProductService.findProductById(id, getViewerLocale("me"))
         } else if(type === 'SKUType') {
-            return SKUService.findSKUById(id)
+            return SKUService.findSKUById(id, getViewerLocale("me"))
+        } else if(type === 'DiscountType') {
+            return DiscountService.findDiscountById(id, getViewerLocale("me"))
         }
         return null;
     },
@@ -83,6 +85,8 @@ var {nodeInterface, nodeField} = nodeDefinitions(
             return ProductType
         } else if(obj.price) {
             return SKUType
+        } else if(obj.uniqueUse) {
+            return DiscountType
         }
         return null
     }
