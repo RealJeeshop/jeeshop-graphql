@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.GraphQLRoot = exports.ViewerType = exports.SKUEdge = exports.SKUConnection = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.SKUType = exports.PresentationType = exports.ImageType = undefined;
+exports.GraphQLRoot = exports.ViewerType = exports.SKUEdge = exports.SKUConnection = exports.ProductEdge = exports.ProductConnection = exports.CatalogEdge = exports.CatalogConnection = exports.UserEdge = exports.UserConnection = exports.UserType = exports.CatalogType = exports.CategoryEdge = exports.CategoryConnection = exports.CategoryType = exports.ProductType = exports.SKUType = exports.DiscountType = exports.PresentationType = exports.ImageType = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -32,6 +32,10 @@ var _ProductService2 = _interopRequireDefault(_ProductService);
 var _SkuService = require('./product/SkuService');
 
 var _SkuService2 = _interopRequireDefault(_SkuService);
+
+var _DiscountService = require('./discount/DiscountService');
+
+var _DiscountService2 = _interopRequireDefault(_DiscountService);
 
 var _jsBase = require('js-base64');
 
@@ -144,6 +148,53 @@ var PresentationType = exports.PresentationType = new _graphql.GraphQLObjectType
     }
 });
 
+var DiscountType = exports.DiscountType = new _graphql.GraphQLObjectType({
+    name: 'DiscountType',
+    description: 'It represents a discount',
+    fields: {
+        id: (0, _graphqlRelay.globalIdField)('DiscountType'),
+        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.name;
+            } },
+        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.description;
+            } },
+        disabled: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+                return obj.disabled;
+            } },
+        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.startDate;
+            } },
+        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.endDate;
+            } },
+        visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+                return obj.visible;
+            } },
+        usePerCustomer: { type: _graphql.GraphQLInt, resolve: function resolve(obj) {
+                return obj.usePerCustomer;
+            } },
+        type: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.type;
+            } },
+        triggerRule: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+                return obj.triggerRule;
+            } },
+        triggerValue: { type: _graphql.GraphQLFloat, resolve: function resolve(obj) {
+                return obj.triggerValue;
+            } },
+        discountValue: { type: _graphql.GraphQLFloat, resolve: function resolve(obj) {
+                return obj.discountValue;
+            } },
+        rateType: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+                return obj.rateType;
+            } },
+        uniqueUse: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+                return obj.uniqueUse;
+            } }
+    }
+});
+
 var SKUType = exports.SKUType = new _graphql.GraphQLObjectType({
     name: 'SKUType',
     description: 'It represents a SKU',
@@ -188,6 +239,12 @@ var SKUType = exports.SKUType = new _graphql.GraphQLObjectType({
             resolve: function resolve(obj, args) {
                 var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
                 return _SkuService2.default.findSKULocalizedContent(obj.id, locale);
+            }
+        },
+        discounts: {
+            type: new _graphql.GraphQLList(DiscountType),
+            resolve: function resolve(obj) {
+                return _DiscountService2.default.findDiscountsWithMultipleIds(obj.discountsIds);
             }
         }
     }

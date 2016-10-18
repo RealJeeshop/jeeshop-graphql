@@ -116,6 +116,7 @@ export const PresentationType = new GraphQLObjectType({
     }
 });
 
+
 export const DiscountType = new GraphQLObjectType({
     name: 'DiscountType',
     description: 'It represents a discount',
@@ -326,6 +327,15 @@ export var {
 });
 
 
+export var {
+    connectionType: DiscountConnection
+    , edgeType: DiscountEdge,
+} = connectionDefinitions({
+    name: 'DiscountType',
+    nodeType: DiscountType
+});
+
+
 export var ViewerType = new GraphQLObjectType({
     name: 'Viewer',
     fields: () => ({
@@ -412,6 +422,18 @@ export var ViewerType = new GraphQLObjectType({
                 ...connectionArgs
             },
             resolve: (obj, args) => connectionFromPromisedArray(SKUService.findAllSKUs(args), args)
+        },
+        discounts: {
+            type: DiscountConnection,
+            args: {
+                search: {type: GraphQLString},
+                start: {type: GraphQLInt},
+                size: {type: GraphQLInt},
+                orderBy: {type: GraphQLString},
+                isDesc: {type: GraphQLBoolean},
+                ...connectionArgs
+            },
+            resolve: (obj, args) => connectionFromPromisedArray(DiscountService.findAllDiscounts(args), args)
         }
     }),
     interfaces: [nodeInterface]

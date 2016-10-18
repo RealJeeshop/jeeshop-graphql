@@ -65,6 +65,32 @@ var SKUService = {
             console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
         });
+    },
+    deleteSKULocalizedContent: function deleteSKULocalizedContent(skuId, locale) {
+        return _axios2.default.delete(url + '/jeeshop-admin/rs/skus/' + skuId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
+            return response.data;
+        }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
+            if (response.status == "404") return [];
+        });
+    },
+    createSKULocalizedContent: function createSKULocalizedContent(skuId, locale, presentationObject) {
+        return _axios2.default.post(url + '/jeeshop-admin/rs/skus/' + skuId + '/presentations/' + locale, presentationObject, { headers: credentials }).then(function (response) {
+
+            return response.data;
+        }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
+            if (response.status == "404") return [];
+        });
+    },
+    modifySKULocalizedContent: function modifySKULocalizedContent(skuId, locale, presentationObject) {
+        return _axios2.default.put(url + '/jeeshop-admin/rs/skus/' + skuId + '/presentations/' + locale, presentationObject, { headers: credentials }).then(function (response) {
+            console.log("response : " + JSON.stringify(response.data));
+            return response.data;
+        }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
+            if (response.status == "404") return [];
+        });
     }
 };
 exports.default = SKUService;

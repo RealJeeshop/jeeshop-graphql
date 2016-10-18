@@ -130,7 +130,7 @@ export const DeleteSKULocalizedContent = new mutationWithClientMutationId({
         }
     },
     mutateAndGetPayload: async (args) => {
-        let skuId = fromGlobalId(args.skuId).id;
+        let skuId = fromGlobalId(args.discountId).id;
         return await SKUService.deleteSKULocalizedContent(skuId, args.locale)
     }
 });
@@ -154,9 +154,9 @@ export const CreateSKULocalizedContent = new mutationWithClientMutationId({
         }
     },
     mutateAndGetPayload: async (args) => {
-        let skuId = fromGlobalId(args.skuId).id;
+        let skuId = fromGlobalId(args.discountId).id;
         delete args.clientMutationId;
-        delete args.skuId;
+        delete args.discountId;
         return await SKUService.createSKULocalizedContent(skuId, args.locale, args)
     }
 });
@@ -192,9 +192,9 @@ export const ModifySKULocalizedContent = new mutationWithClientMutationId({
         }
     },
     mutateAndGetPayload: async (args) => {
-        let skuId = fromGlobalId(args.skuId).id;
+        let skuId = fromGlobalId(args.discountId).id;
         delete args.clientMutationId;
-        delete args.skuId;
+        delete args.discountId;
         return await SKUService.modifySKULocalizedContent(skuId, args.locale, args)
     }
 });

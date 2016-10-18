@@ -112,6 +112,47 @@ type CreateCategoryPayload {
   clientMutationId: String!
 }
 
+input CreateDiscountLocalizedContentInput {
+  discountId: String!
+  locale: String!
+  displayName: String
+  promotion: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type CreateDiscountLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+input CreateDiscountMutationInput {
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  voucherCode: String
+  usesPerCustomer: Int
+  type: String
+  triggerRule: String
+  applicableTo: String
+  triggerValue: Float
+  discountValue: Float
+  rateType: Boolean
+  uniqueUse: Boolean
+  clientMutationId: String!
+}
+
+type CreateDiscountMutationPayload {
+  viewer: Viewer
+  discount: DiscountType
+  clientMutationId: String!
+}
+
 input CreateProductLocalizedContentInput {
   productId: String!
   locale: String!
@@ -141,6 +182,22 @@ input CreateProductMutationInput {
 type CreateProductMutationPayload {
   viewer: Viewer
   productEdge: ProductTypeEdge
+  clientMutationId: String!
+}
+
+input CreateSKULocalizedContentInput {
+  skuId: String!
+  locale: String!
+  displayName: String
+  promotion: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type CreateSKULocalizedContentPayload {
+  viewer: Viewer
   clientMutationId: String!
 }
 
@@ -208,6 +265,27 @@ type DeleteCategoryPayload {
   clientMutationId: String!
 }
 
+input DeleteDiscountLocalizedContentInput {
+  discountId: String!
+  locale: String!
+  clientMutationId: String!
+}
+
+type DeleteDiscountLocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
+input DeleteDiscountMutationInput {
+  id: String!
+  clientMutationId: String!
+}
+
+type DeleteDiscountMutationPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
 input DeleteProductLocalizedContentInput {
   productId: String!
   locale: String!
@@ -229,6 +307,17 @@ type DeleteProductMutationPayload {
   clientMutationId: String!
 }
 
+input DeleteSKULocalizedContentInput {
+  skuId: String!
+  locale: String!
+  clientMutationId: String!
+}
+
+type DeleteSKULocalizedContentPayload {
+  viewer: Viewer
+  clientMutationId: String!
+}
+
 input DeleteSKUMutationInput {
   id: String!
   clientMutationId: String!
@@ -237,6 +326,23 @@ input DeleteSKUMutationInput {
 type DeleteSKUMutationPayload {
   viewer: Viewer
   clientMutationId: String!
+}
+
+type DiscountType {
+  id: ID!
+  name: String
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  usePerCustomer: Int
+  type: String
+  triggerRule: String
+  triggerValue: Float
+  discountValue: Float
+  rateType: Boolean
+  uniqueUse: Boolean
 }
 
 type ImageType {
@@ -316,6 +422,49 @@ type ModifyCategoryPayload {
   clientMutationId: String!
 }
 
+input ModifyDiscountLocalizedContentInput {
+  discountId: String!
+  locale: String!
+  displayName: String
+  promotion: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type ModifyDiscountLocalizedContentPayload {
+  viewer: Viewer
+  discount: DiscountType
+  clientMutationId: String!
+}
+
+input ModifyDiscountMutationInput {
+  id: String!
+  name: String!
+  description: String
+  disabled: Boolean
+  startDate: String
+  endDate: String
+  visible: Boolean
+  voucherCode: String
+  usesPerCustomer: Int
+  type: String
+  triggerRule: String
+  applicableTo: String
+  triggerValue: Float
+  discountValue: Float
+  rateType: Boolean
+  uniqueUse: Boolean
+  clientMutationId: String!
+}
+
+type ModifyDiscountMutationPayload {
+  viewer: Viewer
+  discount: DiscountType
+  clientMutationId: String!
+}
+
 input ModifyProductLocalizedContentInput {
   productId: String!
   locale: String!
@@ -346,6 +495,23 @@ input ModifyProductMutationInput {
 type ModifyProductMutationPayload {
   viewer: Viewer
   productEdge: ProductTypeEdge
+  clientMutationId: String!
+}
+
+input ModifySKULocalizedContentInput {
+  skuId: String!
+  locale: String!
+  displayName: String
+  promotion: String
+  shortDescription: String
+  mediumDescription: String
+  longDescription: String
+  clientMutationId: String!
+}
+
+type ModifySKULocalizedContentPayload {
+  viewer: Viewer
+  skuEdge: SKUTypeEdge
   clientMutationId: String!
 }
 
@@ -394,6 +560,15 @@ type Mutation {
   createSKU(input: CreateSKUMutationInput!): CreateSKUMutationPayload
   modifySKU(input: ModifySKUMutationInput!): ModifySKUMutationPayload
   deleteSKU(input: DeleteSKUMutationInput!): DeleteSKUMutationPayload
+  deleteSKULocalizedContent(input: DeleteSKULocalizedContentInput!): DeleteSKULocalizedContentPayload
+  createSKULocalizedContent(input: CreateSKULocalizedContentInput!): CreateSKULocalizedContentPayload
+  modifySKULocalizedContent(input: ModifySKULocalizedContentInput!): ModifySKULocalizedContentPayload
+  createDiscount(input: CreateDiscountMutationInput!): CreateDiscountMutationPayload
+  modifyDiscount(input: ModifyDiscountMutationInput!): ModifyDiscountMutationPayload
+  deleteDiscount(input: DeleteDiscountMutationInput!): DeleteDiscountMutationPayload
+  createDiscountLocalizedContent(input: CreateDiscountLocalizedContentInput!): CreateDiscountLocalizedContentPayload
+  modifyDiscountLocalizedContent(input: ModifyDiscountLocalizedContentInput!): ModifyDiscountLocalizedContentPayload
+  deleteDiscountLocalizedContent(input: DeleteDiscountLocalizedContentInput!): DeleteDiscountLocalizedContentPayload
 }
 
 interface Node {
@@ -463,6 +638,7 @@ type SKUType {
   quantity: Int
   available: Boolean
   localizedPresentation(locale: String): PresentationType
+  discounts: [DiscountType]
 }
 
 type SKUTypeConnection {

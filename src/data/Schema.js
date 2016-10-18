@@ -37,8 +37,21 @@ import {
 import {
     CreateSKUMutation,
     ModifySKUMutation,
-    DeleteSKUMutation
+    DeleteSKUMutation,
+    DeleteSKULocalizedContent,
+    CreateSKULocalizedContent,
+    ModifySKULocalizedContent
+
 } from './product/SKUMutation'
+
+import {
+    CreateDiscountMutation,
+    ModifyDiscountMutation,
+    DeleteDiscountMutation,
+    CreateDiscountLocalizedContent,
+    ModifyDiscountLocalizedContent,
+    DeleteDiscountLocalizedContent
+} from './discount/DiscountMutation'
 
 let Mutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -66,7 +79,17 @@ let Mutation = new GraphQLObjectType({
 
     createSKU: CreateSKUMutation,
     modifySKU: ModifySKUMutation,
-    deleteSKU: DeleteSKUMutation
+    deleteSKU: DeleteSKUMutation,
+    deleteSKULocalizedContent: DeleteSKULocalizedContent,
+    createSKULocalizedContent: CreateSKULocalizedContent,
+    modifySKULocalizedContent: ModifySKULocalizedContent,
+
+    createDiscount: CreateDiscountMutation,
+    modifyDiscount: ModifyDiscountMutation,
+    deleteDiscount: DeleteDiscountMutation,
+    createDiscountLocalizedContent: CreateDiscountLocalizedContent,
+    modifyDiscountLocalizedContent: ModifyDiscountLocalizedContent,
+    deleteDiscountLocalizedContent: DeleteDiscountLocalizedContent
   }
 });
 
