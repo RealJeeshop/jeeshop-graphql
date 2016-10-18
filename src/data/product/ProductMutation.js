@@ -59,6 +59,7 @@ export const CreateProductMutation = new mutationWithClientMutationId({
     },
     mutateAndGetPayload: async (args) => {
         delete args.clientMutationId;
+        console.log("args : " + JSON.stringify(args));
         return await ProductService.createProduct(args)
     }
 });
@@ -67,7 +68,8 @@ export const ModifyProductMutation = new mutationWithClientMutationId({
     name: 'ModifyProductMutation',
     description: 'Function to modify a product',
     inputFields: {
-        name: {type: new GraphQLNonNull(GraphQLString)},
+        id: {type: new GraphQLNonNull(GraphQLString)},
+        name: {type: GraphQLString},
         description: {type: GraphQLString},
         disabled: {type: GraphQLBoolean},
         startDate: {type: GraphQLString},
@@ -94,6 +96,7 @@ export const ModifyProductMutation = new mutationWithClientMutationId({
     },
     mutateAndGetPayload: async (args) => {
         delete args.clientMutationId;
+        args.id = fromGlobalId(args.id).id;
         return await ProductService.modifyProduct(args)
     }
 });

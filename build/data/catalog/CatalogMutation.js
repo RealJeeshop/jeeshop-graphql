@@ -166,7 +166,7 @@ var ModifyCatalogMutation = exports.ModifyCatalogMutation = new _graphqlRelay.mu
                         case 0:
 
                             delete args.clientMutationId;
-                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            args.catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
 
                             _context4.next = 4;
                             return _CatalogService2.default.modifyCatalog(args);
@@ -210,7 +210,7 @@ var DeleteCatalogMutation = exports.DeleteCatalogMutation = new _graphqlRelay.mu
                         case 0:
                             console.log("delete catalog mutate");
                             _context5.next = 3;
-                            return _CatalogService2.default.deleteCatalog((0, _graphqlRelay.fromGlobalId)(args.id).id);
+                            return _CatalogService2.default.deleteCatalog((0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId);
 
                         case 3:
                             return _context5.abrupt('return', _context5.sent);
@@ -255,9 +255,9 @@ var CreateCatalogLocalizedContentMutation = exports.CreateCatalogLocalizedConten
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            id = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
 
-                            delete args.id;
+                            delete args.catalogId;
                             delete args.clientMutationId;
                             console.log("args : " + JSON.stringify(args));
                             _context6.next = 6;
@@ -307,8 +307,8 @@ var ModifyCatalogLocalizedContent = exports.ModifyCatalogLocalizedContent = new 
                 while (1) {
                     switch (_context7.prev = _context7.next) {
                         case 0:
-                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
-                            catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).id;
+                            args.catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
+                            catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
 
                             delete args.clientMutationId;
                             delete args.catalogId;
@@ -355,7 +355,7 @@ var DeleteCatalogLocalizedContent = exports.DeleteCatalogLocalizedContent = new 
                 while (1) {
                     switch (_context8.prev = _context8.next) {
                         case 0:
-                            catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).id;
+                            catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
                             _context8.next = 3;
                             return _CatalogService2.default.deleteCatalogLocalizedContent(catalogId, args.locale);
 

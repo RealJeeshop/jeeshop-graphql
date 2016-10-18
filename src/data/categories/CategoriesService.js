@@ -68,7 +68,7 @@ var CategoriesService = {
         return axios.put(`${url}/jeeshop-admin/rs/categories`, input, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
-                console.log("error in createCategory : " + JSON.stringify(response));
+                console.log("error in modifyCategory : " + JSON.stringify(response));
                 if(response.status == "404") return []
                 return []
 
@@ -76,7 +76,9 @@ var CategoriesService = {
     },
     deleteCategory(id) {
         return axios.delete(`${url}/jeeshop-admin/rs/categories/${id}`, {headers: credentials})
-            .then((response) => response.data)
+            .then((response) => {
+                if(response.status == "204") return {success: true}
+            })
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []

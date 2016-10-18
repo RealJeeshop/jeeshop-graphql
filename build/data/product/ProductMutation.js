@@ -202,7 +202,7 @@ var DeleteProductMutation = exports.DeleteProductMutation = new _graphqlRelay.mu
                     switch (_context5.prev = _context5.next) {
                         case 0:
                             _context5.next = 2;
-                            return _ProductService2.default.deleteProduct((0, _graphqlRelay.fromGlobalId)(args.id).id);
+                            return _ProductService2.default.deleteProduct((0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId);
 
                         case 2:
                             return _context5.abrupt('return', _context5.sent);
@@ -243,7 +243,7 @@ var DeleteProductLocalizedContent = exports.DeleteProductLocalizedContent = new 
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).id;
+                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).catalogId;
                             _context6.next = 3;
                             return _ProductService2.default.deleteProductLocalizedContent(productId, args.locale);
 
@@ -291,7 +291,7 @@ var CreateProductLocalizedContent = exports.CreateProductLocalizedContent = new 
                 while (1) {
                     switch (_context7.prev = _context7.next) {
                         case 0:
-                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).id;
+                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).catalogId;
 
                             delete args.clientMutationId;
                             delete args.productId;
@@ -375,7 +375,7 @@ var ModifyProductLocalizedContent = exports.ModifyProductLocalizedContent = new 
                 while (1) {
                     switch (_context9.prev = _context9.next) {
                         case 0:
-                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).id;
+                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).catalogId;
 
                             delete args.clientMutationId;
                             delete args.productId;

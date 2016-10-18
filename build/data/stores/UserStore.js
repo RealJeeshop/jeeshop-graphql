@@ -30,7 +30,7 @@ var Viewer = exports.Viewer = function (_Object) {
 var VIEWER_ID = 'me';
 
 var viewer = new Viewer();
-viewer.id = VIEWER_ID;
+viewer.catalogId = VIEWER_ID;
 viewer.locale = 'fr_FR';
 
 var users = {};
@@ -40,8 +40,8 @@ var usersById = _defineProperty({}, VIEWER_ID, viewer);
 
 function registerViewer(viewer) {
 
-    if (users[viewer.id] == undefined) {
-        users[viewer.id] = viewer;
+    if (users[viewer.catalogId] == undefined) {
+        users[viewer.catalogId] = viewer;
     }
 }
 

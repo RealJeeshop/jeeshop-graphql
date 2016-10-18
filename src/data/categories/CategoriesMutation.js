@@ -95,6 +95,7 @@ export const ModifyCategoryMutation = new mutationWithClientMutationId({
     },
     mutateAndGetPayload: async (args) => {
         delete args.clientMutationId;
+        args.id = fromGlobalId(args.id).id;
         return await CategoriesService.modifyCategory(args)
     }
 });
@@ -146,7 +147,6 @@ export const ModifyCategoryLocalizedContent = new mutationWithClientMutationId({
     name: 'ModifyCategoryLocalizedContent',
     description: 'Modify a localized content for a category',
     inputFields: {
-        categoryId: {type: new GraphQLNonNull(GraphQLString)},
         id: {type: new GraphQLNonNull(GraphQLString)},
         locale: {type: new GraphQLNonNull(GraphQLString)},
         displayName: {type: GraphQLString},
@@ -165,10 +165,8 @@ export const ModifyCategoryLocalizedContent = new mutationWithClientMutationId({
         }
     },
     mutateAndGetPayload: async (args) => {
-        args.id = fromGlobalId(args.id).id;
-        let categoryId = fromGlobalId(args.categoryId).id;
+        let categoryId = fromGlobalId(args.id).id;
         delete args.clientMutationId;
-        delete args.categoryId;
         return await CategoriesService.modifyCategoryLocalizedContent(categoryId, args)
     }
 });

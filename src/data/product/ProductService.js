@@ -26,7 +26,7 @@ var ProductService = {
             })
     },
     createProduct(args) {
-        return axios.post(`${url}/jeeshop-admin/rs/products`, {params: args, headers: credentials})
+        return axios.post(`${url}/jeeshop-admin/rs/products`, args, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
@@ -34,7 +34,7 @@ var ProductService = {
             })
     },
     modifyProduct(args) {
-        return axios.put(`${url}/jeeshop-admin/rs/products`, {params: args, headers: credentials})
+        return axios.put(`${url}/jeeshop-admin/rs/products`, args, {headers: credentials})
             .then((response) => response.data)
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
@@ -43,7 +43,9 @@ var ProductService = {
     },
     deleteProduct(id) {
         return axios.delete(`${url}/jeeshop-admin/rs/products/${id}`, {headers: credentials})
-            .then((response) => response.data)
+            .then((response) => {
+                if(response.status == "204") return {success: true}
+            })
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []

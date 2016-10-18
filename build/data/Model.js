@@ -52,7 +52,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var _nodeDefinitions = (0, _graphqlRelay.nodeDefinitions)(function (globalId) {
     var _fromGlobalId = (0, _graphqlRelay.fromGlobalId)(globalId);
 
-    var id = _fromGlobalId.id;
+    var id = _fromGlobalId.catalogId;
     var type = _fromGlobalId.type;
 
 
@@ -238,7 +238,7 @@ var SKUType = exports.SKUType = new _graphql.GraphQLObjectType({
             args: { locale: { type: _graphql.GraphQLString } },
             resolve: function resolve(obj, args) {
                 var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
-                return _SkuService2.default.findSKULocalizedContent(obj.id, locale);
+                return _SkuService2.default.findSKULocalizedContent(obj.catalogId, locale);
             }
         },
         discounts: {
@@ -279,13 +279,13 @@ var ProductType = exports.ProductType = new _graphql.GraphQLObjectType({
             resolve: function resolve(obj, args) {
                 var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
                 console.log("locale : " + JSON.stringify(locale));
-                return _ProductService2.default.findProductLocalizedContent(obj.id, locale);
+                return _ProductService2.default.findProductLocalizedContent(obj.catalogId, locale);
             }
         },
         skus: {
             type: new _graphql.GraphQLList(SKUType),
             resolve: function resolve(obj, args) {
-                return _ProductService2.default.findProductRelatedSKUs(obj.id);
+                return _ProductService2.default.findProductRelatedSKUs(obj.catalogId);
             }
         }
     }
@@ -319,7 +319,7 @@ var CategoryType = exports.CategoryType = new _graphql.GraphQLObjectType({
             args: { locale: { type: _graphql.GraphQLString } },
             resolve: function resolve(obj, args) {
                 var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
-                return _CategoriesService2.default.getCategoryLocalizedContent(obj.id, locale);
+                return _CategoriesService2.default.getCategoryLocalizedContent(obj.catalogId, locale);
             } },
         childCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
                 return obj.childCategoriesId;
@@ -368,7 +368,7 @@ var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
             args: { locale: { type: _graphql.GraphQLString } },
             resolve: function resolve(obj, args) {
                 var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
-                return _CatalogService2.default.getCatalogLocalizedContent(obj.id, locale);
+                return _CatalogService2.default.getCatalogLocalizedContent(obj.catalogId, locale);
             }
         },
         rootCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
@@ -380,7 +380,7 @@ var CatalogType = exports.CatalogType = new _graphql.GraphQLObjectType({
                 locale: { type: _graphql.GraphQLString }
             }, _graphqlRelay.connectionArgs),
             resolve: function resolve(obj, args) {
-                return (0, _graphqlRelay.connectionFromPromisedArray)(_CategoriesService2.default.findCatalogCategories(obj.id, args.locale), args);
+                return (0, _graphqlRelay.connectionFromPromisedArray)(_CategoriesService2.default.findCatalogCategories(obj.catalogId, args.locale), args);
             }
         }
     },
@@ -487,7 +487,7 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                     locale: { type: _graphql.GraphQLString }
                 },
                 resolve: function resolve(obj, args) {
-                    return _CatalogService2.default.findCatalogById((0, _graphqlRelay.fromGlobalId)(args.id).id);
+                    return _CatalogService2.default.findCatalogById((0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId);
                 }
             },
             categories: {
@@ -510,7 +510,7 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                     locale: { type: _graphql.GraphQLString }
                 },
                 resolve: function resolve(obj, args) {
-                    return _CategoriesService2.default.findCategoryById((0, _graphqlRelay.fromGlobalId)(args.id).id, args.locale);
+                    return _CategoriesService2.default.findCategoryById((0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId, args.locale);
                 }
             },
             products: {
@@ -533,7 +533,7 @@ var ViewerType = exports.ViewerType = new _graphql.GraphQLObjectType({
                     locale: { type: _graphql.GraphQLString }
                 },
                 resolve: function resolve(obj, args) {
-                    return _ProductService2.default.findProductById(args.id, args.locale);
+                    return _ProductService2.default.findProductById(args.catalogId, args.locale);
                 }
             },
             skus: {

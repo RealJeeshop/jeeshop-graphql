@@ -119,7 +119,7 @@ var ModifySKUMutation = exports.ModifySKUMutation = new _graphqlRelay.mutationWi
                 while (1) {
                     switch (_context2.prev = _context2.next) {
                         case 0:
-                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            args.catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
                             delete args.clientMutationId;
                             _context2.next = 4;
                             return _SkuService2.default.modifySKU(args);
@@ -162,7 +162,7 @@ var DeleteSKUMutation = exports.DeleteSKUMutation = new _graphqlRelay.mutationWi
                 while (1) {
                     switch (_context3.prev = _context3.next) {
                         case 0:
-                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            id = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
                             _context3.next = 3;
                             return _SkuService2.default.deleteSKU(id);
 
@@ -205,7 +205,7 @@ var DeleteSKULocalizedContent = exports.DeleteSKULocalizedContent = new _graphql
                 while (1) {
                     switch (_context4.prev = _context4.next) {
                         case 0:
-                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
                             _context4.next = 3;
                             return _SkuService2.default.deleteSKULocalizedContent(skuId, args.locale);
 
@@ -253,7 +253,7 @@ var CreateSKULocalizedContent = exports.CreateSKULocalizedContent = new _graphql
                 while (1) {
                     switch (_context5.prev = _context5.next) {
                         case 0:
-                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
 
                             delete args.clientMutationId;
                             delete args.discountId;
@@ -337,7 +337,7 @@ var ModifySKULocalizedContent = exports.ModifySKULocalizedContent = new _graphql
                 while (1) {
                     switch (_context7.prev = _context7.next) {
                         case 0:
-                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
 
                             delete args.clientMutationId;
                             delete args.discountId;

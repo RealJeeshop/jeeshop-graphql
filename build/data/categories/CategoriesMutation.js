@@ -203,7 +203,7 @@ var DeleteCategoryMutation = exports.DeleteCategoryMutation = new _graphqlRelay.
                     switch (_context5.prev = _context5.next) {
                         case 0:
                             _context5.next = 2;
-                            return _CategoriesService2.default.deleteCategory((0, _graphqlRelay.fromGlobalId)(args.id).id);
+                            return _CategoriesService2.default.deleteCategory((0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId);
 
                         case 2:
                             return _context5.abrupt('return', _context5.sent);
@@ -248,9 +248,9 @@ var CreateCategoryLocalizedContentMutation = exports.CreateCategoryLocalizedCont
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            id = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
 
-                            delete args.id;
+                            delete args.catalogId;
                             delete args.clientMutationId;
                             console.log("args : " + JSON.stringify(args));
                             _context6.next = 6;
@@ -304,8 +304,8 @@ var ModifyCategoryLocalizedContent = exports.ModifyCategoryLocalizedContent = ne
                 while (1) {
                     switch (_context7.prev = _context7.next) {
                         case 0:
-                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
-                            categoryId = (0, _graphqlRelay.fromGlobalId)(args.categoryId).id;
+                            args.catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
+                            categoryId = (0, _graphqlRelay.fromGlobalId)(args.categoryId).catalogId;
 
                             delete args.clientMutationId;
                             delete args.categoryId;
@@ -352,7 +352,7 @@ var DeleteCategoryLocalizedContent = exports.DeleteCategoryLocalizedContent = ne
                 while (1) {
                     switch (_context8.prev = _context8.next) {
                         case 0:
-                            categoryId = (0, _graphqlRelay.fromGlobalId)(args.categoryId).id;
+                            categoryId = (0, _graphqlRelay.fromGlobalId)(args.categoryId).catalogId;
                             _context8.next = 3;
                             return _CategoriesService2.default.deleteCategoryLocalizedContent(categoryId, args.locale);
 

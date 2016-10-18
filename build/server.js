@@ -886,6 +886,7 @@ module.exports =
 	    },
 	    deleteCatalog: function deleteCatalog(id) {
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
+	            if (response.status == "204") return { success: true };
 	            return response.data;
 	        }).catch(function (response) {
 	            console.log("response error : " + JSON.stringify(response));
@@ -894,7 +895,8 @@ module.exports =
 	    },
 	    getCatalogLocalizedContent: function getCatalogLocalizedContent(id, locale) {
 	        return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
-	            return response.data;
+	            if (response.status == "204") return { success: true };
+	            return null;
 	        }).catch(function (response) {
 	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
@@ -1047,14 +1049,14 @@ module.exports =
 	        return _axios2.default.put(url + '/jeeshop-admin/rs/categories', input, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
-	            console.log("error in createCategory : " + JSON.stringify(response));
+	            console.log("error in modifyCategory : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
 	            return [];
 	        });
 	    },
 	    deleteCategory: function deleteCategory(id) {
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/categories/' + id, { headers: credentials }).then(function (response) {
-	            return response.data;
+	            if (response.status == "204") return { success: true };
 	        }).catch(function (response) {
 	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
@@ -1184,7 +1186,7 @@ module.exports =
 	        });
 	    },
 	    createProduct: function createProduct(args) {
-	        return _axios2.default.post(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
+	        return _axios2.default.post(url + '/jeeshop-admin/rs/products', args, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
 	            console.log("response error : " + JSON.stringify(response));
@@ -1192,7 +1194,7 @@ module.exports =
 	        });
 	    },
 	    modifyProduct: function modifyProduct(args) {
-	        return _axios2.default.put(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
+	        return _axios2.default.put(url + '/jeeshop-admin/rs/products', args, { headers: credentials }).then(function (response) {
 	            return response.data;
 	        }).catch(function (response) {
 	            console.log("response error : " + JSON.stringify(response));
@@ -1201,7 +1203,7 @@ module.exports =
 	    },
 	    deleteProduct: function deleteProduct(id) {
 	        return _axios2.default.delete(url + '/jeeshop-admin/rs/products/' + id, { headers: credentials }).then(function (response) {
-	            return response.data;
+	            if (response.status == "204") return { success: true };
 	        }).catch(function (response) {
 	            console.log("response error : " + JSON.stringify(response));
 	            if (response.status == "404") return [];
@@ -1707,9 +1709,9 @@ module.exports =
 
 	var CreateCatalogLocalizedContentMutation = exports.CreateCatalogLocalizedContentMutation = new _graphqlRelay.mutationWithClientMutationId({
 	    name: 'CreateCatalogLocalizedContent',
-	    description: 'CQ2F0ZWdvcnlUeXBlOjE=reates a localized content for a catalog',
+	    description: 'Creates a localized content for a catalog',
 	    inputFields: {
-	        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        catalogId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
 	        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
 	        displayName: { type: _graphql.GraphQLString },
 	        shortDescription: { type: _graphql.GraphQLString },
@@ -1726,18 +1728,18 @@ module.exports =
 	    },
 	    mutateAndGetPayload: function () {
 	        var _ref6 = _asyncToGenerator(regeneratorRuntime.mark(function _callee6(args) {
-	            var id;
+	            var catalogId;
 	            return regeneratorRuntime.wrap(function _callee6$(_context6) {
 	                while (1) {
 	                    switch (_context6.prev = _context6.next) {
 	                        case 0:
-	                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+	                            catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).id;
 
-	                            delete args.id;
+	                            delete args.catalogId;
 	                            delete args.clientMutationId;
 	                            console.log("args : " + JSON.stringify(args));
 	                            _context6.next = 6;
-	                            return _CatalogService2.default.createCatalogLocalizedContent(id, args);
+	                            return _CatalogService2.default.createCatalogLocalizedContent(catalogId, args);
 
 	                        case 6:
 	                            return _context6.abrupt('return', _context6.sent);
@@ -2026,13 +2028,14 @@ module.exports =
 	                    switch (_context4.prev = _context4.next) {
 	                        case 0:
 	                            delete args.clientMutationId;
-	                            _context4.next = 3;
+	                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+	                            _context4.next = 4;
 	                            return _CategoriesService2.default.modifyCategory(args);
 
-	                        case 3:
+	                        case 4:
 	                            return _context4.abrupt('return', _context4.sent);
 
-	                        case 4:
+	                        case 5:
 	                        case 'end':
 	                            return _context4.stop();
 	                    }
@@ -2141,7 +2144,6 @@ module.exports =
 	    name: 'ModifyCategoryLocalizedContent',
 	    description: 'Modify a localized content for a category',
 	    inputFields: {
-	        categoryId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
 	        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
 	        locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
 	        displayName: { type: _graphql.GraphQLString },
@@ -2168,18 +2170,16 @@ module.exports =
 	                while (1) {
 	                    switch (_context7.prev = _context7.next) {
 	                        case 0:
-	                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
-	                            categoryId = (0, _graphqlRelay.fromGlobalId)(args.categoryId).id;
+	                            categoryId = (0, _graphqlRelay.fromGlobalId)(args.id).id;
 
 	                            delete args.clientMutationId;
-	                            delete args.categoryId;
-	                            _context7.next = 6;
+	                            _context7.next = 4;
 	                            return _CategoriesService2.default.modifyCategoryLocalizedContent(categoryId, args);
 
-	                        case 6:
+	                        case 4:
 	                            return _context7.abrupt('return', _context7.sent);
 
-	                        case 7:
+	                        case 5:
 	                        case 'end':
 	                            return _context7.stop();
 	                    }
@@ -2325,13 +2325,14 @@ module.exports =
 	                    switch (_context2.prev = _context2.next) {
 	                        case 0:
 	                            delete args.clientMutationId;
-	                            _context2.next = 3;
+	                            console.log("args : " + JSON.stringify(args));
+	                            _context2.next = 4;
 	                            return _ProductService2.default.createProduct(args);
 
-	                        case 3:
+	                        case 4:
 	                            return _context2.abrupt('return', _context2.sent);
 
-	                        case 4:
+	                        case 5:
 	                        case 'end':
 	                            return _context2.stop();
 	                    }
@@ -2349,7 +2350,8 @@ module.exports =
 	    name: 'ModifyProductMutation',
 	    description: 'Function to modify a product',
 	    inputFields: {
-	        name: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+	        name: { type: _graphql.GraphQLString },
 	        description: { type: _graphql.GraphQLString },
 	        disabled: { type: _graphql.GraphQLBoolean },
 	        startDate: { type: _graphql.GraphQLString },
@@ -2404,13 +2406,14 @@ module.exports =
 	                    switch (_context4.prev = _context4.next) {
 	                        case 0:
 	                            delete args.clientMutationId;
-	                            _context4.next = 3;
+	                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+	                            _context4.next = 4;
 	                            return _ProductService2.default.modifyProduct(args);
 
-	                        case 3:
+	                        case 4:
 	                            return _context4.abrupt('return', _context4.sent);
 
-	                        case 4:
+	                        case 5:
 	                        case 'end':
 	                            return _context4.stop();
 	                    }
@@ -2767,7 +2770,7 @@ module.exports =
 	                while (1) {
 	                    switch (_context2.prev = _context2.next) {
 	                        case 0:
-	                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+	                            args.catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
 	                            delete args.clientMutationId;
 	                            _context2.next = 4;
 	                            return _SkuService2.default.modifySKU(args);
@@ -2810,7 +2813,7 @@ module.exports =
 	                while (1) {
 	                    switch (_context3.prev = _context3.next) {
 	                        case 0:
-	                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+	                            id = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
 	                            _context3.next = 3;
 	                            return _SkuService2.default.deleteSKU(id);
 
@@ -2853,7 +2856,7 @@ module.exports =
 	                while (1) {
 	                    switch (_context4.prev = _context4.next) {
 	                        case 0:
-	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
 	                            _context4.next = 3;
 	                            return _SkuService2.default.deleteSKULocalizedContent(skuId, args.locale);
 
@@ -2901,7 +2904,7 @@ module.exports =
 	                while (1) {
 	                    switch (_context5.prev = _context5.next) {
 	                        case 0:
-	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
 
 	                            delete args.clientMutationId;
 	                            delete args.discountId;
@@ -2985,7 +2988,7 @@ module.exports =
 	                while (1) {
 	                    switch (_context7.prev = _context7.next) {
 	                        case 0:
-	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+	                            skuId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
 
 	                            delete args.clientMutationId;
 	                            delete args.discountId;

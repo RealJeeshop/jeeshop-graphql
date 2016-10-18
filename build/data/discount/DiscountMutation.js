@@ -125,7 +125,7 @@ var ModifyDiscountMutation = exports.ModifyDiscountMutation = new _graphqlRelay.
                 while (1) {
                     switch (_context2.prev = _context2.next) {
                         case 0:
-                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            args.catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
                             delete args.clientMutationId;
                             _context2.next = 4;
                             return _DiscountService2.default.modifyDiscount(args);
@@ -168,7 +168,7 @@ var DeleteDiscountMutation = exports.DeleteDiscountMutation = new _graphqlRelay.
                 while (1) {
                     switch (_context3.prev = _context3.next) {
                         case 0:
-                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            id = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
                             _context3.next = 3;
                             return _DiscountService2.default.deleteDiscount(id);
 
@@ -211,7 +211,7 @@ var DeleteDiscountLocalizedContent = exports.DeleteDiscountLocalizedContent = ne
                 while (1) {
                     switch (_context4.prev = _context4.next) {
                         case 0:
-                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
                             _context4.next = 3;
                             return _DiscountService2.default.deleteDiscountLocalizedContent(discountId, args.locale);
 
@@ -259,7 +259,7 @@ var CreateDiscountLocalizedContent = exports.CreateDiscountLocalizedContent = ne
                 while (1) {
                     switch (_context5.prev = _context5.next) {
                         case 0:
-                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
 
                             delete args.clientMutationId;
                             delete args.discountId;
@@ -316,7 +316,7 @@ var ModifyDiscountLocalizedContent = exports.ModifyDiscountLocalizedContent = ne
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
+                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
 
                             delete args.clientMutationId;
                             delete args.discountId;

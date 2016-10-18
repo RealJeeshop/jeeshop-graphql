@@ -127,9 +127,9 @@ export const DeleteCatalogMutation = new mutationWithClientMutationId({
 
 export const CreateCatalogLocalizedContentMutation = new mutationWithClientMutationId({
     name: 'CreateCatalogLocalizedContent',
-    description: 'CQ2F0ZWdvcnlUeXBlOjE=reates a localized content for a catalog',
+    description: 'Creates a localized content for a catalog',
     inputFields: {
-        id: {type: new GraphQLNonNull(GraphQLString)},
+        catalogId: {type: new GraphQLNonNull(GraphQLString)},
         locale: {type: new GraphQLNonNull(GraphQLString)},
         displayName: {type: GraphQLString},
         shortDescription: {type: GraphQLString},
@@ -143,11 +143,11 @@ export const CreateCatalogLocalizedContentMutation = new mutationWithClientMutat
         }
     },
     mutateAndGetPayload: async (args) => {
-        let id = fromGlobalId(args.id).id;
-        delete args.id;
+        let catalogId = fromGlobalId(args.catalogId).id;
+        delete args.catalogId;
         delete args.clientMutationId;
         console.log("args : " + JSON.stringify(args));
-        return await CatalogService.createCatalogLocalizedContent(id, args)
+        return await CatalogService.createCatalogLocalizedContent(catalogId, args)
     }
 });
 
