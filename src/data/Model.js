@@ -206,7 +206,7 @@ export const ProductType = new GraphQLObjectType({
 export const CategoryType = new GraphQLObjectType({
     name: 'CategoryType',
     description: 'It represents a category',
-    fields: {
+    fields: () => ({
         id: globalIdField('CategoryType'),
         name: {type: GraphQLString, resolve: (obj) => obj.name},
         description: {type: GraphQLString, resolve: (obj) => obj.description},
@@ -223,17 +223,17 @@ export const CategoryType = new GraphQLObjectType({
             }},
         childCategoriesId: {type: GraphQLString, resolve: (obj) => obj.childCategoriesId},
         childProductsIds: {type: GraphQLString, resolve: (obj) => obj.childProductsIds},
-        // relatedCategories: {
-        //     type: CategoryConnection,
-        //     args: {
-        //         locale: {type: GraphQLString},
-        //         ...connectionArgs
-        //     },
-        //     resolve: (obj, args) => {
-        //         return connectionFromPromisedArray(CategoriesService.findCategoryRelatedCategories(obj.id, args.locale), args)
-        //     }
-        // }
-    }
+        relatedCategories: {
+            type: CategoryConnection,
+            args: {
+                locale: {type: GraphQLString},
+                ...connectionArgs
+            },
+            resolve: (obj, args) => {
+                return connectionFromPromisedArray(CategoriesService.findCategoryRelatedCategories(obj.id, args.locale), args)
+            }
+        }
+    })
 });
 
 

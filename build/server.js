@@ -449,39 +449,50 @@ module.exports =
 	var CategoryType = exports.CategoryType = new _graphql.GraphQLObjectType({
 	    name: 'CategoryType',
 	    description: 'It represents a category',
-	    fields: {
-	        id: (0, _graphqlRelay.globalIdField)('CategoryType'),
-	        name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
-	                return obj.name;
-	            } },
-	        description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
-	                return obj.description;
-	            } },
-	        disabled: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
-	                return obj.disabled;
-	            } },
-	        startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
-	                return obj.startDate;
-	            } },
-	        endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
-	                return obj.endDate;
-	            } },
-	        visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
-	                return obj.visible;
-	            } },
-	        localizedPresentation: {
-	            type: PresentationType,
-	            args: { locale: { type: _graphql.GraphQLString } },
-	            resolve: function resolve(obj, args) {
-	                var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
-	                return _CategoriesService2.default.getCategoryLocalizedContent(obj.id, locale);
-	            } },
-	        childCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
-	                return obj.childCategoriesId;
-	            } },
-	        childProductsIds: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
-	                return obj.childProductsIds;
-	            } }
+	    fields: function fields() {
+	        return {
+	            id: (0, _graphqlRelay.globalIdField)('CategoryType'),
+	            name: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                    return obj.name;
+	                } },
+	            description: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                    return obj.description;
+	                } },
+	            disabled: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                    return obj.disabled;
+	                } },
+	            startDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                    return obj.startDate;
+	                } },
+	            endDate: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                    return obj.endDate;
+	                } },
+	            visible: { type: _graphql.GraphQLBoolean, resolve: function resolve(obj) {
+	                    return obj.visible;
+	                } },
+	            localizedPresentation: {
+	                type: PresentationType,
+	                args: { locale: { type: _graphql.GraphQLString } },
+	                resolve: function resolve(obj, args) {
+	                    var locale = args.locale ? args.locale : (0, _UserStore.getViewerLocale)("me");
+	                    return _CategoriesService2.default.getCategoryLocalizedContent(obj.id, locale);
+	                } },
+	            childCategoriesId: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                    return obj.childCategoriesId;
+	                } },
+	            childProductsIds: { type: _graphql.GraphQLString, resolve: function resolve(obj) {
+	                    return obj.childProductsIds;
+	                } },
+	            relatedCategories: {
+	                type: CategoryConnection,
+	                args: _extends({
+	                    locale: { type: _graphql.GraphQLString }
+	                }, _graphqlRelay.connectionArgs),
+	                resolve: function resolve(obj, args) {
+	                    return (0, _graphqlRelay.connectionFromPromisedArray)(_CategoriesService2.default.findCategoryRelatedCategories(obj.id, args.locale), args);
+	                }
+	            }
+	        };
 	    }
 	});
 
