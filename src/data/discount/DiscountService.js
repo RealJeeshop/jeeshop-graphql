@@ -40,6 +40,14 @@ var DiscountService = {
                     console.log("args : " + JSON.stringify(args));
             }))
     },
+    createDiscount(input) {
+        return axios.post(`${url}/jeeshop-admin/rs/discounts/`, input, {headers: credentials})
+            .then((response) => response.data)
+            .catch((response) => {
+                console.log("response error : " + JSON.stringify(response));
+                if(response.status == "404") return []
+            })
+    },
     modifyDiscount(input) {
         return axios.put(`${url}/jeeshop-admin/rs/discounts/`, input, {headers: credentials})
             .then((response) => response.data)
@@ -67,7 +75,9 @@ var DiscountService = {
     },
     deleteDiscountLocalizedContent(discountId, locale) {
         return axios.delete(`${url}/jeeshop-admin/rs/discounts/${discountId}/presentations/${locale}`, {headers: credentials})
-            .then((response) => response.data)
+            .then((response) => {
+                if(response.status == "204") return {success: true}
+            })
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
@@ -76,7 +86,7 @@ var DiscountService = {
     createDiscountLocalizedContent(discountId, locale, presentationObject) {
         return axios.post(`${url}/jeeshop-admin/rs/discounts/${discountId}/presentations/${locale}`, presentationObject, {headers: credentials})
             .then((response) => {
-
+                console.log("response.data : " + JSON.stringify(response.data));
                 return response.data;
             })
             .catch((response) => {

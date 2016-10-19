@@ -24,9 +24,10 @@ var DiscountService = {
             if (response.status == "404") return [];
         });
     },
-    findDiscountById: function findDiscountById(id) {
+    findDiscountById: function findDiscountById(id, locale) {
 
-        return _axios2.default.get(url + '/jeeshop-admin/rs/discounts/' + id, { headers: credentials }).then(function (response) {
+        var params = locale ? { locale: locale } : {};
+        return _axios2.default.get(url + '/jeeshop-admin/rs/discounts/' + id, { params: params, headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));
@@ -47,6 +48,14 @@ var DiscountService = {
         return _axios2.default.all(calls).then(_axios2.default.spread(function (args) {
             console.log("args : " + JSON.stringify(args));
         }));
+    },
+    createDiscount: function createDiscount(input) {
+        return _axios2.default.post(url + '/jeeshop-admin/rs/discounts/', input, { headers: credentials }).then(function (response) {
+            return response.data;
+        }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
+            if (response.status == "404") return [];
+        });
     },
     modifyDiscount: function modifyDiscount(input) {
         return _axios2.default.put(url + '/jeeshop-admin/rs/discounts/', input, { headers: credentials }).then(function (response) {
@@ -75,7 +84,7 @@ var DiscountService = {
     },
     deleteDiscountLocalizedContent: function deleteDiscountLocalizedContent(discountId, locale) {
         return _axios2.default.delete(url + '/jeeshop-admin/rs/discounts/' + discountId + '/presentations/' + locale, { headers: credentials }).then(function (response) {
-            return response.data;
+            if (response.status == "204") return { success: true };
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
@@ -83,7 +92,7 @@ var DiscountService = {
     },
     createDiscountLocalizedContent: function createDiscountLocalizedContent(discountId, locale, presentationObject) {
         return _axios2.default.post(url + '/jeeshop-admin/rs/discounts/' + discountId + '/presentations/' + locale, presentationObject, { headers: credentials }).then(function (response) {
-
+            console.log("response.data : " + JSON.stringify(response.data));
             return response.data;
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));

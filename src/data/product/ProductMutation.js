@@ -19,6 +19,7 @@ import {
 
 import {
     ViewerType,
+    ProductType,
     ProductEdge
 } from '../Model'
 
@@ -153,13 +154,21 @@ export const CreateProductLocalizedContent = new mutationWithClientMutationId({
         viewer: {
             type: ViewerType,
             resolve: () => getViewer("me")
+        },
+        product: {
+            type: ProductType,
+            resolve: (payload) => ProductService.findProductById(payload.productId)
         }
     },
     mutateAndGetPayload: async (args) => {
         let productId = fromGlobalId(args.productId).id;
         delete args.clientMutationId;
         delete args.productId;
-        return await ProductService.createProductLocalizedContent(productId, args.locale, args)
+        let localizedContent  = await ProductService.createProductLocalizedContent(productId, args.locale, args)
+        return {
+            localizedContent: localizedContent,
+            productId: productId
+        }
     }
 });
 
@@ -167,6 +176,7 @@ export const ModifyProductLocalizedContent = new mutationWithClientMutationId({
     name: 'ModifyProductLocalizedContent',
     description: 'modify a localized content for a product',
     inputFields: {
+        id: {type: new GraphQLNonNull(GraphQLString)},
         productId: {type: new GraphQLNonNull(GraphQLString)},
         locale: {type: new GraphQLNonNull(GraphQLString)},
         displayName: {type: GraphQLString},
@@ -185,19 +195,25 @@ export const ModifyProductLocalizedContent = new mutationWithClientMutationId({
             resolve: async (payload) => {
 
                 let products = await ProductService.findAllProducts();
-                let cursor = cursorForObjectInConnection(products, payload);
+                let product = await ProductService.findProductById(payload.productId);
+                let cursor = cursorForObjectInConnection(products, product);
                 return {
                     cursor: cursor,
-                    node: payload
+                    node: product
                 }
             }
         }
     },
     mutateAndGetPayload: async (args) => {
         let productId = fromGlobalId(args.productId).id;
+        args.id = fromGlobalId(args.id).id;
         delete args.clientMutationId;
         delete args.productId;
-        return await ProductService.modifyProductLocalizedContent(productId, args.locale, args)
+        let localizedContent = await ProductService.modifyProductLocalizedContent(productId, args.locale, args)
+        return {
+            localizedContent: localizedContent,
+            productId: productId
+        }
     }
 });
 

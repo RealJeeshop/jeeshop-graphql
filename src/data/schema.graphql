@@ -37,6 +37,7 @@ type CategoryType {
   localizedPresentation(locale: String): PresentationType
   childCategoriesId: String
   childProductsIds: String
+  relatedCategories(locale: String, after: String, first: Int, before: String, last: Int): CategoryTypeConnection
 }
 
 type CategoryTypeConnection {
@@ -61,7 +62,7 @@ input CreateCatalogInput {
 }
 
 input CreateCatalogLocalizedContentInput {
-  id: String!
+  catalogId: String!
   locale: String!
   displayName: String
   shortDescription: String
@@ -125,6 +126,7 @@ input CreateDiscountLocalizedContentInput {
 
 type CreateDiscountLocalizedContentPayload {
   viewer: Viewer
+  discount: DiscountType
   clientMutationId: String!
 }
 
@@ -139,7 +141,7 @@ input CreateDiscountMutationInput {
   usesPerCustomer: Int
   type: String
   triggerRule: String
-  applicableTo: String
+  applicableTo: String!
   triggerValue: Float
   discountValue: Float
   rateType: Boolean
@@ -198,6 +200,7 @@ input CreateSKULocalizedContentInput {
 
 type CreateSKULocalizedContentPayload {
   viewer: Viewer
+  sku: SKUType
   clientMutationId: String!
 }
 
@@ -337,12 +340,24 @@ type DiscountType {
   endDate: String
   visible: Boolean
   usePerCustomer: Int
+  applicableTo: String
   type: String
   triggerRule: String
   triggerValue: Float
   discountValue: Float
   rateType: Boolean
   uniqueUse: Boolean
+  localizedPresentation(locale: String): PresentationType
+}
+
+type DiscountTypeConnection {
+  pageInfo: PageInfo!
+  edges: [DiscountTypeEdge]
+}
+
+type DiscountTypeEdge {
+  node: DiscountType
+  cursor: String!
 }
 
 type ImageType {
@@ -397,7 +412,6 @@ input ModifyCategoryInput {
 }
 
 input ModifyCategoryLocalizedContentInput {
-  categoryId: String!
   id: String!
   locale: String!
   displayName: String
@@ -423,6 +437,7 @@ type ModifyCategoryPayload {
 }
 
 input ModifyDiscountLocalizedContentInput {
+  id: String!
   discountId: String!
   locale: String!
   displayName: String
@@ -483,7 +498,8 @@ type ModifyProductLocalizedContentPayload {
 }
 
 input ModifyProductMutationInput {
-  name: String!
+  id: String!
+  name: String
   description: String
   disabled: Boolean
   startDate: String
@@ -499,6 +515,7 @@ type ModifyProductMutationPayload {
 }
 
 input ModifySKULocalizedContentInput {
+  id: String!
   skuId: String!
   locale: String!
   displayName: String
@@ -517,7 +534,7 @@ type ModifySKULocalizedContentPayload {
 
 input ModifySKUMutationInput {
   id: String!
-  name: String!
+  name: String
   description: String
   disabled: Boolean
   startDate: String
@@ -678,4 +695,5 @@ type Viewer implements Node {
   products(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): ProductTypeConnection
   product(id: String!, locale: String): ProductType
   skus(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): SKUTypeConnection
+  discounts(search: String, start: Int, size: Int, orderBy: String, isDesc: Boolean, after: String, first: Int, before: String, last: Int): DiscountTypeConnection
 }

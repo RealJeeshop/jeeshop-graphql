@@ -37,7 +37,7 @@ var CreateDiscountMutation = exports.CreateDiscountMutation = new _graphqlRelay.
         usesPerCustomer: { type: _graphql.GraphQLInt },
         type: { type: _graphql.GraphQLString },
         triggerRule: { type: _graphql.GraphQLString },
-        applicableTo: { type: _graphql.GraphQLString },
+        applicableTo: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         triggerValue: { type: _graphql.GraphQLFloat },
         discountValue: { type: _graphql.GraphQLFloat },
         rateType: { type: _graphql.GraphQLBoolean },
@@ -125,7 +125,7 @@ var ModifyDiscountMutation = exports.ModifyDiscountMutation = new _graphqlRelay.
                 while (1) {
                     switch (_context2.prev = _context2.next) {
                         case 0:
-                            args.catalogId = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
+                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
                             delete args.clientMutationId;
                             _context2.next = 4;
                             return _DiscountService2.default.modifyDiscount(args);
@@ -168,7 +168,7 @@ var DeleteDiscountMutation = exports.DeleteDiscountMutation = new _graphqlRelay.
                 while (1) {
                     switch (_context3.prev = _context3.next) {
                         case 0:
-                            id = (0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId;
+                            id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
                             _context3.next = 3;
                             return _DiscountService2.default.deleteDiscount(id);
 
@@ -211,7 +211,7 @@ var DeleteDiscountLocalizedContent = exports.DeleteDiscountLocalizedContent = ne
                 while (1) {
                     switch (_context4.prev = _context4.next) {
                         case 0:
-                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
+                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
                             _context4.next = 3;
                             return _DiscountService2.default.deleteDiscountLocalizedContent(discountId, args.locale);
 
@@ -250,6 +250,12 @@ var CreateDiscountLocalizedContent = exports.CreateDiscountLocalizedContent = ne
             resolve: function resolve() {
                 return (0, _UserStore.getViewer)("me");
             }
+        },
+        discount: {
+            type: _Model.DiscountType,
+            resolve: function resolve(discountId) {
+                return _DiscountService2.default.findDiscountById(discountId);
+            }
         }
     },
     mutateAndGetPayload: function () {
@@ -259,7 +265,7 @@ var CreateDiscountLocalizedContent = exports.CreateDiscountLocalizedContent = ne
                 while (1) {
                     switch (_context5.prev = _context5.next) {
                         case 0:
-                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
+                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
 
                             delete args.clientMutationId;
                             delete args.discountId;
@@ -267,7 +273,7 @@ var CreateDiscountLocalizedContent = exports.CreateDiscountLocalizedContent = ne
                             return _DiscountService2.default.createDiscountLocalizedContent(discountId, args.locale, args);
 
                         case 5:
-                            return _context5.abrupt('return', _context5.sent);
+                            return _context5.abrupt('return', discountId);
 
                         case 6:
                         case 'end':
@@ -287,6 +293,7 @@ var ModifyDiscountLocalizedContent = exports.ModifyDiscountLocalizedContent = ne
     name: 'ModifyDiscountLocalizedContent',
     description: 'modify a localized content for a discount',
     inputFields: {
+        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         discountId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         locale: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
         displayName: { type: _graphql.GraphQLString },
@@ -305,28 +312,33 @@ var ModifyDiscountLocalizedContent = exports.ModifyDiscountLocalizedContent = ne
         discount: {
             type: _Model.DiscountType,
             resolve: function resolve(payload) {
-                return payload;
+                return _DiscountService2.default.findDiscountById(payload.discountId);
             }
         }
     },
     mutateAndGetPayload: function () {
         var _ref6 = _asyncToGenerator(regeneratorRuntime.mark(function _callee6(args) {
-            var discountId;
+            var discountId, localizedContent;
             return regeneratorRuntime.wrap(function _callee6$(_context6) {
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).catalogId;
+                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            discountId = (0, _graphqlRelay.fromGlobalId)(args.discountId).id;
 
                             delete args.clientMutationId;
                             delete args.discountId;
-                            _context6.next = 5;
+                            _context6.next = 6;
                             return _DiscountService2.default.modifyDiscountLocalizedContent(discountId, args.locale, args);
 
-                        case 5:
-                            return _context6.abrupt('return', _context6.sent);
-
                         case 6:
+                            localizedContent = _context6.sent;
+                            return _context6.abrupt('return', {
+                                localizedContent: localizedContent,
+                                discountId: discountId
+                            });
+
+                        case 8:
                         case 'end':
                             return _context6.stop();
                     }

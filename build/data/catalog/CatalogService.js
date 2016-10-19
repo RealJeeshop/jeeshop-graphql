@@ -51,6 +51,7 @@ var CatalogService = {
     },
     deleteCatalog: function deleteCatalog(id) {
         return _axios2.default.delete(url + '/jeeshop-admin/rs/catalogs/' + id, { headers: credentials }).then(function (response) {
+            if (response.status == "204") return { success: true };
             return response.data;
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));
@@ -59,7 +60,8 @@ var CatalogService = {
     },
     getCatalogLocalizedContent: function getCatalogLocalizedContent(id, locale) {
         return _axios2.default.get(url + '/jeeshop-admin/rs/catalogs/' + id + '/presentations/' + locale, { headers: credentials }).then(function (response) {
-            return response.data;
+            if (response.status == "204") return { success: true };
+            return null;
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];

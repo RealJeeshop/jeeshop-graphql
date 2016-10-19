@@ -35,7 +35,7 @@ var ProductService = {
         });
     },
     createProduct: function createProduct(args) {
-        return _axios2.default.post(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
+        return _axios2.default.post(url + '/jeeshop-admin/rs/products', args, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));
@@ -43,7 +43,7 @@ var ProductService = {
         });
     },
     modifyProduct: function modifyProduct(args) {
-        return _axios2.default.put(url + '/jeeshop-admin/rs/products', { params: args, headers: credentials }).then(function (response) {
+        return _axios2.default.put(url + '/jeeshop-admin/rs/products', args, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));
@@ -52,7 +52,7 @@ var ProductService = {
     },
     deleteProduct: function deleteProduct(id) {
         return _axios2.default.delete(url + '/jeeshop-admin/rs/products/' + id, { headers: credentials }).then(function (response) {
-            return response.data;
+            if (response.status == "204") return { success: true };
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];

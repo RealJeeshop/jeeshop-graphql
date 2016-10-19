@@ -19,7 +19,8 @@ import {
 
 import {
     ViewerType,
-    CategoryEdge
+    CategoryEdge,
+    CategoryType
 } from '../Model'
 
 import {
@@ -121,7 +122,7 @@ export const CreateCategoryLocalizedContentMutation = new mutationWithClientMuta
     name: 'CreateCategoryLocalizedContent',
     description: 'Creates a localized content for a category',
     inputFields: {
-        id: {type: new GraphQLNonNull(GraphQLString)},
+        categoryId: {type: new GraphQLNonNull(GraphQLString)},
         locale: {type: new GraphQLNonNull(GraphQLString)},
         displayName: {type: GraphQLString},
         shortDescription: {type: GraphQLString},
@@ -132,14 +133,21 @@ export const CreateCategoryLocalizedContentMutation = new mutationWithClientMuta
         viewer: {
             type: ViewerType,
             resolve: () => getViewer("me")
+        },
+        category: {
+            type: CategoryType,
+            resolve: (payload) => CategoriesService.findCategoryById(payload.categoryId)
         }
     },
     mutateAndGetPayload: async (args) => {
-        let id = fromGlobalId(args.id).id;
-        delete args.id;
+        let id = fromGlobalId(args.categoryId).id;
+        delete args.categoryId;
         delete args.clientMutationId;
-        console.log("args : " + JSON.stringify(args));
-        return await CategoriesService.createCategoryLocalizedContent(id, args)
+        let localizedContent =  await CategoriesService.createCategoryLocalizedContent(id, args);
+        return {
+            localizedContent: localizedContent,
+            categoryId: id
+        }
     }
 });
 
@@ -148,6 +156,7 @@ export const ModifyCategoryLocalizedContent = new mutationWithClientMutationId({
     description: 'Modify a localized content for a category',
     inputFields: {
         id: {type: new GraphQLNonNull(GraphQLString)},
+        categoryId: {type: new GraphQLNonNull(GraphQLString)},
         locale: {type: new GraphQLNonNull(GraphQLString)},
         displayName: {type: GraphQLString},
         shortDescription: {type: GraphQLString},
@@ -162,12 +171,22 @@ export const ModifyCategoryLocalizedContent = new mutationWithClientMutationId({
         viewer: {
             type: ViewerType,
             resolve: () => getViewer("me")
+        },
+        category: {
+            type: CategoryType,
+            resolve: (payload) => CategoriesService.findCategoryById(payload.categoryId)
         }
     },
     mutateAndGetPayload: async (args) => {
-        let categoryId = fromGlobalId(args.id).id;
+        args.id = fromGlobalId(args.id).id;
+        let categoryId = fromGlobalId(args.categoryId).id;
         delete args.clientMutationId;
-        return await CategoriesService.modifyCategoryLocalizedContent(categoryId, args)
+        delete args.categoryId;
+        let localizedContent = await CategoriesService.modifyCategoryLocalizedContent(categoryId, args);
+        return {
+            localizedContent: localizedContent,
+            categoryId: categoryId
+        }
     }
 });
 
@@ -191,4 +210,3 @@ export const DeleteCategoryLocalizedContent = new mutationWithClientMutationId({
         return await CategoriesService.deleteCategoryLocalizedContent(categoryId, args.locale)
     }
 });
-

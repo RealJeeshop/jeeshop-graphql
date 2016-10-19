@@ -20,7 +20,8 @@ import {
 import {
     ViewerType,
     CatalogConnection,
-    CatalogEdge
+    CatalogEdge,
+    CatalogType
 } from '../Model'
 
 import {
@@ -140,14 +141,21 @@ export const CreateCatalogLocalizedContentMutation = new mutationWithClientMutat
         viewer: {
             type: ViewerType,
             resolve: () => getViewer("me")
+        },
+        catalog: {
+            type: CatalogType,
+            resolve: (payload) => CatalogService.findCatalogById(payload.catalogId)
         }
     },
     mutateAndGetPayload: async (args) => {
         let catalogId = fromGlobalId(args.catalogId).id;
         delete args.catalogId;
         delete args.clientMutationId;
-        console.log("args : " + JSON.stringify(args));
-        return await CatalogService.createCatalogLocalizedContent(catalogId, args)
+        let localizedContent = await CatalogService.createCatalogLocalizedContent(catalogId, args);
+        return {
+            localizedContent: localizedContent,
+            catalogId: catalogId
+        }
     }
 });
 
@@ -167,6 +175,10 @@ export const ModifyCatalogLocalizedContent = new mutationWithClientMutationId({
         viewer: {
             type: ViewerType,
             resolve: () => getViewer("me")
+        },
+        catalog: {
+            type: CatalogType,
+            resolve: (payload) => CatalogService.findCatalogById(payload.catalogId)
         }
     },
     mutateAndGetPayload: async (args) => {
@@ -174,12 +186,16 @@ export const ModifyCatalogLocalizedContent = new mutationWithClientMutationId({
         let catalogId = fromGlobalId(args.catalogId).id;
         delete args.clientMutationId;
         delete args.catalogId;
-        return await CatalogService.modifyCatalogLocalizedContent(catalogId, args)
+        let localizedContent = await CatalogService.modifyCatalogLocalizedContent(catalogId, args);
+        return {
+            localizedContent: localizedContent,
+            catalogId: catalogId
+        }
     }
 });
 
 
-// Seems to work but there's an error
+
 export const DeleteCatalogLocalizedContent = new mutationWithClientMutationId({
     name: 'DeleteCatalogLocalizedContent',
     description: 'Delete a localized content for a catalog',

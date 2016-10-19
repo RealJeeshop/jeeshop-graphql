@@ -17,9 +17,8 @@ var CatalogService = {
     },
     findCatalogById(id) {
         return axios.get(`${url}/jeeshop-admin/rs/catalogs/${id}`, {headers: credentials})
-            .then((response) => {
-                return response.data
-            }).catch((response) => {
+            .then((response) => response.data)
+            .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
             })
@@ -54,10 +53,7 @@ var CatalogService = {
     },
     getCatalogLocalizedContent(id, locale) {
         return axios.get(`${url}/jeeshop-admin/rs/catalogs/${id}/presentations/${locale}`, {headers: credentials})
-            .then((response) => {
-                if(response.status == "204") return {success: true};
-                return null;
-            })
+            .then((response) => response.data)
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
@@ -67,7 +63,9 @@ var CatalogService = {
     },
     createCatalogLocalizedContent(id, input) {
         return axios.post(`${url}/jeeshop-admin/rs/catalogs/${id}/presentations/${input.locale}`, input, {headers: credentials})
-            .then((response) => response.data)
+            .then((response) => {
+                return response.data
+            })
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []
@@ -87,7 +85,9 @@ var CatalogService = {
     },
     deleteCatalogLocalizedContent(catalogId, locale) {
         return axios.delete(`${url}/jeeshop-admin/rs/catalogs/${catalogId}/presentations/${locale}`, {headers: credentials})
-            .then((response) => response.data)
+            .then((response) => {
+                if(response.status == "204") return {success: true}
+            })
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return [];

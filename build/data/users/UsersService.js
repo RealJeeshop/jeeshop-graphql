@@ -24,6 +24,16 @@ var UsersService = {
             if (response.status == "404") return [];
             return [];
         });
+    },
+    findUserById: function findUserById(id) {
+
+        return _axios2.default.get(url + '/jeeshop-admin/rs/users/' + id, { headers: credentials }).then(function (response) {
+            return response.data;
+        }).catch(function (response) {
+            console.log("response error : " + JSON.stringify(response));
+            if (response.status == "404") return [];
+            return [];
+        });
     }
 };
 exports.default = UsersService;

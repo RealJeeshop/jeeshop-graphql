@@ -43,7 +43,7 @@ export const CreateDiscountMutation = new mutationWithClientMutationId({
         usesPerCustomer: {type: GraphQLInt},
         type: {type: GraphQLString},
         triggerRule: {type: GraphQLString},
-        applicableTo: {type: GraphQLString},
+        applicableTo: {type: new GraphQLNonNull(GraphQLString)},
         triggerValue: {type: GraphQLFloat},
         discountValue: {type: GraphQLFloat},
         rateType: {type: GraphQLBoolean},
@@ -156,13 +156,21 @@ export const CreateDiscountLocalizedContent = new mutationWithClientMutationId({
         viewer: {
             type: ViewerType,
             resolve: () => getViewer("me")
+        },
+        discount: {
+            type: DiscountType,
+            resolve: (payload) => DiscountService.findDiscountById(payload.discountId)
         }
     },
     mutateAndGetPayload: async (args) => {
         let discountId = fromGlobalId(args.discountId).id;
         delete args.clientMutationId;
         delete args.discountId;
-        return await DiscountService.createDiscountLocalizedContent(discountId, args.locale, args)
+        let localizedContent = await DiscountService.createDiscountLocalizedContent(discountId, args.locale, args);
+        return {
+            localizedContent: localizedContent,
+            discountId: discountId
+        }
     }
 });
 
@@ -170,6 +178,7 @@ export const ModifyDiscountLocalizedContent = new mutationWithClientMutationId({
     name: 'ModifyDiscountLocalizedContent',
     description: 'modify a localized content for a discount',
     inputFields: {
+        id: {type: new GraphQLNonNull(GraphQLString)},
         discountId: {type: new GraphQLNonNull(GraphQLString)},
         locale: {type: new GraphQLNonNull(GraphQLString)},
         displayName: {type: GraphQLString},
@@ -185,13 +194,18 @@ export const ModifyDiscountLocalizedContent = new mutationWithClientMutationId({
         },
         discount: {
             type: DiscountType,
-            resolve: (payload) => payload
+            resolve: (payload) => DiscountService.findDiscountById(payload.discountId)
         }
     },
     mutateAndGetPayload: async (args) => {
+        args.id = fromGlobalId(args.id).id;
         let discountId = fromGlobalId(args.discountId).id;
         delete args.clientMutationId;
         delete args.discountId;
-        return await DiscountService.modifyDiscountLocalizedContent(discountId, args.locale, args)
+        let localizedContent = await DiscountService.modifyDiscountLocalizedContent(discountId, args.locale, args);
+        return {
+            localizedContent: localizedContent,
+            discountId: discountId
+        }
     }
 });

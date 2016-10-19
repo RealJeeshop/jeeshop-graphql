@@ -60,7 +60,9 @@ var SKUService = {
     },
     deleteSKULocalizedContent(skuId, locale) {
         return axios.delete(`${url}/jeeshop-admin/rs/skus/${skuId}/presentations/${locale}`, {headers: credentials})
-            .then((response) => response.data)
+            .then((response) => {
+                if(response.status == "204") return {success: true}
+            })
             .catch((response) => {
                 console.log("response error : " + JSON.stringify(response));
                 if(response.status == "404") return []

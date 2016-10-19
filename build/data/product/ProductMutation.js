@@ -82,13 +82,14 @@ var CreateProductMutation = exports.CreateProductMutation = new _graphqlRelay.mu
                     switch (_context2.prev = _context2.next) {
                         case 0:
                             delete args.clientMutationId;
-                            _context2.next = 3;
+                            console.log("args : " + JSON.stringify(args));
+                            _context2.next = 4;
                             return _ProductService2.default.createProduct(args);
 
-                        case 3:
+                        case 4:
                             return _context2.abrupt('return', _context2.sent);
 
-                        case 4:
+                        case 5:
                         case 'end':
                             return _context2.stop();
                     }
@@ -106,7 +107,8 @@ var ModifyProductMutation = exports.ModifyProductMutation = new _graphqlRelay.mu
     name: 'ModifyProductMutation',
     description: 'Function to modify a product',
     inputFields: {
-        name: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLString) },
+        name: { type: _graphql.GraphQLString },
         description: { type: _graphql.GraphQLString },
         disabled: { type: _graphql.GraphQLBoolean },
         startDate: { type: _graphql.GraphQLString },
@@ -161,13 +163,14 @@ var ModifyProductMutation = exports.ModifyProductMutation = new _graphqlRelay.mu
                     switch (_context4.prev = _context4.next) {
                         case 0:
                             delete args.clientMutationId;
-                            _context4.next = 3;
+                            args.id = (0, _graphqlRelay.fromGlobalId)(args.id).id;
+                            _context4.next = 4;
                             return _ProductService2.default.modifyProduct(args);
 
-                        case 3:
+                        case 4:
                             return _context4.abrupt('return', _context4.sent);
 
-                        case 4:
+                        case 5:
                         case 'end':
                             return _context4.stop();
                     }
@@ -202,7 +205,7 @@ var DeleteProductMutation = exports.DeleteProductMutation = new _graphqlRelay.mu
                     switch (_context5.prev = _context5.next) {
                         case 0:
                             _context5.next = 2;
-                            return _ProductService2.default.deleteProduct((0, _graphqlRelay.fromGlobalId)(args.catalogId).catalogId);
+                            return _ProductService2.default.deleteProduct((0, _graphqlRelay.fromGlobalId)(args.id).id);
 
                         case 2:
                             return _context5.abrupt('return', _context5.sent);
@@ -243,7 +246,7 @@ var DeleteProductLocalizedContent = exports.DeleteProductLocalizedContent = new 
                 while (1) {
                     switch (_context6.prev = _context6.next) {
                         case 0:
-                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).catalogId;
+                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).id;
                             _context6.next = 3;
                             return _ProductService2.default.deleteProductLocalizedContent(productId, args.locale);
 
@@ -291,7 +294,7 @@ var CreateProductLocalizedContent = exports.CreateProductLocalizedContent = new 
                 while (1) {
                     switch (_context7.prev = _context7.next) {
                         case 0:
-                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).catalogId;
+                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).id;
 
                             delete args.clientMutationId;
                             delete args.productId;
@@ -375,7 +378,7 @@ var ModifyProductLocalizedContent = exports.ModifyProductLocalizedContent = new 
                 while (1) {
                     switch (_context9.prev = _context9.next) {
                         case 0:
-                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).catalogId;
+                            productId = (0, _graphqlRelay.fromGlobalId)(args.productId).id;
 
                             delete args.clientMutationId;
                             delete args.productId;

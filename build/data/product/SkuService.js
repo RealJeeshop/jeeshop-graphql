@@ -24,9 +24,10 @@ var SKUService = {
             if (response.status == "404") return [];
         });
     },
-    findSKUById: function findSKUById(id) {
+    findSKUById: function findSKUById(id, locale) {
 
-        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id, { headers: credentials }).then(function (response) {
+        var params = locale ? { locale: locale } : {};
+        return _axios2.default.get(url + '/jeeshop-admin/rs/skus/' + id, { params: params, headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));

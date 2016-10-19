@@ -68,7 +68,7 @@ export const ModifySKUMutation = new mutationWithClientMutationId({
     description: 'Function to modify a sku',
     inputFields: {
         id: {type: new GraphQLNonNull(GraphQLString)},
-        name: {type: new GraphQLNonNull(GraphQLString)},
+        name: {type: GraphQLString},
         description: {type: GraphQLString},
         disabled: {type: GraphQLBoolean},
         startDate: {type: GraphQLString},
@@ -92,7 +92,7 @@ export const ModifySKUMutation = new mutationWithClientMutationId({
         }
     },
     mutateAndGetPayload: async (args) => {
-        args.catalogId = fromGlobalId(args.catalogId).catalogId;
+        args.id = fromGlobalId(args.id).id;
         delete args.clientMutationId;
         return await SKUService.modifySKU(args)
     }
@@ -111,7 +111,7 @@ export const DeleteSKUMutation = new mutationWithClientMutationId({
         }
     },
     mutateAndGetPayload: async (args) => {
-        let id = fromGlobalId(args.catalogId).catalogId;
+        let id = fromGlobalId(args.id).id;
         return await SKUService.deleteSKU(id)
     }
 });
@@ -130,7 +130,7 @@ export const DeleteSKULocalizedContent = new mutationWithClientMutationId({
         }
     },
     mutateAndGetPayload: async (args) => {
-        let skuId = fromGlobalId(args.discountId).catalogId;
+        let skuId = fromGlobalId(args.skuId).id;
         return await SKUService.deleteSKULocalizedContent(skuId, args.locale)
     }
 });
@@ -151,13 +151,21 @@ export const CreateSKULocalizedContent = new mutationWithClientMutationId({
         viewer: {
             type: ViewerType,
             resolve: () => getViewer("me")
+        },
+        sku: {
+            type: SKUType,
+            resolve: (payload) => SKUService.findSKUById(payload.skuId)
         }
     },
     mutateAndGetPayload: async (args) => {
-        let skuId = fromGlobalId(args.discountId).catalogId;
+        let skuId = fromGlobalId(args.skuId).id;
         delete args.clientMutationId;
-        delete args.discountId;
-        return await SKUService.createSKULocalizedContent(skuId, args.locale, args)
+        delete args.skuId;
+        let localizedContent = await SKUService.createSKULocalizedContent(skuId, args.locale, args);
+        return {
+            localizedContent: localizedContent,
+            skuId: skuId
+        }
     }
 });
 
@@ -165,6 +173,7 @@ export const ModifySKULocalizedContent = new mutationWithClientMutationId({
     name: 'ModifySKULocalizedContent',
     description: 'modify a localized content for a sku',
     inputFields: {
+        id: {type: new GraphQLNonNull(GraphQLString)},
         skuId: {type: new GraphQLNonNull(GraphQLString)},
         locale: {type: new GraphQLNonNull(GraphQLString)},
         displayName: {type: GraphQLString},
@@ -183,18 +192,24 @@ export const ModifySKULocalizedContent = new mutationWithClientMutationId({
             resolve: async (payload) => {
 
                 let skus = await SKUService.findAllSKUs();
-                let cursor = cursorForObjectInConnection(skus, payload);
+                let sku = await SKUService.findSKUById(payload.skuId);
+                let cursor = cursorForObjectInConnection(skus, sku);
                 return {
                     cursor: cursor,
-                    node: payload
+                    node: sku
                 }
             }
         }
     },
     mutateAndGetPayload: async (args) => {
-        let skuId = fromGlobalId(args.discountId).catalogId;
+        let skuId = fromGlobalId(args.skuId).id;
+        args.id = fromGlobalId(args.id).id;
         delete args.clientMutationId;
-        delete args.discountId;
-        return await SKUService.modifySKULocalizedContent(skuId, args.locale, args)
+        delete args.skuId;
+        let localizedContent = await SKUService.modifySKULocalizedContent(skuId, args.locale, args);
+        return {
+            localizedContent: localizedContent,
+            skuId: skuId
+        }
     }
 });

@@ -133,12 +133,21 @@ export const DiscountType = new GraphQLObjectType({
         endDate: {type: GraphQLString, resolve: (obj) => obj.endDate},
         visible: {type: GraphQLBoolean, resolve: (obj) => obj.visible},
         usePerCustomer: {type: GraphQLInt, resolve: (obj) => obj.usePerCustomer},
+        applicableTo: {type: GraphQLString, resolve: (obj) => obj.applicableTo},
         type: {type: GraphQLString, resolve: (obj) => obj.type},
         triggerRule: {type: GraphQLString, resolve: (obj) => obj.triggerRule},
         triggerValue: {type: GraphQLFloat, resolve: (obj) => obj.triggerValue},
         discountValue: {type: GraphQLFloat, resolve: (obj) => obj.discountValue},
         rateType: {type: GraphQLBoolean, resolve: (obj) => obj.rateType},
         uniqueUse: {type: GraphQLBoolean, resolve: (obj) => obj.uniqueUse},
+        localizedPresentation: {
+            type: PresentationType,
+            args: {locale: {type: GraphQLString}},
+            resolve: (obj, args) => {
+                let locale = args.locale ? args.locale : getViewerLocale("me");
+                return DiscountService.findDiscountLocalizedContent(obj.id, locale)
+            }
+        },
     }
 });
 

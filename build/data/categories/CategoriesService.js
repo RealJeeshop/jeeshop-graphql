@@ -72,14 +72,14 @@ var CategoriesService = {
         return _axios2.default.put(url + '/jeeshop-admin/rs/categories', input, { headers: credentials }).then(function (response) {
             return response.data;
         }).catch(function (response) {
-            console.log("error in createCategory : " + JSON.stringify(response));
+            console.log("error in modifyCategory : " + JSON.stringify(response));
             if (response.status == "404") return [];
             return [];
         });
     },
     deleteCategory: function deleteCategory(id) {
         return _axios2.default.delete(url + '/jeeshop-admin/rs/categories/' + id, { headers: credentials }).then(function (response) {
-            return response.data;
+            if (response.status == "204") return { success: true };
         }).catch(function (response) {
             console.log("response error : " + JSON.stringify(response));
             if (response.status == "404") return [];
